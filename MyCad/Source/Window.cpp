@@ -20,11 +20,11 @@ Window::Window(int width, int height, std::string title)
 	glfwSetWindowUserPointer(nativeWindow, static_cast<void*>(this));
 	glfwMakeContextCurrent(nativeWindow);
 
-	ResizeCallback(nativeWindow, width, height);
+	HandleResize(nativeWindow, width, height);
 
 	glfwSetFramebufferSizeCallback(nativeWindow, [](GLFWwindow* window, int width, int height) {
 		Window* newWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
-		newWindow->ResizeCallback(window, width, height);
+		newWindow->HandleResize(window, width, height);
 	});
 
 	if (!InitGLEW())
@@ -44,7 +44,7 @@ bool Window::ShouldClose()
 	return glfwWindowShouldClose(nativeWindow);
 }
 
-void Window::ResizeCallback(GLFWwindow* window, int width, int height)
+void Window::HandleResize(GLFWwindow* window, int width, int height)
 {
 	this->width = width;
 	this->height = height;

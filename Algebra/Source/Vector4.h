@@ -16,7 +16,6 @@ namespace Algebra
 		float Sum() const;
 		float Length() const;
 		Vector4 Normalize() const;
-		Vector4 Cross(const Vector4& other) const;
 
 		float& operator[](int index);
 		const float& operator[](int index) const;
@@ -30,6 +29,8 @@ namespace Algebra
 		friend Vector4 operator*(const Vector4& vector, const float& scalar);
 		friend Vector4 operator*(const float& scalar, const Vector4& vector);
 		friend Vector4 operator/(const Vector4& vector, const float& scalar);
+		
+		static Vector4 Cross(const Vector4& a, const Vector4& b);
 	};
 }
 

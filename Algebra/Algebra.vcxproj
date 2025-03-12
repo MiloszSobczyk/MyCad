@@ -132,12 +132,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Matrix4.h" />
-    <ClInclude Include="Source\Point.h" />
     <ClInclude Include="Source\Vector4.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Matrix4.cpp" />
-    <ClCompile Include="Source\Point.cpp" />
     <ClCompile Include="Source\Vector4.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

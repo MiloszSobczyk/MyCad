@@ -28,11 +28,6 @@ Vector4 Vector4::Normalize() const
 	return *this / Length();
 }
 
-Vector4 Algebra::Vector4::Cross(const Vector4& other) const
-{
-	return Vector4(y * other.z - z * other.y, x * other.z - z * other.x, x * other.y - y * other.x, 0.f);
-}
-
 float& Vector4::operator[](int index)
 {
 	switch (index)
@@ -95,6 +90,11 @@ const Vector4 Vector4::operator*(const Matrix4& matrix) const
 		(*this) * matrix.Column(2), 
 		(*this) * matrix.Column(3)
 	);
+}
+
+Vector4 Algebra::Vector4::Cross(const Vector4& a, const Vector4& b)
+{
+	return Vector4(a.y * b.z - a.z * b.y, a.x * b.z - a.z * b.x, a.x * b.y - a.y * b.x, 0.f);
 }
 
 Vector4 Algebra::operator*(const Vector4& vector, const float& scalar)

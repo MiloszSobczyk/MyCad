@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 App::App(int windowWidth, int windowHeight, std::string title)
-    : window(windowWidth, windowHeight, title), active(true), shape(1.f, 1.f, 1.f), UI(&window), raySize(2), frameCount(3)
+    : window(windowWidth, windowHeight, title), active(true)
 {
     active &= InitImgui(window.GetNativeWindow());
     if (!active)
@@ -25,28 +25,6 @@ void App::Run()
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        ResolveRaySize();
-        rayCaster.CalculatePoints(shape, window, raySize);
-        rayCaster.Render();
-
-        UI.Render();
-
         window.Update();
-    }
-}
-
-void App::ResolveRaySize()
-{
-    auto values = UserInterface::values;
-    if (values.moving)
-    {
-        raySize = values.raySize;
-        frameCount = 3;
-        return;
-    }
-    if (frameCount-- == 0)
-    {
-        raySize = std::max(raySize / 2, 2);
-        frameCount = 3;
     }
 }

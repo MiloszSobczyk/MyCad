@@ -1,5 +1,4 @@
 #pragma once
-#include <Point.h>
 #include <vector>
 #include <Matrix4.h>
 #include <Utils/Shader.h>

@@ -41,7 +41,7 @@ void UserInterface::HandleMouseDrag()
         std::cout << mousePos.x << ' ' << mousePos.y << '\n';
         Vector4 q = Project(mousePos.x, mousePos.y).Normalize();
         float theta = acosf(startPos * q) * 2.5f;
-        auto w = q.Cross(startPos).Normalize();
+        auto w = Vector4::Cross(q, startPos).Normalize();
         auto temp = Matrix4();
         temp[1][0] = w.z;
         temp[0][1] = -w.z;

@@ -11,7 +11,7 @@ private:
 	int width, height;
 	std::string title;
 
-	void ResizeCallback(GLFWwindow* window, int width, int height);
+	void HandleResize(GLFWwindow* window, int width, int height);
 public:
 	Window(int width, int height, std::string title);
 
