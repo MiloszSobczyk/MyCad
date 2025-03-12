@@ -1,6 +1,7 @@
-#include "UserInterface.h"
 #include <iostream>
-#include "Matrix4.h"
+
+#include "UserInterface.h"
+#include "Algebra.h"
 
 using namespace Algebra;
 

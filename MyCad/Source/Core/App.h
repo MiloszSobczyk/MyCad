@@ -1,12 +1,10 @@
 #pragma once
 
+#include <string>
+
 #include "Utils/Init.h"
 #include "Window.h"
-#include "Ellipsoid.h"
-
-#include <string>
-#include <RayCaster.h>
-#include <UserInterface.h>
+#include "UserInterface.h"
 
 class App
 {

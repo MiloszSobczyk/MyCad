@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "UserInterface.h"
+#include "Core/UserInterface.h"
 
 Ellipsoid::Ellipsoid(float a, float b, float c)
 	: a(a), b(b), c(c), inverseRotations(Vector4(1.f, 1.f, 1.f, 1.f)), 

@@ -1,8 +1,8 @@
-#include "Window.h"
-
 #include <stdexcept>
 #include <Utils/Logger.h>
 #include <Utils/Init.h>
+
+#include "Window.h"
 
 Window::Window(int width, int height, std::string title) 
 	: width(width), height(height), title(title)

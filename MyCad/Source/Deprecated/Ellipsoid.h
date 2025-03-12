@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include <Matrix4.h>
 #include <Utils/Shader.h>
+#include "Algebra.h"
 
 using namespace Algebra;
 

@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "Utils/Logger.h"
 #include <iostream>
-#include <UserInterface.h>
+#include <Core/UserInterface.h>
 
 RayCaster::RayCaster() : shader("Resources/Shaders/Shader.glsl")
 {

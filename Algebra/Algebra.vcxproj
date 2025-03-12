@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Algebra.h" />
     <ClInclude Include="Source\Matrix4.h" />
     <ClInclude Include="Source\Vector4.h" />
   </ItemGroup>

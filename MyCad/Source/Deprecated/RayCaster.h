@@ -1,8 +1,8 @@
 #pragma once
-#include <Vector4.h>
 #include <vector>
-#include <Ellipsoid.h>
-#include <Window.h>
+#include <Deprecated/Ellipsoid.h>
+#include <Core/Window.h>
+#include "Algebra.h"
 
 using namespace Algebra;
 
