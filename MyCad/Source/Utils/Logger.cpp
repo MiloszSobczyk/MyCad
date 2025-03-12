@@ -1,5 +1,4 @@
 #include "Logger.h"
-#include <iostream>
 
 void GLClearError()
 {

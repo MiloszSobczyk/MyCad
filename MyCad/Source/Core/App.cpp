@@ -1,5 +1,7 @@
-#include "App.h"
 #include <stdexcept>
+
+#include "App.h"
+
 
 App::App(int windowWidth, int windowHeight, std::string title)
     : window(windowWidth, windowHeight, title), active(true)

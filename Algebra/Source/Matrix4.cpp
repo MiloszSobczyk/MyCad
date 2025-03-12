@@ -1,8 +1,8 @@
-#include "Matrix4.h"
-
 #include <stdexcept>
 #include <numbers>
 #include <iostream>
+
+#include "Matrix4.h"
 
 using namespace Algebra;
 

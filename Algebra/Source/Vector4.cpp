@@ -1,7 +1,8 @@
-#include "Vector4.h"
 #include <stdexcept>
-#include "Matrix4.h"
 #include <iostream>
+
+#include "Vector4.h"
+#include "Matrix4.h"
 
 using namespace Algebra;
 

@@ -5,6 +5,7 @@
 #include "Utils/Init.h"
 #include "Window.h"
 #include "UserInterface.h"
+#include "Globals.h"
 
 class App
 {
@@ -13,7 +14,7 @@ private:
 	bool active;
 
 public:
-	App(int windowWidth = 1280, int windowHeight = 720, std::string title = "Pierce the Heavens");
+	App(int windowWidth = Globals::DefaultWindowWidth, int windowHeight = Globals::DefaultWindowHeight, std::string title = "Pierce the Heavens");
 	~App();
 
 	void Run();

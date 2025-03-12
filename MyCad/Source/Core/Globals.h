@@ -1,8 +1,7 @@
 #pragma once
 
-
-struct GLobals
+struct Globals
 {
-	const int defaultWindowWidth = 1280;
-	const int defaultWindowHeight = 720;
+	const static int DefaultWindowWidth = 1280;
+	const static int DefaultWindowHeight = 720;
 };
