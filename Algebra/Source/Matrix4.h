@@ -13,6 +13,8 @@ namespace Algebra
 		Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3);
 		Matrix4(const Vector4& diagonal);
 
+		friend std::ostream& operator<<(std::ostream& os, const Matrix4& matrix);
+
 		float Sum() const;
 		Vector4 Column(int index) const;
 		Matrix4 Transpose();
@@ -30,6 +32,7 @@ namespace Algebra
 
 		static Matrix4 Identity();
 
+		// Transformations
 		static Matrix4 Translation(float x, float y, float z);
 
 		static Matrix4 RotationX(float radians);
@@ -41,5 +44,7 @@ namespace Algebra
 		static Matrix4 RotationYByDegree(float degree);
 		static Matrix4 RotationZByDegree(float degree);
 		static Matrix4 RotationByDegree(float xDegree, float yDegree, float zDegree);
+
+		static Matrix4 Projection(float fov, float aspect, float n, float f);
 	};
 }

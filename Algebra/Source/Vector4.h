@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <iostream>
 
 namespace Algebra
 {
@@ -13,6 +14,8 @@ namespace Algebra
 
 		Vector4();
 		Vector4(float x, float y, float z, float w);
+
+		friend std::ostream& operator<<(std::ostream& os, const Vector4& vector);
 
 		float Sum() const;
 		float Length() const;

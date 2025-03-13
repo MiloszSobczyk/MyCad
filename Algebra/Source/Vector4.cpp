@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <iostream>
+#include <iomanip>
 
 #include "Vector4.h"
 #include "Matrix4.h"
@@ -96,6 +97,14 @@ const Vector4 Vector4::operator*(const Matrix4& matrix) const
 Vector4 Algebra::Vector4::Cross(const Vector4& a, const Vector4& b)
 {
 	return Vector4(a.y * b.z - a.z * b.y, a.x * b.z - a.z * b.x, a.x * b.y - a.y * b.x, 0.f);
+}
+
+std::ostream& Algebra::operator<<(std::ostream& os, const Vector4& vector)
+{
+	os << std::fixed << std::setprecision(2);
+	os << "(" << vector.x << ", " << vector.y << ", " << vector.z << ", " << vector.w << ")" << '\n';
+
+	return os;
 }
 
 Vector4 Algebra::operator*(const Vector4& vector, const float& scalar)

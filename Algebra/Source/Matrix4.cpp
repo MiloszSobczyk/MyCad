@@ -100,6 +100,17 @@ const Matrix4 Matrix4::operator*(const Matrix4& other) const
 	return result;
 }
 
+std::ostream& Algebra::operator<<(std::ostream& os, const Matrix4& matrix)
+{
+	for (const auto row : matrix.rows)
+	{
+		os << row;
+	}
+	os << '\n';
+
+	return os;
+}
+
 Matrix4 Algebra::operator*(const Matrix4& matrix, const float& scalar)
 {
 	return Matrix4(matrix[0] * scalar, matrix[1] * scalar, matrix[2] * scalar, matrix[3] * scalar);
@@ -200,4 +211,17 @@ Matrix4 Matrix4::RotationZByDegree(float degree)
 Matrix4 Matrix4::RotationByDegree(float xDegree, float yDegree, float zDegree)
 {
 	return RotationXByDegree(xDegree) * RotationYByDegree(yDegree) * RotationZByDegree(zDegree);
+}
+
+Matrix4 Algebra::Matrix4::Projection(float fov, float aspect, float n, float f)
+{
+	if (fov <= 0.f || fov >= std::numbers::pi_v<float> || n <= 0.f || n >= f)
+	{
+		throw std::runtime_error("Invalid projection parameters");
+	}
+
+	float ctg = cosf(fov / 2.f) / sin(fov / 2.f);
+	Matrix4 matrix(Vector4(ctg / aspect, ctg, (f + n) / (f - n), 0.f));
+	matrix[2][3] = (-2.f * f * n) / (f - n);
+	matrix[3][2] = 1.f;
 }
