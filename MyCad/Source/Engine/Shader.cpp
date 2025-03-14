@@ -1,5 +1,5 @@
 #include "Shader.h"
-#include "Logger.h"
+#include "Utils/Logger.h"
 
 #include <iostream>
 #include <fstream>
@@ -8,7 +8,7 @@
 Shader::Shader(const std::string& filepath) 
 	: filepath(filepath)
 {
-	ShaderProgramSource source = ParseShader(filepath);
+	ShaderProgramSource source = ParseShader();
 	rendererID = CreateShader(source.VertexSource, source.GeometrySource, source.FragmentSource);
 }
 
@@ -37,7 +37,7 @@ void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2,
 	GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
 }
 
-ShaderProgramSource Shader::ParseShader(const std::string& filepath)
+ShaderProgramSource Shader::ParseShader()
 {
 	std::ifstream stream(filepath);
 
