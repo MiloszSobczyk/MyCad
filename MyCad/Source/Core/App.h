@@ -4,7 +4,6 @@
 
 #include "Utils/Init.h"
 #include "Window.h"
-#include "UserInterface.h"
 #include "Globals.h"
 
 class App

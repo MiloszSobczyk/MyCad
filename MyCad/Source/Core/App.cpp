@@ -1,10 +1,11 @@
 #include <stdexcept>
 
 #include "App.h"
-#include <Engine/VertexBuffer.h>
-#include <Engine/VertexArray.h>
-#include <Engine/VertexLayout.h>
-#include <Engine/Shader.h>
+#include "Engine/VertexBuffer.h"
+#include "Engine/VertexArray.h"
+#include "Engine/VertexLayout.h"
+#include "Engine/Shader.h"
+#include "Engine/Camera.h"
 
 
 App::App(int windowWidth, int windowHeight, std::string title)
@@ -27,6 +28,8 @@ App::~App()
 
 void App::Run()
 {
+    Camera camera;
+
     std::vector<PositionColorVertexData> vertices =
     {
         PositionColorVertexData{ .Position = Vector4(-0.5f, -0.5f, 0.0f, 1.0f), .Color = Vector4(1.0f, 0.0f, 0.0f, 1.0f) },
@@ -48,6 +51,9 @@ void App::Run()
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.Bind();
+
+        shader.SetUniformMat4f("view", camera.GetViewMatrix());
+
         vao.Bind();
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
