@@ -39,9 +39,7 @@ void App::Run()
 
     VertexBuffer vbo(vertices);
 
-    VertexLayout layout(PositionColor);
-
-    VertexArray vao(vbo, layout);
+    VertexArray vao(vbo, PositionColor);
 
     Shader shader("Resources/Shaders/Shader.glsl");
     shader.Bind();

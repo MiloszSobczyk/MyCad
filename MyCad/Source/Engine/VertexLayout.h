@@ -28,12 +28,3 @@ enum VertexDataType
 	PositionColor,
 	PositionNormal,
 };
-
-class VertexLayout
-{
-private:
-	VertexDataType dataType;
-public:
-	VertexLayout(VertexDataType dataType);
-	void EnableAttribArrays() const;
-};
