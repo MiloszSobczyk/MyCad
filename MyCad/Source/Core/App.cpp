@@ -36,7 +36,7 @@ void App::Run()
 
     VertexBuffer vbo(vertices);
 
-    VertexLayout layout;
+    VertexLayout layout(PositionColor);
 
     VertexArray vao(vbo, layout);
 

@@ -31,6 +31,9 @@ enum VertexDataType
 
 class VertexLayout
 {
+private:
+	VertexDataType dataType;
 public:
-	void EnableAttribArrays(VertexDataType dataType) const;
+	VertexLayout(VertexDataType dataType);
+	void EnableAttribArrays() const;
 };

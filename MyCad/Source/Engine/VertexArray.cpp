@@ -7,7 +7,7 @@ VertexArray::VertexArray(VertexBuffer vbo, const VertexLayout& layout)
 	GLCall(glGenVertexArrays(1, &id));
 	Bind();
 	vbo.Bind();
-	layout.EnableAttribArrays(PositionColor);
+	layout.EnableAttribArrays();
 	Unbind();
 }
 

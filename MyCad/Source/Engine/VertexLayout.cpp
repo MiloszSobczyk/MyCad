@@ -1,6 +1,11 @@
 #include "VertexLayout.h"
 
-void VertexLayout::EnableAttribArrays(VertexDataType dataType) const
+
+VertexLayout::VertexLayout(VertexDataType dataType)
+	: dataType(dataType)
+{}
+
+void VertexLayout::EnableAttribArrays() const
 {
 	switch (dataType)
 	{
