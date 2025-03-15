@@ -10,10 +10,10 @@ private:
 
 public:
 	VertexBuffer();
-	VertexBuffer(std::vector<PositionColorVertex> vertices);
+	VertexBuffer(std::vector<PositionColorVertexData> vertices);
 
 	void Bind() const;
 	void Unbind() const;
 
-	void SetVertices(std::vector<PositionColorVertex> vertices) const;
+	void SetVertices(std::vector<PositionColorVertexData> vertices) const;
 };

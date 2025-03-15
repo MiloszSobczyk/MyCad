@@ -5,14 +5,32 @@
 
 using namespace Algebra;
 
-struct PositionColorVertex
+struct PositionVertexData
 {
-	Vector4 point;
-	Vector4 color;
+	Vector4 Position;
+};
+
+struct PositionColorVertexData
+{
+	Vector4 Position;
+	Vector4 Color;
+};
+
+struct PositionNormalVertexData
+{
+	Vector4 Position;
+	Vector4 Normal;
+};
+
+enum VertexDataType
+{
+	Position,
+	PositionColor,
+	PositionNormal,
 };
 
 class VertexLayout
 {
 public:
-	void virtual EnableAttribArrays() const;
+	void EnableAttribArrays(VertexDataType dataType) const;
 };

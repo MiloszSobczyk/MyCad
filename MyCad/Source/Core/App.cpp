@@ -27,11 +27,11 @@ App::~App()
 
 void App::Run()
 {
-    std::vector<PositionColorVertex> vertices =
+    std::vector<PositionColorVertexData> vertices =
     {
-        PositionColorVertex{ .point = Vector4(-0.5f, -0.5f, 0.0f, 1.0f), .color = Vector4(1.0f, 0.0f, 0.0f, 1.0f) },
-        PositionColorVertex{ .point = Vector4(0.5f, -0.5f, 0.0f, 1.0f), .color = Vector4(0.0f, 1.0f, 0.0f, 1.0f) },
-        PositionColorVertex{ .point = Vector4(0.0f,  0.5f, 0.0f, 1.0f), .color = Vector4(0.0f, 0.0f, 1.0f, 1.0f) },
+        PositionColorVertexData{ .Position = Vector4(-0.5f, -0.5f, 0.0f, 1.0f), .Color = Vector4(1.0f, 0.0f, 0.0f, 1.0f) },
+        PositionColorVertexData{ .Position = Vector4(0.5f, -0.5f, 0.0f, 1.0f),  .Color = Vector4(0.0f, 1.0f, 0.0f, 1.0f) },
+        PositionColorVertexData{ .Position = Vector4(0.0f,  0.5f, 0.0f, 1.0f),  .Color = Vector4(0.0f, 0.0f, 1.0f, 1.0f) },
     };
 
     VertexBuffer vbo(vertices);
