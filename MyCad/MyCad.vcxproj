@@ -156,7 +156,6 @@
     <ClCompile Include="Source\Engine\VertexBuffer.cpp" />
     <ClCompile Include="Source\Engine\VertexLayout.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\Core\UserInterface.cpp" />
     <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
     <ClCompile Include="Source\Engine\Shader.cpp" />
@@ -165,7 +164,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Core\App.h" />
     <ClInclude Include="Source\Core\Globals.h" />
-    <ClInclude Include="Source\Core\UserInterface.h" />
+    <ClInclude Include="Source\Engine\Camera.h" />
     <ClInclude Include="Source\Engine\VertexArray.h" />
     <ClInclude Include="Source\Engine\VertexBuffer.h" />
     <ClInclude Include="Source\Engine\VertexLayout.h" />
