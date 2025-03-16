@@ -157,6 +157,7 @@
     <ClCompile Include="Source\Engine\VertexBuffer.cpp" />
     <ClCompile Include="Source\Engine\VertexLayout.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Shapes\Torus.cpp" />
     <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
     <ClCompile Include="Source\Engine\Shader.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Source\Engine\VertexArray.h" />
     <ClInclude Include="Source\Engine\VertexBuffer.h" />
     <ClInclude Include="Source\Engine\VertexLayout.h" />
+    <ClInclude Include="Source\Shapes\Torus.h" />
     <ClInclude Include="Source\Utils\Init.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
     <ClInclude Include="Source\Engine\Shader.h" />

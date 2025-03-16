@@ -7,6 +7,7 @@
 #include "Engine/Shader.h"
 #include "Engine/Camera.h"
 #include <Engine/Renderer.h>
+#include <Shapes/Torus.h>
 
 
 App::App(int windowWidth, int windowHeight, std::string title)
@@ -42,6 +43,9 @@ void App::Run()
 
     Shader shader("Resources/Shaders/Shader.glsl");
     shader.Bind();
+
+    Torus torus(1.f, 0.3f, 20, 6);
+    torus.CalculatePoints();
 
     while (active && !window.ShouldClose())
     {
