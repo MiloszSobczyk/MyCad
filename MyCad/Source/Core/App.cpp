@@ -6,6 +6,7 @@
 #include "Engine/VertexLayout.h"
 #include "Engine/Shader.h"
 #include "Engine/Camera.h"
+#include <Engine/Renderer.h>
 
 
 App::App(int windowWidth, int windowHeight, std::string title)
@@ -37,9 +38,7 @@ void App::Run()
         PositionColorVertexData{ .Position = Vector4(0.0f,  0.5f, 0.0f, 1.0f),  .Color = Vector4(0.0f, 0.0f, 1.0f, 1.0f) },
     };
 
-    VertexBuffer vbo(vertices);
-
-    VertexArray vao(vbo, PositionColor);
+    Renderer renderer(PositionColor, vertices);
 
     Shader shader("Resources/Shaders/Shader.glsl");
     shader.Bind();
@@ -52,8 +51,7 @@ void App::Run()
 
         shader.SetUniformMat4f("view", camera.GetViewMatrix());
 
-        vao.Bind();
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        renderer.Render(GL_TRIANGLES);
 
         window.Update();
     }

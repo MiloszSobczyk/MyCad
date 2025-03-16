@@ -5,7 +5,7 @@
 class IndexBuffer
 {
 private:
-	int count;
+	unsigned int count;
 	unsigned int id;
 
 public:
@@ -16,6 +16,6 @@ public:
 	void Bind() const;
 	void Unbind() const;
 
-	int GetCount() const;
+	unsigned int GetCount() const;
 	void SetIndices(std::vector<unsigned int> indices);
 };

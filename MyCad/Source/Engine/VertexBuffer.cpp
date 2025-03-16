@@ -21,7 +21,7 @@ void VertexBuffer::Unbind() const
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
-int VertexBuffer::GetCount() const
+unsigned int VertexBuffer::GetCount() const
 {
-	return 0;
+	return count;
 }

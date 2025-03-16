@@ -17,14 +17,14 @@ IndexBuffer::~IndexBuffer()
 	GLCall(glDeleteBuffers(1, &id));
 }
 
-int IndexBuffer::GetCount() const
+unsigned int IndexBuffer::GetCount() const
 {
 	return count;
 }
 
 void IndexBuffer::SetIndices(std::vector<unsigned int> indices)
 {
-	count = indices.size();
+	count = static_cast<unsigned int>(indices.size());
 	Bind();
 	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_DYNAMIC_DRAW));
 	Unbind();

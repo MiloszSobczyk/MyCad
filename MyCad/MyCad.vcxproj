@@ -167,6 +167,8 @@
     <ClInclude Include="Source\Core\Globals.h" />
     <ClInclude Include="Source\Engine\Camera.h" />
     <ClInclude Include="Source\Engine\IndexBuffer.h" />
+    <ClInclude Include="Source\Engine\Renderer.h" />
+    <ClInclude Include="Source\Engine\Renderer.ipp" />
     <ClInclude Include="Source\Engine\VertexArray.h" />
     <ClInclude Include="Source\Engine\VertexBuffer.h" />
     <ClInclude Include="Source\Engine\VertexLayout.h" />
