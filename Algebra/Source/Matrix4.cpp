@@ -65,14 +65,12 @@ const Vector4& Matrix4::operator[](int index) const
 
 const Matrix4 Matrix4::operator+(const Matrix4& other) const
 {
-	return Matrix4(this->rows[0] + other[0], this->rows[1] + other[1],
-		this->rows[2] + other[2], this->rows[3] + other[3]);
+	return Matrix4(rows[0] + other[0], rows[1] + other[1], rows[2] + other[2], rows[3] + other[3]);
 }
 
 const Matrix4 Matrix4::operator-(const Matrix4& other) const
 {
-	return Matrix4(this->rows[0] - other[0], this->rows[1] - other[1],
-		this->rows[2] - other[2], this->rows[3] - other[3]);
+	return Matrix4(rows[0] - other[0], rows[1] - other[1], rows[2] - other[2], rows[3] - other[3]);
 }
 
 const Matrix4 Algebra::Matrix4::operator*(const Matrix4& matrix) const

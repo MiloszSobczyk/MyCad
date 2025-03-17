@@ -26,8 +26,7 @@ float Algebra::Vector4::Sum() const
 
 const Vector4 Algebra::Vector4::Scale(const Vector4& scale) const
 {
-	return Vector4(this->x * scale.x, this->y * scale.y,
-		this->z * scale.z, this->w * scale.w);
+	return Vector4(x * scale.x, y * scale.y, z * scale.z, w * scale.w);
 }
 
 Vector4 Algebra::Vector4::Normalize() const
@@ -80,14 +79,12 @@ const float& Algebra::Vector4::operator[](int index) const
 
 const Vector4 Algebra::Vector4::operator+(const Vector4& other) const
 {
-	return Vector4(this->x + other.x, this->y + other.y,
-		this->z + other.z, this->w + other.w);
+	return Vector4(x + other.x, y + other.y, z + other.z, w + other.w);
 }
 
 const Vector4 Algebra::Vector4::operator-(const Vector4& other) const
 {
-	return Vector4(this->x - other.x, this->y - other.y,
-		this->z - other.z, this->w - other.w);
+	return Vector4(x - other.x, y - other.y, z - other.z, w - other.w);
 }
 
 const Vector4 Algebra::Vector4::operator-() const
@@ -117,20 +114,17 @@ Vector4& Algebra::Vector4::operator+=(const Vector4& other)
 
 Vector4 Algebra::operator*(const Vector4& vector, const Matrix4& matrix)
 {
-	return Vector4(vector * matrix.Column(0), vector * matrix.Column(1),
-		vector * matrix.Column(2), vector * matrix.Column(3));
+	return Vector4(vector * matrix.Column(0), vector * matrix.Column(1), vector * matrix.Column(2), vector * matrix.Column(3));
 }
 
 Vector4 Algebra::operator*(const Matrix4& matrix, const Vector4& vector)
 {
-	return Vector4(matrix[0] * vector, matrix[1] * vector,
-		matrix[2] * vector, matrix[3] * vector);
+	return Vector4(matrix[0] * vector, matrix[1] * vector, matrix[2] * vector, matrix[3] * vector);
 }
 
 Vector4 Algebra::operator*(const Vector4& vector, const float& scalar)
 {
-	return Vector4(vector.x * scalar, vector.y * scalar,
-		vector.z * scalar, vector.w * scalar);
+	return Vector4(vector.x * scalar, vector.y * scalar, vector.z * scalar, vector.w * scalar);
 }
 
 Vector4 Algebra::operator/(const Vector4& vector, const float& scalar)
@@ -144,7 +138,7 @@ Vector4 Algebra::operator/(const Vector4& vector, const float& scalar)
 
 std::ostream& Algebra::operator<<(std::ostream& os, const Vector4& vector)
 {
-	os << '[' << vector.x << ' ' << vector.y << vector.z << vector.w << ']';
+	os << '[' << vector.x << ' ' << vector.y << vector.z << vector.w << ']\n';
 	return os;
 }
 
