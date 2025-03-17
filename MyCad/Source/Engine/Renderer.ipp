@@ -15,13 +15,13 @@ Renderer<T>::Renderer(VertexDataType dataType, std::vector<unsigned int> indices
 
 template<class T>
 Renderer<T>::Renderer(VertexDataType dataType, std::vector<T> vertices)
-	: vbo(vertices), ibo(), vao(vbo, dataType, ibo)
+	:vbo(vertices), ibo(), vao(vbo, dataType, ibo)
 {
 }
 
 template<class T>
 Renderer<T>::Renderer(VertexDataType dataType, std::vector<T> vertices, std::vector<unsigned int> indices)
-	: vbo(vertices), ibo(indices), vao(vbo, dataType, ibo)
+	:vbo(vertices), ibo(indices), vao(vbo, dataType, ibo)
 {
 }
 
@@ -34,17 +34,16 @@ void Renderer<T>::SetIndices(std::vector<unsigned int> indices)
 template<class T>
 void Renderer<T>::SetVertices(std::vector<T> vertices)
 {
-	vbo.SetVertices(vertices);
+	vbo.AssignVectorData(vertices);
 }
 
 template<class T>
 void Renderer<T>::Render(GLenum mode)
 {
 	vao.Bind();
-	
 	if (ibo.GetCount() > 0)
 	{
-		GLCall(glDrawElements(mode, static_cast<unsigned int>(ibo.GetCount()), GL_UNSIGNED_INT, NULL));
+		GLCall(glDrawElements(mode, static_cast<unsigned int>(ibo.GetCount()), GL_UNSIGNED_INT, nullptr));
 	}
 	else
 	{
