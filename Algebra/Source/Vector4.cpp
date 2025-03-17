@@ -27,6 +27,11 @@ float Vector4::Length() const
 
 Vector4 Vector4::Normalize() const
 {
+	if (Length() == 0.f)
+	{
+		return *this;
+	}
+
 	return *this / Length();
 }
 

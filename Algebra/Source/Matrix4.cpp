@@ -210,7 +210,7 @@ Matrix4 Matrix4::RotationZByDegree(float degree)
 
 Matrix4 Matrix4::RotationByDegree(float xDegree, float yDegree, float zDegree)
 {
-	return RotationXByDegree(xDegree) * RotationYByDegree(yDegree) * RotationZByDegree(zDegree);
+	return RotationZByDegree(xDegree) * RotationYByDegree(yDegree) * RotationXByDegree(zDegree);
 }
 
 Matrix4 Algebra::Matrix4::Projection(float fov, float aspect, float n, float f)

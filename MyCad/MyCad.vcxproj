@@ -152,6 +152,7 @@
     <ClCompile Include="Libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="Libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Libs\stb_image\stb_image.cpp" />
+    <ClCompile Include="Source\Engine\Camera.cpp" />
     <ClCompile Include="Source\Engine\IndexBuffer.cpp" />
     <ClCompile Include="Source\Engine\VertexArray.cpp" />
     <ClCompile Include="Source\Engine\VertexBuffer.cpp" />
