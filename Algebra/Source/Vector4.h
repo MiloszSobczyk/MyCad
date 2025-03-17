@@ -27,9 +27,12 @@ namespace Algebra
 		const Vector4 operator-(const Vector4& other) const;
 		const Vector4 operator-() const;
 
+		const bool operator==(const Vector4& other) const;
+
 		const float operator*(const Vector4& other) const;
 		const Vector4 operator*(const Matrix4& matrix) const;
 
+		friend Vector4 operator*(const Matrix4& matrix, const Vector4& vector);
 		friend Vector4 operator*(const Vector4& vector, const float& scalar);
 		friend Vector4 operator*(const float& scalar, const Vector4& vector);
 		friend Vector4 operator/(const Vector4& vector, const float& scalar);

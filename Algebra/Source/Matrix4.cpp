@@ -215,13 +215,10 @@ Matrix4 Matrix4::RotationByDegree(float xDegree, float yDegree, float zDegree)
 
 Matrix4 Algebra::Matrix4::Projection(float fov, float aspect, float n, float f)
 {
-	if (fov <= 0.f || fov >= std::numbers::pi_v<float> || n <= 0.f || n >= f)
-	{
-		throw std::runtime_error("Invalid projection parameters");
-	}
-
 	float ctg = cosf(fov / 2.f) / sin(fov / 2.f);
 	Matrix4 matrix(Vector4(ctg / aspect, ctg, (f + n) / (f - n), 0.f));
 	matrix[2][3] = (-2.f * f * n) / (f - n);
 	matrix[3][2] = 1.f;
+
+	return matrix;
 }

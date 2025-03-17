@@ -1,27 +1,23 @@
 #pragma once
-
-#include <vector>
-
-#include "Algebra.h"
-#include "Engine/VertexLayout.h"
-
-using namespace Algebra;
+#include "Engine/Renderer.h"
 
 class Torus
 {
 private:
-	Vector4 center;
+	Renderer<PositionVertexData> renderer;
 
-	float majorR;
-	float minorR;
-	int majorDivisions;
-	int minorDivisions;
+	float majorRadius = 15.f;
+	float minorRadius = 5.f;
+	unsigned int majorSegments = 30;
+	unsigned int minorSegments = 50;
 
-	std::vector<PositionVertexData> vertices;
-	std::vector<unsigned int> indices;
+	Algebra::Vector4 GetPoint(float angleTube, float angleRadius);
+
+	void GeneratePoints();
 
 public:
-	Torus(float majorR, float minorR, int majorDivisions, int minorDivisions);
-	
-	void CalculatePoints();
+	Torus();
+	void HandleInput();
+	void Render();
 };
+

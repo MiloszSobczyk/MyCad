@@ -1,24 +1,22 @@
 #shader vertex
 #version 410 core
 
-layout(location = 0) in vec4 a_Position;
-layout(location = 1) in vec4 a_Color;
+layout(location = 0) in vec4 position;
 
-layout(location = 0) out vec4 out_Color;
+uniform mat4 u_projectionMatrix;
+uniform mat4 u_viewMatrix;
 
-uniform mat4 view;
-
-void main() {
-    gl_Position = view * a_Position;
-    out_Color = a_Color;
-}
+void main()
+{
+    gl_Position = u_projectionMatrix * u_viewMatrix * position;
+};
 
 #shader fragment
 #version 410 core
 
-layout(location = 0) in vec4 out_Color;
-out vec4 FragColor;
+layout(location = 0) out vec4 color;
 
-void main() {
-    FragColor = vec4(0.2, 0.2, 0.0, 0.5) + out_Color;
-}
+void main()
+{
+    color = vec4(1.f, 0.2f, 0.f, 1.f);
+};

@@ -84,6 +84,11 @@ const Vector4 Algebra::Vector4::operator-() const
 	return Vector4(-x, -y, -z, -w);
 }
 
+const bool Algebra::Vector4::operator==(const Vector4& other) const
+{
+	return x == other.x && y == other.y && z == other.z && w == other.w;
+}
+
 const float Vector4::operator*(const Vector4& other) const
 {
 	return x * other.x + y * other.y + z * other.z + w * other.w;
@@ -110,6 +115,12 @@ std::ostream& Algebra::operator<<(std::ostream& os, const Vector4& vector)
 	os << "(" << vector.x << ", " << vector.y << ", " << vector.z << ", " << vector.w << ")" << '\n';
 
 	return os;
+}
+
+Vector4 Algebra::operator*(const Matrix4& matrix, const Vector4& vector)
+{
+	return Vector4(vector * matrix.Column(0), vector * matrix.Column(1),
+		vector * matrix.Column(2), vector * matrix.Column(3));
 }
 
 Vector4 Algebra::operator*(const Vector4& vector, const float& scalar)
