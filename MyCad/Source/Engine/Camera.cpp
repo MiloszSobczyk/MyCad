@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-#include "Camera.h"
 #include <imgui/imgui.h>
 #include <algorithm>
 
@@ -11,31 +10,31 @@ Algebra::Matrix4 Camera::GetTranslationMatrix()
 
 Algebra::Matrix4 Camera::GetZoomMatrix()
 {
-	return Matrix4(Vector4(zoom, zoom, zoom, 1.f));
+	return Algebra::Matrix4::Scale(zoom, zoom, zoom);
 }
 
 Algebra::Matrix4 Camera::GetRotationMatrix()
 {
-	return Matrix4::RotationXByDegree(xAngle) * Matrix4::RotationYByDegree(yAngle) * Matrix4::RotationZByDegree(zAngle);
+	return Algebra::Matrix4::RotationXByDegree(xAngle) * Algebra::Matrix4::RotationYDegree(yAngle) * Algebra::Matrix4::RotationZDegree(zAngle);
 }
 
-void Camera::HandleTranslation(const float& delta)
+void Camera::HandleTranslation(const float& deltaTime)
 {
 	if (ImGui::IsMouseDragging(ImGuiMouseButton_Middle))
 	{
-		ImVec2 mosueDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle);
+		ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle);
 
-		Vector4 direction = Vector4(mosueDelta.x, -mosueDelta.y, 0, 0);
+		Algebra::Vector4 direction = Algebra::Vector4(delta.x, -delta.y, 0, 0);
 		if (direction.Length() > 0)
 		{
 			direction = direction.Normalize();
 		}
 
-		position = position + direction * 100.f * delta * GetRotationMatrix() * GetZoomMatrix();
+		position += direction * 100.f * deltaTime * GetRotationMatrix() * GetZoomMatrix();
 	}
 }
 
-void Camera::HandleZoom(const float& dt)
+void Camera::HandleZoom(const float& deltaTime)
 {
 	if (ImGui::GetIO().MouseWheel != 0.f)
 	{
@@ -44,7 +43,7 @@ void Camera::HandleZoom(const float& dt)
 	}
 }
 
-void Camera::HandleRotations(const float& dt)
+void Camera::HandleRotations(const float& deltaTime)
 {
 	if (ImGui::IsMouseDragging(ImGuiMouseButton_Right))
 	{
@@ -59,7 +58,7 @@ void Camera::HandleRotations(const float& dt)
 			yAngle += delta.x / 10.f;
 			xAngle += delta.y / 10.f;
 		}
-
+		
 		ImGui::ResetMouseDragDelta(ImGuiMouseButton_Right);
 
 		xAngle = std::clamp(xAngle, -90.f, 90.f);
@@ -68,35 +67,35 @@ void Camera::HandleRotations(const float& dt)
 		{
 			yAngle = 0;
 		}
-		else if (yAngle < 0)
+		else if(yAngle < 0)
 		{
 			yAngle = 360;
 		}
-
+		
 	}
 }
 
 Camera::Camera(Algebra::Vector4 position, float zoom)
-	:position( position ), zoom( zoom ), yAngle( 0.f ), xAngle( 0.f ), zAngle( 0.f )
+	: position(position), zoom(zoom), yAngle(0.f), xAngle(0.f), zAngle(0.f)
 {
+}
+
+Algebra::Vector4 Camera::GetPosition() 
+{
+	return position; 
+}
+
+Algebra::Matrix4 Camera::GetViewMatrix() 
+{ 
+	return GetRotationMatrix() * GetTranslationMatrix() * GetZoomMatrix(); 
 }
 
 void Camera::HandleInput()
 {
-	const float delta = ImGui::GetIO().DeltaTime;
-	HandleTranslation(delta);
-	HandleZoom(delta);
-	HandleRotations(delta);
+	const float deltaTime = ImGui::GetIO().DeltaTime;
+	HandleTranslation(deltaTime);
+	HandleZoom(deltaTime);
+	HandleRotations(deltaTime);
 }
 
 
-
-Vector4 Camera::GetPosition()
-{
-	return position;
-}
-
-Matrix4 Camera::GetViewMatrix()
-{
-    return GetRotationMatrix() * GetTranslationMatrix() * GetZoomMatrix(); 
-}
