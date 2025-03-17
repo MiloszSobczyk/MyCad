@@ -1,6 +1,6 @@
-#include <numbers>
-
 #include "Utils.h"
+
+#include <numbers>
 
 float Algebra::DegreeToRadians(float degree)
 {
@@ -9,5 +9,5 @@ float Algebra::DegreeToRadians(float degree)
 
 float Algebra::RadiansToDegree(float radians)
 {
-	return std::numbers::inv_pi_v<float> * radians * 180.f;
+	return std::numbers::inv_pi_v<float> * 180.f * radians;
 }

@@ -8,43 +8,42 @@ namespace Algebra
 	{
 	private:
 		Vector4 rows[4];
+
 	public:
 		Matrix4();
-		Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3);
 		Matrix4(const Vector4& diagonal);
-
-		friend std::ostream& operator<<(std::ostream& os, const Matrix4& matrix);
+		Matrix4(const Vector4& row1, const Vector4& row2, const Vector4& row3, const Vector4& row4);
+		Matrix4(const float& v1, const float& v2, const float& v3, const float& v4);
 
 		float Sum() const;
-		Vector4 Column(int index) const;
 		Matrix4 Transpose();
+
+		Vector4 Column(int index) const;
 
 		Vector4& operator[](int index);
 		const Vector4& operator[](int index) const;
 		const Matrix4 operator+(const Matrix4& other) const;
 		const Matrix4 operator-(const Matrix4& other) const;
 
-		const Matrix4 operator*(const Matrix4& other) const;
+		const Matrix4 operator*(const Matrix4& matrix) const;
 
 		friend Matrix4 operator*(const Matrix4& matrix, const float& scalar);
 		friend Matrix4 operator*(const float& scalar, const Matrix4& matrix);
 		friend Matrix4 operator/(const Matrix4& matrix, const float& scalar);
 
 		static Matrix4 Identity();
-
-		// Transformations
 		static Matrix4 Translation(float x, float y, float z);
 
-		static Matrix4 RotationX(float radians);
-		static Matrix4 RotationY(float radians);
-		static Matrix4 RotationZ(float radians);
-		static Matrix4 Rotation(float xRadians, float yRadians, float zRadians);
+		static Matrix4 Rotation(float x, float y, float z);
+		static Matrix4 RotationX(float angle);
+		static Matrix4 RotationY(float angle);
+		static Matrix4 RotationZ(float angle);
+		static Matrix4 RotationByDegree(float x, float y, float z);
+		static Matrix4 RotationXByDegree(float angle);
+		static Matrix4 RotationYDegree(float angle);
+		static Matrix4 RotationZDegree(float angle);
 
-		static Matrix4 RotationXByDegree(float degree);
-		static Matrix4 RotationYByDegree(float degree);
-		static Matrix4 RotationZByDegree(float degree);
-		static Matrix4 RotationByDegree(float xDegree, float yDegree, float zDegree);
-
-		static Matrix4 Projection(float fov, float aspect, float n, float f);
+		static Matrix4 Scale(float x, float y, float z, float w = 1);
+		static Matrix4 Projection(float aspect, float f, float n, float fov);
 	};
 }
