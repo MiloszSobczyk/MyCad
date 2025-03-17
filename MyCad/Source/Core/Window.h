@@ -1,25 +1,27 @@
 #pragma once
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "utils/Initialization.h"
 #include <string>
 
 class Window
 {
 private:
-	GLFWwindow* nativeWindow;
-	int width, height;
+	int width;
+	int height;
 	std::string title;
 
-	void HandleResize(int width, int height);
+	GLFWwindow* nativeWindow;
+
+	void SetupGLFWFunctions();
+
 public:
 	Window(int width, int height, std::string title);
 
-	inline GLFWwindow* GetNativeWindow() const { return nativeWindow; }
-	inline int GetWidth() const { return width; }
-	inline int GetHeight() const { return height; }
-	inline std::string GetTitle() { return title; }
+	int GetWidth();
+	int GetHeight();
+	std::string GetTitle();
+	GLFWwindow* GetWindowPointer();
 
-	void Update();
 	bool ShouldClose();
+	void ProcessFrame();
+	void HandleResize(int width, int height);
 };
