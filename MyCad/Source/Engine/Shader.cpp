@@ -3,7 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "utils/GlCall.h"
+
+#include "Utils/Logger.h"
 
 Shader::Shader(const std::string& filepath)
     : m_RendererID(0)

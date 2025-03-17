@@ -1,34 +1,16 @@
 #pragma once
-
+#include "Utils/Init.h"
+#include "Algebra.h"
+#include "Core/Window.h"
+#include "Core/InfiniteGrid.h"
+#include "Engine/Camera.h"
+#include "Shapes/Torus.h"
 #include <string>
 
-#include "Algebra.h"
-#include "Window.h"
-#include "Globals.h"
-#include "Utils/Init.h"
-#include "Shapes/Torus.h"
-#include "Engine/Shader.h"
-#include "Engine/Camera.h"
-
-using namespace Algebra;
-
-class App
+class App 
 {
-private:
-	bool active;
-	Window window;
-	Camera camera;
-	Torus torus;
-	Shader shader;
-
-	Vector4 GetMousePoint(float x, float y);
-	Vector4 draggingPoint;
-
-	Matrix4 projectionMatrix;
-	Matrix4 viewMatrix;
-
 public:
-	App(int windowWidth = Globals::DefaultWindowWidth, int windowHeight = Globals::DefaultWindowHeight, std::string title = "Pierce the Heavens");
+	App();
 	~App();
 
 	void Run();
@@ -37,4 +19,19 @@ public:
 	void HandleResize();
 	void Update();
 	void DisplayParameters();
+
+private:
+	bool active;
+	bool showGrid = false;
+	Window window;
+	Camera camera;
+	Torus torus;
+	InfiniteGrid grid;
+	Shader defaultShader;
+
+	Algebra::Matrix4 projectionMatrix;
+	Algebra::Matrix4 viewMatrix;
+	
+	Algebra::Vector4 draggingPoint;
+	Algebra::Vector4 GetMousePoint(float x, float y);
 };

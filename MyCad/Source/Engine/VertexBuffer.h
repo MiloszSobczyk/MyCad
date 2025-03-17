@@ -1,7 +1,9 @@
 #pragma once
+
 #include <vector>
-#include <utils/GlCall.h>
 #include <iostream>
+
+#include "Utils/Logger.h"
 
 class VertexBuffer
 {

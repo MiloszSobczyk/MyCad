@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Renderer.h"
 
 template<class T>

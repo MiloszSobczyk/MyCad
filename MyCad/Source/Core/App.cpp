@@ -1,52 +1,23 @@
-#include <stdexcept>
-
 #include "App.h"
-#include "Engine/VertexBuffer.h"
-#include "Engine/VertexArray.h"
-#include "Engine/VertexLayout.h"
+
 #include "Engine/Shader.h"
-#include "Engine/Camera.h"
+#include "Core/Globals.h"
 #include <Engine/Renderer.h>
-#include <Shapes/Torus.h>
+#include <Core/InfiniteGrid.h>
 
-using namespace Algebra;
+#include <string>
+#include <stdexcept>
+#include <iostream>
 
-Vector4 App::GetMousePoint(float x, float y)
+App::App()
+    : window{Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Geometry"}, 
+    active{true},
+	camera{ Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f },
+	defaultShader{ "resources/shaders/default" }
 {
-    float screenWidth = static_cast<float>(window.GetWidth());
-    float screenHeight = static_cast<float>(window.GetHeight());
-    float scale = fminf(screenHeight, screenWidth) - 1.f;
+    InitImgui(window.GetWindowPointer());
+	viewMatrix = Algebra::Matrix4::Identity();
 
-    x = (2.f * x - screenWidth + 1.f) / scale;
-    y = (2.f * y - screenHeight + 1.f) / -scale;
-
-    float z = 0;
-    float d = x * x + y * y;
-    if (d <= 1.f / 2.f)
-    {
-        z = sqrtf(1 - d);
-    }
-    else
-    {
-        z = 1.f / 2.f / sqrtf(d);
-    }
-
-    return Algebra::Vector4(x, y, z, 0);
-}
-
-App::App(int windowWidth, int windowHeight, std::string title)
-    : window(windowWidth, windowHeight, title), 
-    active(true),
-    camera(Vector4(0.f, 20.f, -50.f, 1.f), 1.f),
-    shader("Resources/Shaders/Shader.glsl")
-{
-    active &= InitImgui(window.GetNativeWindow());
-    if (!active)
-    {
-        throw std::runtime_error("cannot initialize app");
-    }
-
-    viewMatrix = Matrix4::Identity();
     HandleResize();
 }
 
@@ -77,17 +48,8 @@ void App::Run()
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        window.Update();
+        window.ProcessFrame();
     }
-}
-
-void App::Render()
-{
-    shader.Bind();
-    shader.SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
-    shader.SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-    torus.Render();
-    shader.Unbind();
 }
 
 void App::HandleInput()
@@ -122,24 +84,24 @@ void App::HandleInput()
             return;
         }
         float theta = acosf(draggingPoint * q);
-        auto w = Vector4::Cross(q, draggingPoint).Normalize();
-        auto tempMat = Matrix4(Vector4(0.f, 0.f, 0.f, 0.f));
+        auto w = Algebra::Vector4::Cross(q, draggingPoint).Normalize();
+        auto tempMat = Algebra::Matrix4(0, 0, 0, 0);
         tempMat[1][0] = w.z;
         tempMat[0][1] = -w.z;
         tempMat[0][2] = -w.y;
         tempMat[2][0] = w.y;
         tempMat[2][1] = w.x;
         tempMat[1][2] = -w.x;
-        auto rotation = Matrix4::Identity() + sinf(theta) * tempMat + ((1.f - cosf(theta)) * tempMat * tempMat);
+        auto rotation = Algebra::Matrix4::Identity() + sinf(theta) * tempMat + ((1.f - cosf(theta)) * tempMat * tempMat);
         draggingPoint = q;
     }
 }
 
 void App::HandleResize()
 {
-    float newWidth = static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth);
-    float newHeight = static_cast<float>(window.GetHeight());
-    float aspect = newWidth / newHeight;
+	float newWidth = static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth);
+	float newHeight = static_cast<float>(window.GetHeight());
+	float aspect = newWidth / newHeight;
     projectionMatrix = Algebra::Matrix4::Projection(aspect, 0.1f, 10000.0f, 3.14f / 2.f);
 }
 
@@ -149,4 +111,62 @@ void App::Update()
 
 void App::DisplayParameters()
 {
+    ImGuiWindowFlags window_flags = 0;
+    window_flags |= ImGuiWindowFlags_NoTitleBar;
+    window_flags |= ImGuiWindowFlags_NoMove;
+    window_flags |= ImGuiWindowFlags_NoResize;
+    window_flags |= ImGuiWindowFlags_NoCollapse;
+    window_flags |= ImGuiWindowFlags_NoDocking;
+
+    ImGui::SetNextWindowPos(ImVec2(static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth), 0.f));
+    ImGui::SetNextWindowSize(ImVec2(static_cast<float>(Globals::RightInterfaceWidth), static_cast<float>(window.GetHeight())));
+
+    ImGui::Begin("Main Menu", nullptr, window_flags);
+    if (ImGui::CollapsingHeader("Main Menu", ImGuiTreeNodeFlags_Leaf))
+    {
+		ImGui::Checkbox("Show grid", &showGrid);
+    }
+
+    if (ImGui::CollapsingHeader("Selected item parameters", ImGuiTreeNodeFlags_Leaf))
+    {
+        torus.HandleInput();
+    }
+    ImGui::End();
+}
+
+Algebra::Vector4 App::GetMousePoint(float x, float y)
+{
+    float screenWidth = static_cast<float>(window.GetWidth());
+    float screenHeight = static_cast<float>(window.GetHeight());
+    float scale = fminf(screenHeight, screenWidth) - 1.f;
+
+    x = (2.f * x - screenWidth + 1.f) / scale;
+    y = (2.f * y - screenHeight + 1.f) / -scale;
+
+    float z = 0;
+    float d = x * x + y * y;
+    if (d <= 1.f / 2.f)
+    {
+        z = sqrtf(1 - d);
+    }
+    else
+    {
+        z = 1.f / 2.f / sqrtf(d);
+    }
+
+    return Algebra::Vector4(x, y, z, 0);
+}
+
+void App::Render()
+{
+    if (showGrid)
+    {
+	    grid.Render(camera.GetViewMatrix(), projectionMatrix, camera.GetPosition());
+    }
+
+	defaultShader.Bind();
+    defaultShader.SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
+    defaultShader.SetUniformMat4f("u_projectionMatrix", projectionMatrix);
+    torus.Render();
+	defaultShader.UnBind();
 }

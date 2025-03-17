@@ -1,6 +1,7 @@
 #pragma once
+
 #include "Algebra.h"
-#include "utils/GlCall.h"
+#include "Utils/Logger.h"
 
 enum class VertexDataType
 {

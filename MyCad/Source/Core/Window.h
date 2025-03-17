@@ -1,5 +1,5 @@
 #pragma once
-#include "utils/Initialization.h"
+#include "utils/Init.h"
 #include <string>
 
 class Window

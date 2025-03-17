@@ -2,7 +2,7 @@
 
 struct Globals
 {
-	const static int DefaultWindowWidth = 1280;
-	const static int DefaultWindowHeight = 720;
-	const static int RightInterfaceWidth = 200;
+	static const int StartingWidth = 1280;
+	static const int StartingHeight = 960;
+	static const int RightInterfaceWidth = 400;
 };

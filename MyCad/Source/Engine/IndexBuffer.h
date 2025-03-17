@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "utils/GlCall.h"
+#include "utils/Logger.h"
 
 class IndexBuffer
 {

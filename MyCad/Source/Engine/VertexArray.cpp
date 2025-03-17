@@ -1,5 +1,5 @@
 #include "VertexArray.h"
-#include <utils/GlCall.h>
+#include "Utils/Logger.h"
 
 void VertexArray::EnableLayout()
 {

@@ -1,8 +1,9 @@
 #include "Window.h"
-#include "utils/GlCall.h"
-#include <stdexcept>
+#include "Utils/Logger.h"
 #include "App.h"
 #include "Globals.h"
+
+#include <stdexcept>
 
 Window::Window(int width, int height, std::string title)
 	: width(width), height(height), title(title)

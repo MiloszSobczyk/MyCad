@@ -11,9 +11,9 @@ private:
 	unsigned int majorSegments = 30;
 	unsigned int minorSegments = 50;
 
-	Algebra::Vector4 GetPoint(float angleTube, float angleRadius);
+	Algebra::Vector4 GetPoint(float angle, float radius);
 
-	void GeneratePoints();
+	void GenerateMesh();
 
 public:
 	Torus();

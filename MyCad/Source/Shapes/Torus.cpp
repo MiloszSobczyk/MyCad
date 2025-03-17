@@ -1,13 +1,14 @@
 #include "Torus.h"
+
 #include <imgui/imgui.h>
 
 Algebra::Vector4 Torus::GetPoint(float angleTube, float angleRadius)
 {
-	return Matrix4::RotationYByDegree(angleRadius) *
-		Vector4(majorRadius + minorRadius * cosf(angleTube), minorRadius * sinf(angleTube), 0.f, 1.f);
+	return Algebra::Matrix4::RotationY(angleRadius) * 
+		Algebra::Vector4(majorRadius + minorRadius * cosf(angleTube), minorRadius * sinf(angleTube), 0.f, 1.f);
 }
 
-void Torus::GeneratePoints()
+void Torus::GenerateMesh()
 {
 	std::vector<PositionVertexData> vertices;
 	std::vector<unsigned int> indices;
@@ -40,26 +41,26 @@ void Torus::GeneratePoints()
 }
 
 Torus::Torus()
-	: renderer(Position)
+	: renderer(VertexDataType::PositionVertexData)
 {
-	GeneratePoints();
+	GenerateMesh();
 }
 
 void Torus::HandleInput()
 {
-	uint32_t min_value = 3;
-	uint32_t max_value = 100;
+	int min_value = 3;
+	int max_value = 100;
 
-	bool stateChanged = false;
+	bool somethingChanged = false;
 
-	stateChanged |= ImGui::SliderFloat("Radius", &majorRadius, 1.f, 100.f);
-	stateChanged |= ImGui::SliderFloat("Tube Radius", &minorRadius, 1.f, 50.f);
-	stateChanged |= ImGui::SliderScalar("Segments", ImGuiDataType_U32, &majorSegments, &min_value, &max_value);
-	stateChanged |= ImGui::SliderScalar("Circle Segments", ImGuiDataType_U32, &minorSegments, &min_value, &max_value);
+	somethingChanged |= ImGui::SliderFloat("Radius", &majorRadius, 1.f, 100.f);
+	somethingChanged |= ImGui::SliderFloat("Tube Radius", &minorRadius, 1.f, 50.f);
+	somethingChanged |= ImGui::SliderScalar("Segments", ImGuiDataType_U32,  &majorSegments, &min_value, &max_value);
+	somethingChanged |= ImGui::SliderScalar("Circle Segments", ImGuiDataType_U32,  &minorSegments, &min_value, &max_value);
 
-	if (stateChanged)
+	if (somethingChanged)
 	{
-		GeneratePoints();
+		GenerateMesh();
 	}
 }
 

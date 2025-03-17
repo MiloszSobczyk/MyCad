@@ -153,21 +153,23 @@
     <ClCompile Include="Libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Libs\stb_image\stb_image.cpp" />
     <ClCompile Include="Source\Engine\Camera.cpp" />
+    <ClCompile Include="Source\Core\InfiniteGrid.cpp" />
     <ClCompile Include="Source\Engine\IndexBuffer.cpp" />
     <ClCompile Include="Source\Engine\VertexArray.cpp" />
     <ClCompile Include="Source\Engine\VertexBuffer.cpp" />
     <ClCompile Include="Source\Engine\VertexLayout.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Shapes\Torus.cpp" />
-    <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
+    <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Engine\Shader.cpp" />
     <ClCompile Include="Source\Core\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\App.h" />
-    <ClInclude Include="Source\Core\Globals.h" />
     <ClInclude Include="Source\Engine\Camera.h" />
+    <ClInclude Include="Source\Core\Globals.h" />
+    <ClInclude Include="Source\Core\InfiniteGrid.h" />
     <ClInclude Include="Source\Engine\IndexBuffer.h" />
     <ClInclude Include="Source\Engine\Renderer.h" />
     <ClInclude Include="Source\Engine\Renderer.ipp" />
@@ -175,8 +177,8 @@
     <ClInclude Include="Source\Engine\VertexBuffer.h" />
     <ClInclude Include="Source\Engine\VertexLayout.h" />
     <ClInclude Include="Source\Shapes\Torus.h" />
-    <ClInclude Include="Source\Utils\Init.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
+    <ClInclude Include="Source\Utils\Init.h" />
     <ClInclude Include="Source\Engine\Shader.h" />
     <ClInclude Include="Source\Core\Window.h" />
     <ClInclude Include="Libs\imgui\imconfig.h" />
@@ -189,10 +191,6 @@
     <ClInclude Include="Libs\imgui\imstb_textedit.h" />
     <ClInclude Include="Libs\imgui\imstb_truetype.h" />
     <ClInclude Include="Libs\stb_image\stb_image.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Shaders\.gitkeep" />
-    <None Include="Resources\Shaders\Shader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Libs\imgui\imgui.natvis" />
