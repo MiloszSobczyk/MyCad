@@ -1,30 +1,27 @@
 #pragma once
-
 #include "Algebra.h"
-#include "Utils/Logger.h"
+#include "utils/GlCall.h"
 
-using namespace Algebra;
+enum class VertexDataType
+{
+	PositionVertexData,
+	PositionColorVertexData,
+	PositionNormalVertexData,
+};
 
 struct PositionVertexData
 {
-	Vector4 Position;
-};
-
-struct PositionColorVertexData
-{
-	Vector4 Position;
-	Vector4 Color;
+	Algebra::Vector4 Position;
 };
 
 struct PositionNormalVertexData
 {
-	Vector4 Position;
-	Vector4 Normal;
+	Algebra::Vector4 Position;
+	Algebra::Vector4 Normal;
 };
 
-enum VertexDataType
+struct PositionColorVertexData
 {
-	Position,
-	PositionColor,
-	PositionNormal,
+	Algebra::Vector4 Position;
+	Algebra::Vector4 Color;
 };

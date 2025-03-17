@@ -34,7 +34,7 @@ void Renderer<T>::SetIndices(std::vector<unsigned int> indices)
 template<class T>
 void Renderer<T>::SetVertices(std::vector<T> vertices)
 {
-	vbo.AssignVectorData(vertices);
+	vbo.SetVertices(vertices);
 }
 
 template<class T>

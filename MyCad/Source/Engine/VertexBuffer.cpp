@@ -8,7 +8,12 @@ VertexBuffer::VertexBuffer()
 
 VertexBuffer::~VertexBuffer()
 {
-	GLCall(glDeleteBuffers(1, &id));
+	glDeleteBuffers(1, &id);
+}
+
+int VertexBuffer::GetCount() const
+{
+	return count;
 }
 
 void VertexBuffer::Bind() const
@@ -19,9 +24,4 @@ void VertexBuffer::Bind() const
 void VertexBuffer::Unbind() const
 {
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-}
-
-unsigned int VertexBuffer::GetCount() const
-{
-	return count;
 }

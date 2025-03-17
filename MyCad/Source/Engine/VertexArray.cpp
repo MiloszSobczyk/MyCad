@@ -1,24 +1,24 @@
 #include "VertexArray.h"
-#include <Utils/Logger.h>
+#include <utils/GlCall.h>
 
 void VertexArray::EnableLayout()
 {
 	switch (dataType)
 	{
-	case VertexDataType::Position:
+	case VertexDataType::PositionVertexData:
 		GLCall(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(PositionVertexData),
 			(void*)offsetof(PositionVertexData, Position)));
 		GLCall(glEnableVertexAttribArray(0));
 		break;
-	case VertexDataType::PositionColor:
+	case VertexDataType::PositionColorVertexData:
 		GLCall(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(PositionColorVertexData),
 			(void*)offsetof(PositionColorVertexData, Position)));
 		GLCall(glEnableVertexAttribArray(0));
 		GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(PositionColorVertexData),
-			(void*)offsetof(PositionColorVertexData, Color)));
-		GLCall(glEnableVertexAttribArray(1));
+			(void*)offsetof(PositionColorVertexData, Color));
+		GLCall(glEnableVertexAttribArray(1)));
 		break;
-	case VertexDataType::PositionNormal:
+	case VertexDataType::PositionNormalVertexData:
 		GLCall(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(PositionNormalVertexData),
 			(void*)offsetof(PositionNormalVertexData, Position)));
 		GLCall(glEnableVertexAttribArray(0));
@@ -27,7 +27,7 @@ void VertexArray::EnableLayout()
 		GLCall(glEnableVertexAttribArray(1));
 		break;
 	default:
-		throw std::runtime_error("Invalid vertex data type");
+		throw std::runtime_error("Invalid Vertex Data type");
 		break;
 	}
 }
@@ -58,7 +58,7 @@ VertexArray::VertexArray(const VertexBuffer& vbo, VertexDataType dataType, const
 
 VertexArray::~VertexArray()
 {
-	GLCall(glDeleteVertexArrays(1, &id));
+	glDeleteVertexArrays(1, &id);
 }
 
 void VertexArray::Bind() const
