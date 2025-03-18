@@ -10,10 +10,9 @@
 #include <iostream>
 
 App::App()
-    : window{Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Geometry"}, 
-    active{true},
-	camera{ Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f },
-	defaultShader{ "resources/shaders/default" }
+    : window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"), 
+    active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f),
+	defaultShader("resources/shaders/default")
 {
     InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -40,7 +39,6 @@ void App::Run()
         ImGui::NewFrame();
 
         HandleInput();
-        Update();
 
         DisplayParameters();
         Render();
@@ -105,32 +103,21 @@ void App::HandleResize()
     projectionMatrix = Algebra::Matrix4::Projection(aspect, 0.1f, 10000.0f, 3.14f / 2.f);
 }
 
-void App::Update()
-{
-}
-
 void App::DisplayParameters()
 {
-    ImGuiWindowFlags window_flags = 0;
-    window_flags |= ImGuiWindowFlags_NoTitleBar;
-    window_flags |= ImGuiWindowFlags_NoMove;
-    window_flags |= ImGuiWindowFlags_NoResize;
-    window_flags |= ImGuiWindowFlags_NoCollapse;
-    window_flags |= ImGuiWindowFlags_NoDocking;
+    ImGuiWindowFlags windowFlags = 0;
+    windowFlags |= ImGuiWindowFlags_NoTitleBar;
+    windowFlags |= ImGuiWindowFlags_NoMove;
+    windowFlags |= ImGuiWindowFlags_NoResize;
+    windowFlags |= ImGuiWindowFlags_NoCollapse;
+    windowFlags |= ImGuiWindowFlags_NoDocking;
 
     ImGui::SetNextWindowPos(ImVec2(static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth), 0.f));
     ImGui::SetNextWindowSize(ImVec2(static_cast<float>(Globals::RightInterfaceWidth), static_cast<float>(window.GetHeight())));
 
-    ImGui::Begin("Main Menu", nullptr, window_flags);
-    if (ImGui::CollapsingHeader("Main Menu", ImGuiTreeNodeFlags_Leaf))
-    {
-		ImGui::Checkbox("Show grid", &showGrid);
-    }
-
-    if (ImGui::CollapsingHeader("Selected item parameters", ImGuiTreeNodeFlags_Leaf))
-    {
-        torus.HandleInput();
-    }
+    ImGui::Begin("Main Menu", nullptr, windowFlags);
+	ImGui::Checkbox("Show grid", &showGrid);
+    torus.HandleInput();
     ImGui::End();
 }
 

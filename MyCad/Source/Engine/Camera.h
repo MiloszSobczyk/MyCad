@@ -6,11 +6,9 @@ class Camera
 {
 private:
 	float zoom;
-	float yAngle;
-	float xAngle;
-	float zAngle;
-	
 	Algebra::Vector4 position;
+	Algebra::Quaternion rotation;
+
 	Algebra::Matrix4 GetTranslationMatrix();
 	Algebra::Matrix4 GetZoomMatrix();
 	Algebra::Matrix4 GetRotationMatrix();
@@ -21,7 +19,7 @@ private:
 
 public:
 	Camera(Algebra::Vector4 position = Algebra::Vector4(0.f, 0.f, 0.f, 1.f), float zoom = 1.f);
-	
+
 	Algebra::Vector4 GetPosition();
 	Algebra::Matrix4 GetViewMatrix();
 

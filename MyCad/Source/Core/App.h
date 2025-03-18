@@ -17,12 +17,11 @@ public:
 	void Render();
 	void HandleInput();
 	void HandleResize();
-	void Update();
 	void DisplayParameters();
 
 private:
 	bool active;
-	bool showGrid = false;
+	bool showGrid = true;
 	Window window;
 	Camera camera;
 	Torus torus;

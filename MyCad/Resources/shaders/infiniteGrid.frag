@@ -9,7 +9,7 @@ uniform float u_gridCellSize = 0.1;
 uniform vec4 u_gridColorThin = vec4(0.2, 0.2, 0.2, 1.0);
 uniform vec4 u_gridColorThick = vec4(0.4, 0.4, 0.4, 1.0);
 uniform vec4 u_CameraWorldPosition;
-uniform float u_GridSize = 10000.f;
+uniform float u_GridSize = 1000.f;
 
 float log10(float x)
 {
