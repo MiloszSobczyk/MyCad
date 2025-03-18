@@ -1,7 +1,7 @@
 #include "Camera.h"
+#include "Core/Globals.h"
 #include <imgui/imgui.h>
 #include <algorithm>
-#include "Core/Globals.h"
 
 Camera::Camera(Algebra::Vector4 position, float zoom)
     : position(position), zoom(zoom), rotation(1, 0, 0, 0)
@@ -62,7 +62,7 @@ void Camera::HandleRotations(const float& deltaTime)
 
         Algebra::Vector4 right = tempRotation.Rotate(Algebra::Vector4(1, 0, 0, 0));
 
-        Algebra::Quaternion pitchQuat = Algebra::Quaternion::CreateFromAxisAngle(right, -pitchDelta);
+        Algebra::Quaternion pitchQuat = Algebra::Quaternion::CreateFromAxisAngle(right, pitchDelta);
 
         rotation = (pitchQuat * tempRotation).Normalize();
 

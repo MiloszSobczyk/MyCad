@@ -1,7 +1,9 @@
 #pragma once
+
+#include "Shape.h"
 #include "Engine/Renderer.h"
 
-class Torus
+class Torus : public Shape
 {
 private:
 	Renderer<PositionVertexData> renderer;
@@ -17,7 +19,7 @@ private:
 
 public:
 	Torus();
-	void HandleInput();
-	void Render();
+	void HandleInput() override;
+	void Render() override;
 };
 

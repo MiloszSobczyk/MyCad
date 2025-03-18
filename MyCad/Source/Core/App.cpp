@@ -17,11 +17,15 @@ App::App()
     InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
 
+    torus = new Torus();
+
     HandleResize();
 }
 
 App::~App()
 {
+    delete torus;
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -117,7 +121,7 @@ void App::DisplayParameters()
 
     ImGui::Begin("Main Menu", nullptr, windowFlags);
 	ImGui::Checkbox("Show grid", &showGrid);
-    torus.HandleInput();
+    torus->HandleInput();
     ImGui::End();
 }
 
@@ -154,6 +158,6 @@ void App::Render()
 	defaultShader.Bind();
     defaultShader.SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
     defaultShader.SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-    torus.Render();
+    torus->Render();
 	defaultShader.UnBind();
 }

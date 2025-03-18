@@ -1,11 +1,13 @@
 #pragma once
-#include "Utils/Init.h"
+
+#include <string>
+
 #include "Algebra.h"
+#include "Utils/Init.h"
 #include "Core/Window.h"
 #include "Core/InfiniteGrid.h"
 #include "Engine/Camera.h"
-#include "Shapes/Torus.h"
-#include <string>
+#include "Objects/Objects.h"
 
 class App 
 {
@@ -24,7 +26,7 @@ private:
 	bool showGrid = true;
 	Window window;
 	Camera camera;
-	Torus torus;
+	Shape* torus;
 	InfiniteGrid grid;
 	Shader defaultShader;
 
