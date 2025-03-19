@@ -19,7 +19,9 @@ private:
 	Camera camera;
 	InfiniteGrid grid;
 	Shader defaultShader;
+
 	std::vector<Shape*> shapes;
+	AxisCursor axisCursor;
 
 	Algebra::Matrix4 projectionMatrix;
 	Algebra::Matrix4 viewMatrix;

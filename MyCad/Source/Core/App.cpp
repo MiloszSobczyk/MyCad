@@ -12,8 +12,8 @@
 
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"), 
-	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f),
-	defaultShader("resources/shaders/default"), showGrid(true), shapes()
+	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), defaultShader("resources/shaders/default"), 
+	showGrid(true), shapes(), axisCursor()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -156,9 +156,15 @@ void App::Render()
 	defaultShader.Bind();
 	defaultShader.SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	defaultShader.SetUniformMat4f("u_projectionMatrix", projectionMatrix);
+	defaultShader.SetUniformVec4f("u_color", Algebra::Vector4(0.5f, 0.f, 0.5f, 1.f));
+
 	for (Shape* shape : shapes)
 	{
 		shape->Render();
 	}
+
+	defaultShader.SetUniformVec4f("u_color", axisCursor.GetColor());
+	axisCursor.Render();
+
 	defaultShader.Unbind();
 }
