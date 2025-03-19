@@ -9,8 +9,6 @@
 #include "Core/InfiniteGrid.h"
 #include "Engine/Camera.h"
 #include "Objects/Objects.h"
-#include "Managers/ShapeManager.h"
-
 
 class App 
 {
@@ -19,10 +17,9 @@ private:
 	bool showGrid;
 	Window window;
 	Camera camera;
-	Shape* torus;
 	InfiniteGrid grid;
 	Shader defaultShader;
-	ShapeManager* shapeManager;
+	std::vector<Shape*> shapes;
 
 	Algebra::Matrix4 projectionMatrix;
 	Algebra::Matrix4 viewMatrix;

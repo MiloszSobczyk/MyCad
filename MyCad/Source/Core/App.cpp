@@ -13,21 +13,18 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"), 
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f),
-	defaultShader("resources/shaders/default"), showGrid(true),
-	shapeManager(ShapeManager::GetInstance())
+	defaultShader("resources/shaders/default"), showGrid(true), shapes()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
 
-	torus = new Torus();
+	shapes.push_back(new Torus());
 
 	HandleResize();
 }
 
 App::~App()
 {
-	delete torus;
-
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
@@ -123,7 +120,6 @@ void App::DisplayParameters()
 
 	ImGui::Begin("Main Menu", nullptr, windowFlags);
 	//ImGui::Checkbox("Show grid", &showGrid);
-	torus->HandleInput();
 	ImGui::End();
 }
 
@@ -160,6 +156,9 @@ void App::Render()
 	defaultShader.Bind();
 	defaultShader.SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	defaultShader.SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-	torus->Render();
+	for (Shape* shape : shapes)
+	{
+		shape->Render();
+	}
 	defaultShader.Unbind();
 }
