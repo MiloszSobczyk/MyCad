@@ -163,7 +163,6 @@
     <ClCompile Include="Source\Engine\VertexBuffer.cpp" />
     <ClCompile Include="Source\Engine\VertexLayout.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\Objects\Shape.cpp" />
     <ClCompile Include="Source\Objects\Torus.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
     <ClCompile Include="Source\Utils\Init.cpp" />
