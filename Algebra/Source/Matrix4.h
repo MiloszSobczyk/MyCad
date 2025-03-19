@@ -33,17 +33,22 @@ namespace Algebra
 
 		static Matrix4 Identity();
 		static Matrix4 Translation(float x, float y, float z);
+		static Matrix4 Translation(Vector4 translation);
 
 		static Matrix4 Rotation(float x, float y, float z);
+		static Matrix4 Rotation(Vector4 rotation);
 		static Matrix4 RotationX(float angle);
 		static Matrix4 RotationY(float angle);
 		static Matrix4 RotationZ(float angle);
 		static Matrix4 RotationByDegree(float x, float y, float z);
+		static Matrix4 RotationByDegree(Vector4 rotation);
 		static Matrix4 RotationXByDegree(float angle);
 		static Matrix4 RotationYDegree(float angle);
 		static Matrix4 RotationZDegree(float angle);
 
 		static Matrix4 Scale(float x, float y, float z, float w = 1);
+		static Matrix4 Scale(Vector4 scale);
+
 		static Matrix4 Projection(float aspect, float f, float n, float fov);
 	};
 }

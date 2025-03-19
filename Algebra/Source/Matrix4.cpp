@@ -119,9 +119,19 @@ Matrix4 Algebra::Matrix4::Translation(float x, float y, float z)
 	return result;
 }
 
+Matrix4 Algebra::Matrix4::Translation(Vector4 translation)
+{
+	return Translation(translation.x, translation.y, translation.z);
+}
+
 Matrix4 Algebra::Matrix4::Rotation(float x, float y, float z)
 {
 	return RotationX(x) * RotationY(y) * RotationZ(z);
+}
+
+Matrix4 Algebra::Matrix4::Rotation(Vector4 rotation)
+{
+	return Rotation(rotation.x, rotation.y, rotation.z);
 }
 
 Matrix4 Algebra::Matrix4::RotationX(float angle)
@@ -171,6 +181,11 @@ Matrix4 Algebra::Matrix4::RotationByDegree(float x, float y, float z)
 	return RotationXByDegree(x) * RotationYDegree(y) * RotationZDegree(z);
 }
 
+Matrix4 Algebra::Matrix4::RotationByDegree(Vector4 rotation)
+{
+	return RotationByDegree(rotation.x, rotation.y, rotation.z);
+}
+
 Matrix4 Algebra::Matrix4::RotationXByDegree(float angle)
 {
 	return RotationX(DegreeToRadians(angle));
@@ -189,6 +204,11 @@ Matrix4 Algebra::Matrix4::RotationZDegree(float angle)
 Matrix4 Algebra::Matrix4::Scale(float x, float y, float z, float w)
 {
 	return Matrix4(x, y, z, w);
+}
+
+Matrix4 Algebra::Matrix4::Scale(Vector4 scale)
+{
+	return Matrix4(scale.x, scale.y, scale.z, scale.w);
 }
 
 Matrix4 Algebra::Matrix4::Projection(float aspect, float f, float n, float fov)
