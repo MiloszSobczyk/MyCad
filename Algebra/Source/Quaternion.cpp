@@ -27,7 +27,8 @@ namespace Algebra
     Quaternion Quaternion::Inverse() const 
     {
         float lenSq = w * w + x * x + y * y + z * z;
-        if (lenSq == 0.0f) {
+        if (lenSq == 0.f) 
+        {
             throw std::runtime_error("Cannot invert a zero-length quaternion.");
         }
         return Conjugate() * (1.0f / lenSq);
@@ -108,6 +109,7 @@ namespace Algebra
         x *= scalar;
         y *= scalar;
         z *= scalar;
+
         return *this;
     }
 
@@ -158,12 +160,14 @@ namespace Algebra
         float dot = q1.Dot(q2);
 
         Quaternion q2Adjusted = q2;
-        if (dot < 0.0f) {
+        if (dot < 0.0f) 
+        {
             q2Adjusted = -1.0f * q2;
             dot = -dot;
         }
 
-        if (dot > 1.0f - epsilon) {
+        if (dot > 1.0f - epsilon) 
+        {
             return (q1 * (1.0f - t) + q2Adjusted * t).Normalize();
         }
 

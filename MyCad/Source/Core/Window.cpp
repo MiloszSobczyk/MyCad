@@ -6,26 +6,28 @@
 #include <stdexcept>
 
 Window::Window(int width, int height, std::string title)
-	: width(width), height(height), title(title)
+    : width(width), height(height), title(title)
 {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     nativeWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
-    if (!nativeWindow) 
+    if (!nativeWindow)
     {
         throw std::runtime_error("Cannot create window");
     }
 
     glfwMakeContextCurrent(nativeWindow);
 
+    glfwSetWindowUserPointer(nativeWindow, this);
+
     HandleResize(width, height);
 
-	glfwSetFramebufferSizeCallback(nativeWindow, [](GLFWwindow* window, int width, int height) {
-		Window* newWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
-		newWindow->HandleResize(width, height);
-        });
+    glfwSetFramebufferSizeCallback(nativeWindow, [](GLFWwindow* window, int width, int height) {
+        Window* newWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
+            newWindow->HandleResize(width, height);
+    });
 
     if (!InitGLEW())
     {
@@ -34,6 +36,7 @@ Window::Window(int width, int height, std::string title)
 
     SetupGLFWFunctions();
 }
+
 
 int Window::GetWidth()
 {

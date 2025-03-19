@@ -15,7 +15,7 @@ private:
 
 	Algebra::Vector4 GetPoint(float angle, float radius);
 
-	void GenerateMesh();
+	void GeneratePoints();
 
 public:
 	Torus();

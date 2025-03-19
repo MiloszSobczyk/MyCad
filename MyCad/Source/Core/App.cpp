@@ -120,7 +120,7 @@ void App::DisplayParameters()
     ImGui::SetNextWindowSize(ImVec2(static_cast<float>(Globals::RightInterfaceWidth), static_cast<float>(window.GetHeight())));
 
     ImGui::Begin("Main Menu", nullptr, windowFlags);
-	ImGui::Checkbox("Show grid", &showGrid);
+	//ImGui::Checkbox("Show grid", &showGrid);
     torus->HandleInput();
     ImGui::End();
 }
