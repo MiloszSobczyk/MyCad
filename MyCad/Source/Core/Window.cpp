@@ -25,8 +25,7 @@ Window::Window(int width, int height, std::string title)
     HandleResize(width, height);
 
     glfwSetFramebufferSizeCallback(nativeWindow, [](GLFWwindow* window, int width, int height) {
-        Window* newWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
-            newWindow->HandleResize(width, height);
+        static_cast<Window*>(glfwGetWindowUserPointer(window))->HandleResize(width, height);
     });
 
     if (!InitGLEW())

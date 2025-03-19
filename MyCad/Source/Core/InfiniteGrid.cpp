@@ -27,5 +27,5 @@ void InfiniteGrid::Render(Algebra::Matrix4 viewMatrix, Algebra::Matrix4 projecti
 	shader.SetUniformMat4f("u_projectionMatrix", projectionMatrix);
 	shader.SetUniformVec4f("u_CameraWorldPosition", cameraPosition);
 	renderer.Render(GL_TRIANGLES);
-	shader.UnBind();
+	shader.Unbind();
 }

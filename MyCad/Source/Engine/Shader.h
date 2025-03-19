@@ -25,7 +25,7 @@ public:
 	void SetUniformVec4f(const std::string& name, const Algebra::Vector4& vector);
 
 	void Bind() const;
-	void UnBind() const;
+	void Unbind() const;
 private:
 	std::stringstream ParseShader(const std::string& filepath);
 	ShaderProgramSource GetShaderFromFiles(const std::string& filepath);

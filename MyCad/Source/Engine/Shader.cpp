@@ -125,7 +125,7 @@ void Shader::Bind() const
     GLCall(glUseProgram(m_RendererID));
 }
 
-void Shader::UnBind() const
+void Shader::Unbind() const
 {
     GLCall(glUseProgram(0));
 }
