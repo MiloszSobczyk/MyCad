@@ -6,6 +6,9 @@
 class AxisCursor
 {
 private:
+	static std::vector<PositionVertexData> vertices;
+	static std::vector<unsigned int> indices;
+
 	bool visible;
 
 	float size;
@@ -13,20 +16,6 @@ private:
 	Algebra::Vector4 color;
 
 	Renderer<PositionVertexData> renderer;
-
-	std::vector<PositionVertexData> vertices = {
-		{{ 0.f, 0.f, 0.f, 1.f }},
-		{{ 1.f, 0.f, 0.f, 1.f }},
-		{{ 0.f, 1.f, 0.f, 1.f }},
-		{{ 0.f, 0.f, 1.f, 1.f }},
-	};
-
-	std::vector<unsigned int> indices = {
-		0, 1,
-		0, 2,
-		0, 3,
-	};
-
 public:
 	AxisCursor();
 

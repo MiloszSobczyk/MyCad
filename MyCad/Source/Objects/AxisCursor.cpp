@@ -1,5 +1,18 @@
 #include "AxisCursor.h"
 
+std::vector<PositionVertexData> AxisCursor::vertices = {
+	{{ 0.f, 0.f, 0.f, 1.f }},
+	{{ 1.f, 0.f, 0.f, 1.f }},
+	{{ 0.f, 1.f, 0.f, 1.f }},
+	{{ 0.f, 0.f, 1.f, 1.f }},
+};
+
+std::vector<unsigned int> AxisCursor::indices = {
+	0, 1,
+	0, 2,
+	0, 3,
+};
+
 AxisCursor::AxisCursor()
 	: visible(true), size(1.f), position(0.f, 0.f, 0.f), color(1.f, 0.f, 0.f, 1.f), renderer(VertexDataType::PositionVertexData)
 {

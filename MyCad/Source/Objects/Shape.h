@@ -6,7 +6,11 @@
 
 class Shape
 {
+private:
+	static int idCounter;
 protected:
+	int id;
+
 	Algebra::Vector4 position;
 	Algebra::Vector4 color;
 
@@ -15,13 +19,15 @@ protected:
 	Algebra::Vector4 scale;
 
 	std::string name;
-
 public:
+	Shape();
 	virtual ~Shape() = default;
 
 	virtual void HandleInput() = 0;
 	virtual void Render() = 0;
 	
+	inline int GetId() { return id; }
+
 	inline Algebra::Vector4 GetPosition() { return position; }
 	inline Algebra::Vector4 GetColor() { return color; }
 	inline void SetPosition(Algebra::Vector4 position) { this->position = position; }
@@ -38,4 +44,5 @@ public:
 	
 	inline std::string GetName() { return name; }
 	inline void SetName(std::string name) { this->name = name; }
+
 };

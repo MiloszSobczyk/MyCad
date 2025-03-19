@@ -19,6 +19,7 @@ App::App()
 	viewMatrix = Algebra::Matrix4::Identity();
 
 	shapes.push_back(new Torus());
+	//shapes.push_back(new Point());
 
 	HandleResize();
 }
