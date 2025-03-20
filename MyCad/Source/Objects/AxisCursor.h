@@ -2,8 +2,9 @@
 
 #include "Algebra.h"
 #include "Engine/Renderer.h"
+#include "Shape.h"
 
-class AxisCursor
+class AxisCursor : public Shape
 {
 private:
 	static std::vector<PositionVertexData> vertices;
@@ -11,20 +12,10 @@ private:
 
 	bool visible;
 
-	float size;
-	Algebra::Vector4 position;
-	Algebra::Vector4 color;
-
 	Renderer<PositionVertexData> renderer;
 public:
 	AxisCursor();
-
-	void SetPosition(Algebra::Vector4 position);
-	void SetSize(float size);
-	void SetColor(Algebra::Vector4 color);
-	void SetVisible(bool visible);
-
-	Algebra::Vector4 GetColor() { return color; }
 	
 	void Render();
+	void HandleInput();
 };
