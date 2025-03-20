@@ -20,7 +20,7 @@ private:
 	InfiniteGrid grid;
 	Shader defaultShader;
 
-	std::vector<Shape*> shapes;
+	std::vector<std::shared_ptr<Shape>> shapes;
 	AxisCursor axisCursor;
 
 	Algebra::Matrix4 projectionMatrix;

@@ -12,14 +12,31 @@
 
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"), 
-	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), defaultShader("resources/shaders/default"), 
+	active(true), camera(Algebra::Vector4(0.f, 20.f, -20.f, 1.f), 1.f), defaultShader("resources/shaders/default"), 
 	showGrid(true), shapes(), axisCursor()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
 
-	shapes.push_back(new Torus());
-	//shapes.push_back(new Point());
+	//shapes.push_back(new Torus());
+
+	std::shared_ptr<Point> p1 = std::make_shared<Point>();
+	std::shared_ptr<Point> p2 = std::make_shared<Point>();
+	std::shared_ptr<Point> p3 = std::make_shared<Point>();
+
+	p2->SetTranslation(Algebra::Vector4(0.f, 0.f, 10.f, 0.f));
+	p3->SetTranslation(Algebra::Vector4(0.f, 0.f, 0.f, 0.f));
+
+	std::shared_ptr<Polyline> pl = std::make_shared<Polyline>();
+	pl->AddPoint(p1);
+	pl->AddPoint(p2);
+	pl->AddPoint(p3);
+
+	shapes.push_back(p1);
+	shapes.push_back(p2);
+	shapes.push_back(p3);
+	shapes.push_back(pl);
+
 
 	HandleResize();
 }
@@ -159,13 +176,21 @@ void App::Render()
 	defaultShader.SetUniformMat4f("u_projectionMatrix", projectionMatrix);
 	defaultShader.SetUniformVec4f("u_color", Algebra::Vector4(0.5f, 0.f, 0.5f, 1.f));
 
-	for (Shape* shape : shapes)
+	/*for (auto shape : shapes)
 	{
+		auto mat = shape->GetModelMatrix();
+		defaultShader.SetUniformMat4f("u_modelMatrix", shape->GetModelMatrix());
 		shape->Render();
-	}
+	}*/
 
-	defaultShader.SetUniformVec4f("u_color", axisCursor.GetColor());
-	axisCursor.Render();
+	auto shape = shapes[3];
+
+	auto mat = shape->GetModelMatrix();
+	defaultShader.SetUniformMat4f("u_modelMatrix", shape->GetModelMatrix());
+	shape->Render();
+
+	//defaultShader.SetUniformVec4f("u_color", axisCursor.GetColor());
+	//axisCursor.Render();
 
 	defaultShader.Unbind();
 }

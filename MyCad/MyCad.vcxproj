@@ -165,6 +165,7 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Objects\AxisCursor.cpp" />
     <ClCompile Include="Source\Objects\Point.cpp" />
+    <ClCompile Include="Source\Objects\Polyline.cpp" />
     <ClCompile Include="Source\Objects\Shape.cpp" />
     <ClCompile Include="Source\Objects\Torus.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Source\Engine\VertexBuffer.h" />
     <ClInclude Include="Source\Engine\VertexLayout.h" />
     <ClInclude Include="Source\Objects\AxisCursor.h" />
+    <ClInclude Include="Source\Objects\Polyline.h" />
     <ClInclude Include="Source\Objects\Shape.h" />
     <ClInclude Include="Source\Objects\Objects.h" />
     <ClInclude Include="Source\Objects\Torus.h" />

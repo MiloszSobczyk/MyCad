@@ -56,13 +56,13 @@ void Camera::HandleRotations(const float& deltaTime)
         float yawDelta = delta.x / Globals::StartingWidth * 3.f;
         float pitchDelta = delta.y / Globals::StartingHeight * 3.f;
 
-        Algebra::Quaternion yawQuat = Algebra::Quaternion::CreateFromAxisAngle(Algebra::Vector4(0, 1, 0, 0), yawDelta);
+        Algebra::Quaternion yawQuat = Algebra::Quaternion::CreateFromAxisAngle(Algebra::Vector4(0, 1, 0, 0), -yawDelta);
 
         Algebra::Quaternion tempRotation = (yawQuat * rotation).Normalize();
 
         Algebra::Vector4 right = tempRotation.Rotate(Algebra::Vector4(1, 0, 0, 0));
 
-        Algebra::Quaternion pitchQuat = Algebra::Quaternion::CreateFromAxisAngle(right, pitchDelta);
+        Algebra::Quaternion pitchQuat = Algebra::Quaternion::CreateFromAxisAngle(right, -pitchDelta);
 
         rotation = (pitchQuat * tempRotation).Normalize();
 

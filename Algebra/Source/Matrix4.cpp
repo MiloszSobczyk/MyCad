@@ -86,6 +86,15 @@ const Matrix4 Algebra::Matrix4::operator*(const Matrix4& matrix) const
 	return result;
 }
 
+std::ostream& Algebra::operator<<(std::ostream& os, const Matrix4& matrix)
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		os << matrix.rows[i] << '\n';
+	}
+	return os;
+}
+
 Matrix4 Algebra::operator*(const Matrix4& matrix, const float& scalar)
 {
 	return Matrix4(matrix[0] * scalar, matrix[1] * scalar, matrix[2] * scalar, matrix[3] * scalar);
@@ -201,14 +210,14 @@ Matrix4 Algebra::Matrix4::RotationZDegree(float angle)
 	return RotationZ(DegreeToRadians(angle));
 }
 
-Matrix4 Algebra::Matrix4::Scale(float x, float y, float z, float w)
+Matrix4 Algebra::Matrix4::Scale(float x, float y, float z)
 {
-	return Matrix4(x, y, z, w);
+	return Matrix4(x, y, z, 1.f);
 }
 
 Matrix4 Algebra::Matrix4::Scale(Vector4 scale)
 {
-	return Matrix4(scale.x, scale.y, scale.z, scale.w);
+	return Matrix4(scale.x, scale.y, scale.z, 1.f);
 }
 
 Matrix4 Algebra::Matrix4::Projection(float aspect, float f, float n, float fov)
