@@ -11,6 +11,8 @@
 #include "Engine/Camera.h"
 #include "Objects/Objects.h"
 
+#include "Operations/Operations.h"
+
 enum class AppMode
 {
 	None,
@@ -39,6 +41,7 @@ private:
 	Algebra::Vector4 GetMousePoint(float x, float y);
 
 	AppMode mode;
+	Translation translation;
 
 public:
 	App();

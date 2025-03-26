@@ -59,9 +59,11 @@ void App::Run()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		axisCursor.HandleInput();
+		//axisCursor.HandleInput();
 
-		// HandleInput();
+		//HandleInput();
+
+		std::cout << translation.HandleInput() << '\n';
 
 		DisplayParameters();
 		Render();
@@ -162,7 +164,6 @@ void App::DisplayParameters()
 		ImGui::EndCombo();
 	}
 
-	
 	ImGui::End();
 }
 

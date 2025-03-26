@@ -168,6 +168,7 @@
     <ClCompile Include="Source\Objects\Polyline.cpp" />
     <ClCompile Include="Source\Objects\Shape.cpp" />
     <ClCompile Include="Source\Objects\Torus.cpp" />
+    <ClCompile Include="Source\Operations\Translation.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
     <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Engine\Shader.cpp" />
@@ -190,6 +191,8 @@
     <ClInclude Include="Source\Objects\Shape.h" />
     <ClInclude Include="Source\Objects\Objects.h" />
     <ClInclude Include="Source\Objects\Torus.h" />
+    <ClInclude Include="Source\Operations\Operations.h" />
+    <ClInclude Include="Source\Operations\Translation.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
     <ClInclude Include="Source\Utils\Init.h" />
     <ClInclude Include="Source\Engine\Shader.h" />
