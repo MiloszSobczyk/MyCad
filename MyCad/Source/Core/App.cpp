@@ -13,7 +13,7 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"), 
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), defaultShader("resources/shaders/default"), 
-	showGrid(true), shapes(), axisCursor()
+	showGrid(true), shapes(), axisCursor(), mode(AppMode::None)
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -139,7 +139,30 @@ void App::DisplayParameters()
 	ImGui::SetNextWindowSize(ImVec2(static_cast<float>(Globals::RightInterfaceWidth), static_cast<float>(window.GetHeight())));
 
 	ImGui::Begin("Main Menu", nullptr, windowFlags);
-	//ImGui::Checkbox("Show grid", &showGrid);
+	ImGui::Checkbox("Show grid", &showGrid);
+	
+	const char* modeNames[] = { "None", "Translation", "Rotation", "Scaling" };
+	int currentMode = static_cast<int>(mode);
+
+	if (ImGui::BeginCombo("Mode", modeNames[currentMode]))
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			bool isSelected = (currentMode == i);
+			if (ImGui::Selectable(modeNames[i], isSelected))
+			{
+				mode = static_cast<AppMode>(i);
+			}
+
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	
 	ImGui::End();
 }
 

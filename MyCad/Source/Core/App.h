@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
 #include "Algebra.h"
 #include "Utils/Init.h"
@@ -9,6 +10,14 @@
 #include "Core/InfiniteGrid.h"
 #include "Engine/Camera.h"
 #include "Objects/Objects.h"
+
+enum class AppMode
+{
+	None,
+	Translation,
+	Rotation,
+	Scaling
+};
 
 class App 
 {
@@ -29,6 +38,8 @@ private:
 	Algebra::Vector4 draggingPoint;
 	Algebra::Vector4 GetMousePoint(float x, float y);
 
+	AppMode mode;
+
 public:
 	App();
 	~App();
@@ -38,5 +49,4 @@ public:
 	void HandleInput();
 	void HandleResize();
 	void DisplayParameters();
-
 };
