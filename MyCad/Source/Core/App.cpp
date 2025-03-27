@@ -61,11 +61,9 @@ void App::Run()
 
 		//axisCursor.HandleInput();
 
-		//HandleInput();
+		HandleInput();
 
-		shapes[0]->AddTranslation(translation.HandleInput());
-
-		std::cout << shapes[0]->GetTranslationMatrix() << '\n';
+		//shapes[0]->AddTranslation(translation.HandleInput());
 
 		DisplayParameters();
 		Render();
@@ -85,41 +83,6 @@ void App::HandleInput()
 	}
 
 	camera.HandleInput();
-
-	if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-	{
-		auto mousePos = ImGui::GetMousePos();
-		draggingPoint = GetMousePoint(mousePos.x, mousePos.y).Normalize();
-		return;
-	}
-
-	if (ImGui::IsMouseDragging(ImGuiMouseButton_Right))
-	{
-		ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Right);
-
-		ImGui::ResetMouseDragDelta(ImGuiMouseButton_Right);
-	}
-
-	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
-	{
-		auto mousePos = ImGui::GetMousePos();
-		Algebra::Vector4 q = GetMousePoint(mousePos.x, mousePos.y).Normalize();
-		if (q == draggingPoint)
-		{
-			return;
-		}
-		float theta = acosf(draggingPoint * q);
-		auto w = Algebra::Vector4::Cross(q, draggingPoint).Normalize();
-		auto tempMat = Algebra::Matrix4(0, 0, 0, 0);
-		tempMat[1][0] = w.z;
-		tempMat[0][1] = -w.z;
-		tempMat[0][2] = -w.y;
-		tempMat[2][0] = w.y;
-		tempMat[2][1] = w.x;
-		tempMat[1][2] = -w.x;
-		auto rotation = Algebra::Matrix4::Identity() + sinf(theta) * tempMat + ((1.f - cosf(theta)) * tempMat * tempMat);
-		draggingPoint = q;
-	}
 }
 
 void App::HandleResize()
