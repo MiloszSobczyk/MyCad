@@ -63,7 +63,9 @@ void App::Run()
 
 		//HandleInput();
 
-		std::cout << translation.HandleInput() << '\n';
+		shapes[0]->AddTranslation(translation.HandleInput());
+
+		std::cout << shapes[0]->GetTranslationMatrix() << '\n';
 
 		DisplayParameters();
 		Render();
@@ -202,19 +204,12 @@ void App::Render()
 	defaultShader.SetUniformMat4f("u_projectionMatrix", projectionMatrix);
 	defaultShader.SetUniformVec4f("u_color", Algebra::Vector4(0.5f, 0.f, 0.5f, 1.f));
 
-	//for (auto shape : shapes)
-	//{
-	//	auto mat = shape->GetModelMatrix();
-	//	defaultShader.SetUniformMat4f("u_modelMatrix", shape->GetModelMatrix());
-	//	shape->Render();
-	//}
-
-	auto mat = axisCursor.GetModelMatrix();
-
-	defaultShader.SetUniformMat4f("u_modelMatrix", axisCursor.GetModelMatrix());
-
-	defaultShader.SetUniformVec4f("u_color", axisCursor.GetColor());
-	axisCursor.Render();
+	for (auto shape : shapes)
+	{
+		auto mat = shape->GetModelMatrix();
+		defaultShader.SetUniformMat4f("u_modelMatrix", shape->GetModelMatrix());
+		shape->Render();
+	}
 
 	defaultShader.Unbind();
 }

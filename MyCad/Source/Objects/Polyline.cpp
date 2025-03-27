@@ -33,8 +33,7 @@ void Polyline::Render()
 		{
 			if (auto point = it->lock())
 			{
-				auto position = point->GetModelMatrix() * point->GetPosition();
-				vertices.push_back({{ position.x, position.y, position.z, 1.f }});
+				auto position = point->GetModelMatrix();
 			}
 		}
 

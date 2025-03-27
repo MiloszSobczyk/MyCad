@@ -11,7 +11,6 @@ private:
 protected:
 	int id;
 
-	Algebra::Vector4 position;
 	Algebra::Vector4 color;
 
 	Algebra::Quaternion rotation;
@@ -28,9 +27,7 @@ public:
 	
 	inline int GetId() { return id; }
 
-	inline Algebra::Vector4 GetPosition() { return position; }
 	inline Algebra::Vector4 GetColor() { return color; }
-	inline void SetPosition(Algebra::Vector4 position) { this->position = position; }
 	inline void SetColor(Algebra::Vector4 color) { this->color = color; }
 
 	Algebra::Matrix4 GetRotationMatrix();
@@ -39,9 +36,9 @@ public:
 	Algebra::Matrix4 GetModelMatrix();
 
 	inline void SetRotation(Algebra::Quaternion rotation) { this->rotation = rotation; }
-	inline void SetTranslation(Algebra::Vector4 translation) { this->translation = translation; }
+	inline void AddTranslation(Algebra::Vector4 translation) { this->translation = this->translation + translation; }
 	inline void SetScale(Algebra::Vector4 scale) { this->scale = scale; }
-	
+
 	inline std::string GetName() { return name; }
 	inline void SetName(std::string name) { this->name = name; }
 
