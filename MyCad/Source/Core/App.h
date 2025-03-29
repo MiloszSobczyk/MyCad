@@ -43,6 +43,7 @@ private:
 
 	AppMode mode;
 	Translation translation;
+	Rotation rotation;
 
 public:
 	App();

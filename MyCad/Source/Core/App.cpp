@@ -18,6 +18,8 @@ App::App()
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
 
+	rotation.SetState(RotationState::Z);
+
 	shapes.push_back(std::make_shared<Torus>());
 
 	//std::shared_ptr<Point> p1 = std::make_shared<Point>();
@@ -61,7 +63,7 @@ void App::Run()
 
 		//axisCursor.HandleInput();
 
-		HandleInput();
+		//HandleInput();
 
 
 		DisplayParameters();
@@ -180,11 +182,12 @@ void App::DisplayParameters()
 
 void App::ApplyOperation()
 {
-	auto t = translation.HandleInput();
+	//auto t = translation.HandleInput();
+	auto r = rotation.HandleInput();
 
 	for (auto shape : selectedShapes)
 	{
-		shape->AddTranslation(t);
+		shape->AddRotation(r);
 	}
 }
 

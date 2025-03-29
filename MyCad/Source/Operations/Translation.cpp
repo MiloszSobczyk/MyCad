@@ -8,24 +8,23 @@ Algebra::Vector4 Translation::HandleInput()
 
         if (fabs(delta.x) > FLT_EPSILON || fabs(delta.y) > FLT_EPSILON)
         {
-            Algebra::Vector4 direction = Algebra::Vector4(delta.x, 0, -delta.y, 0);
+            Algebra::Vector4 direction(0, 0, 0, 0);
 
-            if (direction.Length() > 0)
+            switch (state)
             {
-                direction = direction.Normalize();
+            case TranslationState::X:
+                direction = Algebra::Vector4(delta.x, 0, 0, 0);
+                break;
+            case TranslationState::Y:
+                direction = Algebra::Vector4(0, delta.y, 0, 0);
+                break;
+            case TranslationState::Z:
+                direction = Algebra::Vector4(0, 0, -delta.y, 0);
+                break;
+            case TranslationState::Camera:
+                direction = Algebra::Vector4(delta.x, -delta.y, 0, 0);
+                break;
             }
-
-            return direction;
-        }
-    }
-
-    if (ImGui::IsMouseDragging(ImGuiMouseButton_Right))
-    {
-        ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Right);
-
-        if (fabs(delta.x) > FLT_EPSILON || fabs(delta.y) > FLT_EPSILON)
-        {
-            Algebra::Vector4 direction = Algebra::Vector4(0, -delta.y, 0, 0);
 
             if (direction.Length() > 0)
             {

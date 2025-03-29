@@ -36,6 +36,9 @@ public:
 	Algebra::Matrix4 GetModelMatrix();
 
 	inline void SetRotation(Algebra::Quaternion rotation) { this->rotation = rotation; }
+	inline void AddRotation(Algebra::Quaternion rotation) { this->rotation = rotation * this->rotation; }
+	
+	inline void SetTranslation(Algebra::Vector4 translation) { this->translation = translation; }
 	inline void AddTranslation(Algebra::Vector4 translation) { this->translation = this->translation + translation; }
 	inline void SetScale(Algebra::Vector4 scale) { this->scale = scale; }
 
