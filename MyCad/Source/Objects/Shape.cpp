@@ -3,7 +3,7 @@
 int Shape::idCounter = 0;
 
 Shape::Shape() 
-	: id(++idCounter), color(0.5f, 0.f, 0.5f, 1.0f), scale(1.f, 1.f, 1.f)
+	: id(++idCounter), color(0.5f, 0.f, 0.5f, 1.0f), scaling(1.f, 1.f, 1.f)
 {
 }
 
@@ -19,7 +19,7 @@ Algebra::Matrix4 Shape::GetTranslationMatrix()
 
 Algebra::Matrix4 Shape::GetScaleMatrix()
 {
-    return Algebra::Matrix4::Scale(scale);
+    return Algebra::Matrix4::Scale(scaling);
 }
 
 Algebra::Matrix4 Shape::GetModelMatrix()

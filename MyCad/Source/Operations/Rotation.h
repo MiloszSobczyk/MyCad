@@ -24,5 +24,4 @@ public:
     inline void SetState(RotationState state) { this->state = state; };
 
     Algebra::Quaternion HandleInput();
-
 };

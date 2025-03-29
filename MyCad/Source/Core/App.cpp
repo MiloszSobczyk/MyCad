@@ -11,8 +11,8 @@
 #include <numbers>
 
 App::App()
-	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"), 
-	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(), 
+	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
+	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(),
 	axisCursor(), mode(AppMode::None), selectedShapes()
 {
 	InitImgui(window.GetWindowPointer());
@@ -183,11 +183,12 @@ void App::DisplayParameters()
 void App::ApplyOperation()
 {
 	//auto t = translation.HandleInput();
-	auto r = rotation.HandleInput();
+	//auto r = rotation.HandleInput();
 
+	auto s = scaling.HandleInput();
 	for (auto shape : selectedShapes)
 	{
-		shape->AddRotation(r);
+		shape->AddScaling(s);
 	}
 }
 

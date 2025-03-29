@@ -170,6 +170,7 @@
     <ClCompile Include="Source\Objects\Shape.cpp" />
     <ClCompile Include="Source\Objects\Torus.cpp" />
     <ClCompile Include="Source\Operations\Rotation.cpp" />
+    <ClCompile Include="Source\Operations\Scaling.cpp" />
     <ClCompile Include="Source\Operations\Translation.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
     <ClCompile Include="Source\Utils\Init.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Source\Objects\Torus.h" />
     <ClInclude Include="Source\Operations\Operations.h" />
     <ClInclude Include="Source\Operations\Rotation.h" />
+    <ClInclude Include="Source\Operations\Scaling.h" />
     <ClInclude Include="Source\Operations\Translation.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
     <ClInclude Include="Source\Utils\Init.h" />

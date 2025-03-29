@@ -15,7 +15,7 @@ protected:
 
 	Algebra::Quaternion rotation;
 	Algebra::Vector4 translation;
-	Algebra::Vector4 scale;
+	Algebra::Vector4 scaling;
 
 	std::string name;
 public:
@@ -40,7 +40,9 @@ public:
 	
 	inline void SetTranslation(Algebra::Vector4 translation) { this->translation = translation; }
 	inline void AddTranslation(Algebra::Vector4 translation) { this->translation = this->translation + translation; }
-	inline void SetScale(Algebra::Vector4 scale) { this->scale = scale; }
+	
+	inline void SetScaling(Algebra::Vector4 scaling) { this->scaling = scaling; }
+	inline void AddScaling(Algebra::Vector4 scaling) { this->scaling = this->scaling.Scale(scaling); }
 
 	inline std::string GetName() { return name; }
 	inline void SetName(std::string name) { this->name = name; }

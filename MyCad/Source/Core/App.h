@@ -44,6 +44,7 @@ private:
 	AppMode mode;
 	Translation translation;
 	Rotation rotation;
+	Scaling scaling;
 
 public:
 	App();
