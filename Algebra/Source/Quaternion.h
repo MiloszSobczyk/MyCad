@@ -13,6 +13,8 @@ namespace Algebra
         Quaternion() : w(1.0f), x(0.0f), y(0.0f), z(0.0f) {}
         Quaternion(float w, float x, float y, float z) : w(w), x(x), y(y), z(z) {}
 
+        friend std::ostream& operator<<(std::ostream& os, const Quaternion& quaternion);
+
         static Quaternion Identity() { return Quaternion(1.0f, 0.0f, 0.0f, 0.0f); }
 
         static Quaternion CreateFromAxisAngle(const Vector4& axis, float angle);

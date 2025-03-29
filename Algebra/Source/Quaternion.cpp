@@ -118,7 +118,13 @@ namespace Algebra
         return w == other.w && x == other.x && y == other.y && z == other.z;
     }
 
-    Quaternion operator*(float scalar, const Quaternion& q) 
+    std::ostream& operator<<(std::ostream& os, const Quaternion& quaternion)
+    {
+        os << "[" << quaternion.w << ' ' << quaternion.x << ' ' << quaternion.y << ' ' << quaternion.z << "]\n";
+        return os;
+    }
+
+    Quaternion operator*(float scalar, const Quaternion& q)
     {
         return q * scalar;
     }
