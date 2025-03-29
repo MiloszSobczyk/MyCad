@@ -12,8 +12,8 @@
 
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"), 
-	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), defaultShader("resources/shaders/default"), 
-	showGrid(true), shapes(), axisCursor(), mode(AppMode::None), selectedShapes()
+	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(), 
+	axisCursor(), mode(AppMode::None), selectedShapes()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -61,12 +61,13 @@ void App::Run()
 
 		//axisCursor.HandleInput();
 
-		HandleInput();
+		//HandleInput();
 
-		//shapes[0]->AddTranslation(translation.HandleInput());
 
 		DisplayParameters();
 		Render();
+
+		ApplyOperation();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -177,24 +178,13 @@ void App::DisplayParameters()
 	ImGui::End();
 }
 
-
-void App::DisplaySelector()
+void App::ApplyOperation()
 {
-	if (shapes.empty())
-	{
-		ImGui::Text("No shapes available.");
-	}
-	else
-	{
-		for (size_t i = 0; i < shapes.size(); ++i)
-		{
-			std::string label = "Shape " + std::to_string(shapes[i]->GetId());
+	auto t = translation.HandleInput();
 
-			if (ImGui::Selectable(label.c_str()))
-			{
-				std::cout << "Selected " << label << std::endl;
-			}
-		}
+	for (auto shape : selectedShapes)
+	{
+		shape->AddTranslation(t);
 	}
 }
 
@@ -229,17 +219,21 @@ void App::Render()
 		grid.Render(camera.GetViewMatrix(), projectionMatrix, camera.GetPosition());
 	}
 
-	defaultShader.Bind();
-	defaultShader.SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
-	defaultShader.SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-	defaultShader.SetUniformVec4f("u_color", Algebra::Vector4(0.5f, 0.f, 0.5f, 1.f));
+	auto shader = ShaderManager::GetInstance().GetShader("default");
+
+	shader->Bind();
+	shader->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
+	shader->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
+	shader->SetUniformVec4f("u_color", Algebra::Vector4(0.5f, 0.f, 0.5f, 1.f));
 
 	for (auto shape : shapes)
 	{
 		auto mat = shape->GetModelMatrix();
-		defaultShader.SetUniformMat4f("u_modelMatrix", shape->GetModelMatrix());
+		shader->SetUniformMat4f("u_modelMatrix", shape->GetModelMatrix());
 		shape->Render();
 	}
 
-	defaultShader.Unbind();
+	axisCursor.Render();
+
+	shader->Unbind();
 }
