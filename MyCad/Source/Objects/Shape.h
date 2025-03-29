@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <imgui/imgui.h>
 
 #include "Algebra.h"
 
@@ -22,7 +23,6 @@ public:
 	Shape();
 	virtual ~Shape() = default;
 
-	virtual void HandleInput() = 0;
 	virtual void Render() = 0;
 	
 	inline int GetId() { return id; }
@@ -47,4 +47,5 @@ public:
 	inline std::string GetName() { return name; }
 	inline void SetName(std::string name) { this->name = name; }
 
+	virtual void RenderUI();
 };

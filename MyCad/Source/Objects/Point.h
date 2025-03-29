@@ -14,6 +14,5 @@ private:
 public:
     Point();
 
-	void HandleInput() override;
 	void Render() override;
 };

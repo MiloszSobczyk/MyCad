@@ -30,3 +30,37 @@ Algebra::Matrix4 Shape::GetModelMatrix()
 
     return GetTranslationMatrix() * GetRotationMatrix() * GetScaleMatrix();
 }
+
+void Shape::RenderUI()
+{
+    if (ImGui::Begin("Shape Properties"))
+    {
+        char nameBuffer[128];
+        strncpy_s(nameBuffer, name.c_str(), sizeof(nameBuffer));
+        nameBuffer[sizeof(nameBuffer) - 1] = '\0';
+        if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer)))
+        {
+            name = std::string(nameBuffer);
+        }
+
+        float colorArray[4] = { color.x, color.y, color.z, color.w };
+        if (ImGui::ColorEdit4("Color", colorArray))
+        {
+            color = Algebra::Vector4(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
+        }
+
+        ImGui::InputFloat3("Translation", &translation.x);
+        if (ImGui::IsItemDeactivatedAfterEdit())
+        {
+            translation = Algebra::Vector4(translation.x, translation.y, translation.z, 0);
+        }
+
+        ImGui::InputFloat("Scale", &scaling.x);
+        if (ImGui::IsItemDeactivatedAfterEdit())
+        {
+            scaling = Algebra::Vector4(scaling.x, scaling.y, scaling.z, 0);
+        }
+
+        ImGui::End();
+    }
+}

@@ -12,6 +12,7 @@ private:
 	float minorRadius = 5.f;
 	unsigned int majorSegments = 30;
 	unsigned int minorSegments = 50;
+	bool stateChanged;
 
 	Algebra::Vector4 GetPoint(float angle, float radius);
 
@@ -19,7 +20,7 @@ private:
 
 public:
 	Torus();
-	void HandleInput() override;
 	void Render() override;
+	void RenderUI() override;
 };
 

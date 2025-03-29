@@ -11,6 +11,7 @@ Algebra::Vector4 Torus::GetPoint(float angleTube, float angleRadius)
 
 void Torus::GeneratePoints()
 {
+	stateChanged = false;
 	std::vector<PositionVertexData> vertices;
 	std::vector<unsigned int> indices;
 
@@ -48,25 +49,24 @@ Torus::Torus()
 	GeneratePoints();
 }
 
-void Torus::HandleInput()
+void Torus::Render()
 {
-	int minValue = 3;
-	int maxValue = 100;
-
-	bool stateChanged = false;
-
-	stateChanged |= ImGui::SliderFloat("Major Radius", &majorRadius, 1.f, 100.f);
-	stateChanged |= ImGui::SliderFloat("Minor Radius", &minorRadius, 1.f, 50.f);
-	stateChanged |= ImGui::SliderScalar("Major Segments", ImGuiDataType_U32,  &majorSegments, &minValue, &maxValue);
-	stateChanged |= ImGui::SliderScalar("Minor Segments", ImGuiDataType_U32,  &minorSegments, &minValue, &maxValue);
-
 	if (stateChanged)
 	{
 		GeneratePoints();
 	}
+	renderer.Render(GL_LINES);
 }
 
-void Torus::Render()
+void Torus::RenderUI()
 {
-	renderer.Render(GL_LINES);
+	Shape::RenderUI();
+
+	int minValue = 3;
+	int maxValue = 100;
+
+	stateChanged |= ImGui::SliderFloat("Major Radius", &majorRadius, 1.f, 100.f);
+	stateChanged |= ImGui::SliderFloat("Minor Radius", &minorRadius, 1.f, 50.f);
+	stateChanged |= ImGui::SliderScalar("Major Segments", ImGuiDataType_U32, &majorSegments, &minValue, &maxValue);
+	stateChanged |= ImGui::SliderScalar("Minor Segments", ImGuiDataType_U32, &minorSegments, &minValue, &maxValue);
 }

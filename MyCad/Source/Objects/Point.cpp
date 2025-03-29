@@ -27,10 +27,6 @@ Point::Point() :
 	renderer.SetIndices(indices);
 }
 
-void Point::HandleInput()
-{
-}
-
 void Point::Render()
 {
 	renderer.Render(GL_TRIANGLES);

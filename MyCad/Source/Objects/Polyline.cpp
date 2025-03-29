@@ -5,9 +5,6 @@ Polyline::Polyline()
 {
 }
 
-void Polyline::HandleInput()
-{
-}
 
 void Polyline::Render()
 {

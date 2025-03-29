@@ -15,7 +15,6 @@ private:
 public:
 	Polyline();
 
-	void HandleInput() override;
 	void Render() override;
 
 	void AddPoint(std::shared_ptr<Point> point);

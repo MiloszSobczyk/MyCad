@@ -98,92 +98,102 @@ void App::HandleResize()
 
 void App::DisplayParameters()
 {
-	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar |
-		ImGuiWindowFlags_NoMove |
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoDocking;
+    ImGuiWindowFlags windowFlags =
+        ImGuiWindowFlags_NoTitleBar
+        | ImGuiWindowFlags_NoMove
+        | ImGuiWindowFlags_NoResize
+        | ImGuiWindowFlags_NoCollapse
+        | ImGuiWindowFlags_NoDocking;
 
-	ImGui::SetNextWindowPos(ImVec2(static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth), 0.f));
-	ImGui::SetNextWindowSize(ImVec2(static_cast<float>(Globals::RightInterfaceWidth), static_cast<float>(window.GetHeight())));
+    // Set window position and size
+    ImGui::SetNextWindowPos(ImVec2(static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth), 0.f));
+    ImGui::SetNextWindowSize(ImVec2(static_cast<float>(Globals::RightInterfaceWidth), static_cast<float>(window.GetHeight())));
 
-	ImGui::Begin("Main Menu", nullptr, windowFlags);
-	ImGui::Checkbox("Show grid", &showGrid);
+    ImGui::Begin("Main Menu", nullptr, windowFlags);
+    ImGui::Checkbox("Show grid", &showGrid);
 
-	const char* modeNames[] = { "None", "Translation", "Rotation", "Scaling" };
-	int currentMode = static_cast<int>(mode);
+    // Mode selection
+    const char* modeNames[] = { "None", "Translation", "Rotation", "Scaling" };
+    int currentMode = static_cast<int>(mode);
 
-	if (ImGui::BeginCombo("Mode", modeNames[currentMode]))
+    if (ImGui::BeginCombo("Mode", modeNames[currentMode]))
+    {
+        for (int i = 0; i < 4; ++i)
+        {
+            bool isSelected = (currentMode == i);
+            if (ImGui::Selectable(modeNames[i], isSelected))
+            {
+                mode = static_cast<AppMode>(i);
+            }
+
+            if (isSelected)
+            {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+        ImGui::EndCombo();
+    }
+
+    ImGui::Separator();
+    ImGui::Text("Shape Selector");
+
+    // Shape selection
+    ImGui::BeginChild("ShapeList", ImVec2(0, 150), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+    if (shapes.empty())
+    {
+        ImGui::Text("No shapes available.");
+    }
+    else
+    {
+        bool ctrlPressed = ImGui::GetIO().KeyCtrl;
+
+        for (const auto& shape : shapes)
+        {
+            Shape* shapePtr = shape.get();
+            std::string label = "Shape " + std::to_string(shape->GetId());
+            bool isSelected = selectedShapes.count(shapePtr) > 0;
+
+            if (ImGui::Selectable(label.c_str(), isSelected))
+            {
+                if (ctrlPressed)
+                {
+                    if (isSelected)
+                        selectedShapes.erase(shapePtr);
+                    else
+                        selectedShapes.insert(shapePtr);
+                }
+                else
+                {
+                    selectedShapes.clear();
+                    selectedShapes.insert(shapePtr);
+                }
+
+                std::cout << "Currently selected shapes: ";
+                for (const auto& selectedShape : selectedShapes)
+                    std::cout << selectedShape->GetId() << " ";
+                std::cout << std::endl;
+            }
+        }
+    }
+
+    ImGui::EndChild();
+
+    if (!shapes.empty()) 
 	{
-		for (int i = 0; i < 4; ++i)
-		{
-			bool isSelected = (currentMode == i);
-			if (ImGui::Selectable(modeNames[i], isSelected))
-			{
-				mode = static_cast<AppMode>(i);
-			}
+        shapes[0]->RenderUI();
+    }
 
-			if (isSelected)
-			{
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
-
-	ImGui::Separator();
-	ImGui::Text("Shape Selector");
-
-	ImGui::BeginChild("ShapeList", ImVec2(0, 150), true, ImGuiWindowFlags_HorizontalScrollbar);
-
-	if (shapes.empty())
-	{
-		ImGui::Text("No shapes available.");
-	}
-	else
-	{
-		bool ctrlPressed = ImGui::GetIO().KeyCtrl;
-
-		for (const auto& shape : shapes)
-		{
-			Shape* shapePtr = shape.get();
-			std::string label = "Shape " + std::to_string(shape->GetId());
-			bool isSelected = selectedShapes.count(shapePtr) > 0;
-
-			if (ImGui::Selectable(label.c_str(), isSelected))
-			{
-				if (ctrlPressed)
-				{
-					if (isSelected)
-						selectedShapes.erase(shapePtr);
-					else
-						selectedShapes.insert(shapePtr);
-				}
-				else
-				{
-					selectedShapes.clear();
-					selectedShapes.insert(shapePtr);
-				}
-
-				std::cout << "Currently selected shapes: ";
-				for (const auto& selectedShape : selectedShapes)
-					std::cout << selectedShape->GetId() << " ";
-				std::cout << std::endl;
-			}
-		}
-	}
-
-	ImGui::EndChild();
-
-
-
-	ImGui::End();
+    ImGui::End();
 }
+
 
 void App::ApplyOperation()
 {
 	//auto t = translation.HandleInput();
 	//auto r = rotation.HandleInput();
+	if (ImGui::IsAnyItemActive())
+		return;
 
 	auto s = scaling.HandleInput();
 	for (auto shape : selectedShapes)
@@ -204,7 +214,7 @@ void App::Render()
 	shader->Bind();
 	shader->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	shader->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-	shader->SetUniformVec4f("u_color", Algebra::Vector4(0.5f, 0.f, 0.5f, 1.f));
+	shader->SetUniformVec4f("u_color", shapes[0]->GetColor());
 
 	for (auto shape : shapes)
 	{
