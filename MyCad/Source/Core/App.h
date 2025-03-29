@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <unordered_set>
 
 #include "Algebra.h"
 #include "Utils/Init.h"
@@ -32,6 +33,7 @@ private:
 	Shader defaultShader;
 
 	std::vector<std::shared_ptr<Shape>> shapes;
+	std::unordered_set<Shape*> selectedShapes;
 	AxisCursor axisCursor;
 
 	Algebra::Matrix4 projectionMatrix;
@@ -52,4 +54,6 @@ public:
 	void HandleInput();
 	void HandleResize();
 	void DisplayParameters();
+
+	void DisplaySelector();
 };

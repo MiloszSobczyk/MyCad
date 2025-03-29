@@ -13,7 +13,7 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"), 
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), defaultShader("resources/shaders/default"), 
-	showGrid(true), shapes(), axisCursor(), mode(AppMode::None)
+	showGrid(true), shapes(), axisCursor(), mode(AppMode::None), selectedShapes()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -95,19 +95,18 @@ void App::HandleResize()
 
 void App::DisplayParameters()
 {
-	ImGuiWindowFlags windowFlags = 0;
-	windowFlags |= ImGuiWindowFlags_NoTitleBar;
-	windowFlags |= ImGuiWindowFlags_NoMove;
-	windowFlags |= ImGuiWindowFlags_NoResize;
-	windowFlags |= ImGuiWindowFlags_NoCollapse;
-	windowFlags |= ImGuiWindowFlags_NoDocking;
+	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoDocking;
 
 	ImGui::SetNextWindowPos(ImVec2(static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth), 0.f));
 	ImGui::SetNextWindowSize(ImVec2(static_cast<float>(Globals::RightInterfaceWidth), static_cast<float>(window.GetHeight())));
 
 	ImGui::Begin("Main Menu", nullptr, windowFlags);
 	ImGui::Checkbox("Show grid", &showGrid);
-	
+
 	const char* modeNames[] = { "None", "Translation", "Rotation", "Scaling" };
 	int currentMode = static_cast<int>(mode);
 
@@ -129,8 +128,76 @@ void App::DisplayParameters()
 		ImGui::EndCombo();
 	}
 
+	ImGui::Separator();
+	ImGui::Text("Shape Selector");
+
+	ImGui::BeginChild("ShapeList", ImVec2(0, 150), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+	if (shapes.empty())
+	{
+		ImGui::Text("No shapes available.");
+	}
+	else
+	{
+		bool ctrlPressed = ImGui::GetIO().KeyCtrl;
+
+		for (const auto& shape : shapes)
+		{
+			Shape* shapePtr = shape.get();
+			std::string label = "Shape " + std::to_string(shape->GetId());
+			bool isSelected = selectedShapes.count(shapePtr) > 0;
+
+			if (ImGui::Selectable(label.c_str(), isSelected))
+			{
+				if (ctrlPressed)
+				{
+					if (isSelected)
+						selectedShapes.erase(shapePtr);
+					else
+						selectedShapes.insert(shapePtr);
+				}
+				else
+				{
+					selectedShapes.clear();
+					selectedShapes.insert(shapePtr);
+				}
+
+				std::cout << "Currently selected shapes: ";
+				for (const auto& selectedShape : selectedShapes)
+					std::cout << selectedShape->GetId() << " ";
+				std::cout << std::endl;
+			}
+		}
+	}
+
+	ImGui::EndChild();
+
+
+
 	ImGui::End();
 }
+
+
+void App::DisplaySelector()
+{
+	if (shapes.empty())
+	{
+		ImGui::Text("No shapes available.");
+	}
+	else
+	{
+		for (size_t i = 0; i < shapes.size(); ++i)
+		{
+			std::string label = "Shape " + std::to_string(shapes[i]->GetId());
+
+			if (ImGui::Selectable(label.c_str()))
+			{
+				std::cout << "Selected " << label << std::endl;
+			}
+		}
+	}
+}
+
 
 Algebra::Vector4 App::GetMousePoint(float x, float y)
 {
