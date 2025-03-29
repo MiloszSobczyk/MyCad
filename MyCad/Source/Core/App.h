@@ -40,7 +40,6 @@ private:
 	Algebra::Matrix4 viewMatrix;
 	
 	Algebra::Vector4 draggingPoint;
-	Algebra::Vector4 GetMousePoint(float x, float y);
 
 	AppMode mode;
 	Translation translation;

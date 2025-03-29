@@ -1,25 +1,26 @@
 #include "AxisCursor.h"
 #include <imgui/imgui.h>
 
-std::vector<PositionVertexData> AxisCursor::vertices = {
-	{{ 0.f, 0.f, 0.f, 1.f }},
-	{{ 1.f, 0.f, 0.f, 1.f }},
-	{{ 0.f, 1.f, 0.f, 1.f }},
-	{{ 0.f, 0.f, 1.f, 1.f }},
+std::vector<PositionColorVertexData> AxisCursor::vertices = {
+	{{ -2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
+	{{ +2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
+	{{ +0.f, -2.f, +0.f, 1.f }, { 0.f, 1.f, 0.f, 1.f }},
+	{{ +0.f, +2.f, +0.f, 1.f }, { 0.f, 1.f, 0.f, 1.f }},
+	{{ +0.f, +0.f, -2.f, 1.f }, { 0.f, 0.f, 1.f, 1.f }},
+	{{ +0.f, +0.f, +2.f, 1.f }, { 0.f, 0.f, 1.f, 1.f }},
 };
 
 std::vector<unsigned int> AxisCursor::indices = {
 	0, 1,
-	0, 2,
-	0, 3,
+	2, 3,
+	4, 5,
 };
 
 AxisCursor::AxisCursor()
-	: visible(true), renderer(VertexDataType::PositionVertexData)
+	: visible(true), renderer(VertexDataType::PositionColorVertexData)
 {
 	renderer.SetVertices(vertices);
 	renderer.SetIndices(indices);
-	color = Algebra::Vector4(1.f, 0.f, 1.f, 1.f);
 }
 
 void AxisCursor::Render()

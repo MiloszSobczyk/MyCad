@@ -61,7 +61,7 @@ void App::Run()
 
 		//axisCursor.HandleInput();
 
-		//HandleInput();
+		HandleInput();
 
 
 		DisplayParameters();
@@ -188,30 +188,6 @@ void App::ApplyOperation()
 	}
 }
 
-
-Algebra::Vector4 App::GetMousePoint(float x, float y)
-{
-	float screenWidth = static_cast<float>(window.GetWidth());
-	float screenHeight = static_cast<float>(window.GetHeight());
-	float scale = fminf(screenHeight, screenWidth) - 1.f;
-
-	x = (2.f * x - screenWidth + 1.f) / scale;
-	y = (2.f * y - screenHeight + 1.f) / -scale;
-
-	float z = 0;
-	float d = x * x + y * y;
-	if (d <= 1.f / 2.f)
-	{
-		z = sqrtf(1 - d);
-	}
-	else
-	{
-		z = 1.f / 2.f / sqrtf(d);
-	}
-
-	return Algebra::Vector4(x, y, z, 0);
-}
-
 void App::Render()
 {
 	if (showGrid)
@@ -233,7 +209,16 @@ void App::Render()
 		shape->Render();
 	}
 
+	shader->Unbind();
+
+	auto shaderC = ShaderManager::GetInstance().GetShader("defaultColor");
+
+	shaderC->Bind();
+	shaderC->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
+	shaderC->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
+	shaderC->SetUniformMat4f("u_modelMatrix", axisCursor.GetModelMatrix());
+
 	axisCursor.Render();
 
-	shader->Unbind();
+	shaderC->Unbind();
 }

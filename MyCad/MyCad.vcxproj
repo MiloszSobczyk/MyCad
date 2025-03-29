@@ -163,6 +163,7 @@
     <ClCompile Include="Source\Engine\VertexBuffer.cpp" />
     <ClCompile Include="Source\Engine\VertexLayout.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Managers\ShaderManager.cpp" />
     <ClCompile Include="Source\Objects\AxisCursor.cpp" />
     <ClCompile Include="Source\Objects\Point.cpp" />
     <ClCompile Include="Source\Objects\Polyline.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Source\Core\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Managers\ShaderManager.h" />
     <ClInclude Include="Source\Objects\Point.h" />
     <ClInclude Include="Source\Core\App.h" />
     <ClInclude Include="Source\Engine\Camera.h" />

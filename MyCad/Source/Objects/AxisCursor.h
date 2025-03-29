@@ -7,12 +7,12 @@
 class AxisCursor : public Shape
 {
 private:
-	static std::vector<PositionVertexData> vertices;
+	static std::vector<PositionColorVertexData> vertices;
 	static std::vector<unsigned int> indices;
 
 	bool visible;
 
-	Renderer<PositionVertexData> renderer;
+	Renderer<PositionColorVertexData> renderer;
 public:
 	AxisCursor();
 	
