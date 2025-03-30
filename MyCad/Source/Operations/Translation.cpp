@@ -38,10 +38,10 @@ Algebra::Vector4 Translation::HandleInput()
                 direction = Algebra::Vector4(delta.x, 0, 0, 0);
                 break;
             case TranslationState::Y:
-                direction = Algebra::Vector4(0, delta.y, 0, 0);
+                direction = Algebra::Vector4(0, -delta.y, 0, 0);
                 break;
             case TranslationState::Z:
-                direction = Algebra::Vector4(0, 0, -delta.y, 0);
+                direction = Algebra::Vector4(0, 0, delta.x, 0);
                 break;
             case TranslationState::Camera:
             {

@@ -18,6 +18,7 @@
 enum class AppMode
 {
 	Camera,
+	AxisCursor,
 	Translation,
 	Rotation,
 	Scaling
@@ -54,7 +55,10 @@ public:
 	void Render();
 	void HandleInput();
 	void HandleResize();
-	void DisplayParameters();
 
-	void ApplyOperation();
+	void DisplayParameters();
+	void DisplayMainMenu();
+	void DisplayModeSelection();
+	void DisplayShapeSelection();
+	void DisplayShapeProperties();
 };
