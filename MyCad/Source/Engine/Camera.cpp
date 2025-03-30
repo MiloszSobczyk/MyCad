@@ -101,3 +101,15 @@ void Camera::HandleInput()
     HandleZoom(deltaTime);
     HandleRotations(deltaTime);
 }
+
+Algebra::Vector4 Camera::GetUpVector() const
+{
+    Algebra::Vector4 up(0.0f, 1.0f, 0.0f, 0.0f);
+    return rotation.Rotate(up);
+}
+
+Algebra::Vector4 Camera::GetRightVector() const
+{
+    Algebra::Vector4 right(1.0f, 0.0f, 0.0f, 0.0f);
+    return rotation.Rotate(right);
+}

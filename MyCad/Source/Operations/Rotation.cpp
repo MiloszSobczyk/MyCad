@@ -2,6 +2,23 @@
 
 Algebra::Quaternion Rotation::HandleInput()
 {
+    if (ImGui::IsKeyPressed(ImGuiKey_X))
+    {
+        state = RotationState::X;
+    }
+    else if (ImGui::IsKeyPressed(ImGuiKey_Y))
+    {
+        state = RotationState::Y;
+    }
+    else if (ImGui::IsKeyPressed(ImGuiKey_Z))
+    {
+        state = RotationState::Z;
+    }
+    else if (ImGui::IsKeyPressed(ImGuiKey_C))
+    {
+        state = RotationState::Trackball;
+    }
+
     if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
     {
         ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);

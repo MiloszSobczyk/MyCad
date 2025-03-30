@@ -24,4 +24,7 @@ public:
 	Algebra::Matrix4 GetViewMatrix();
 
 	void HandleInput();
+
+	Algebra::Vector4 GetUpVector() const;
+	Algebra::Vector4 GetRightVector() const;
 };

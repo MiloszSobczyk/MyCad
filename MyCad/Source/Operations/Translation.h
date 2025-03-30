@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Algebra.h"
+#include "Engine/Camera.h"
 #include <imgui/imgui.h>
 
 enum class TranslationState
@@ -15,7 +16,9 @@ class Translation
 {
 private:
 	TranslationState state;
+	Camera* camera;
 public:
+	Translation(Camera* camera);
 	inline TranslationState GetState() { return state; };
 	inline void SetState(TranslationState state) { this->state = state; };
 

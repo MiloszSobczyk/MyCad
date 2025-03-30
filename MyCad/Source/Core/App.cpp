@@ -13,7 +13,7 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(),
-	axisCursor(), mode(AppMode::Camera), selectedShapes()
+	axisCursor(), mode(AppMode::Camera), selectedShapes(), translation(&camera)
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -62,6 +62,23 @@ void App::HandleInput()
 	if (ImGui::IsAnyItemActive() || ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
 	{
 		return;
+	}
+
+	if (ImGui::IsKeyPressed(ImGuiKey_C))
+	{
+		mode = AppMode::Camera;
+	}
+	else if (ImGui::IsKeyPressed(ImGuiKey_T))
+	{
+		mode = AppMode::Translation;
+	}
+	else if (ImGui::IsKeyPressed(ImGuiKey_R))
+	{
+		mode = AppMode::Rotation;
+	}
+	else if (ImGui::IsKeyPressed(ImGuiKey_S))
+	{
+		mode = AppMode::Scaling;
 	}
 
 	switch (mode)
