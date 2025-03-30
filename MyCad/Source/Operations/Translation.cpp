@@ -30,31 +30,28 @@ Algebra::Vector4 Translation::HandleInput()
 
         if (fabs(delta.x) > FLT_EPSILON || fabs(delta.y) > FLT_EPSILON)
         {
+            auto normDelta = Algebra::Vector4(delta.x, -delta.y, 0.f, 0.f).Normalize();
+
             Algebra::Vector4 direction(0, 0, 0, 0);
 
             switch (state)
             {
             case TranslationState::X:
-                direction = Algebra::Vector4(delta.x, 0, 0, 0);
+                direction = Algebra::Vector4(normDelta.x, 0, 0, 0);
                 break;
             case TranslationState::Y:
-                direction = Algebra::Vector4(0, -delta.y, 0, 0);
+                direction = Algebra::Vector4(0, normDelta.y, 0, 0);
                 break;
             case TranslationState::Z:
-                direction = Algebra::Vector4(0, 0, delta.x, 0);
+                direction = Algebra::Vector4(0, 0, normDelta.x, 0);
                 break;
             case TranslationState::Camera:
             {
                 Algebra::Vector4 right = camera->GetRightVector();
                 Algebra::Vector4 up = camera->GetUpVector();
-                direction = right * delta.x + up * (-delta.y);
+                direction = right * normDelta.x + up * (normDelta.y);
                 break;
             }
-            }
-
-            if (direction.Length() > 0)
-            {
-                direction = direction.Normalize();
             }
 
             return direction;
