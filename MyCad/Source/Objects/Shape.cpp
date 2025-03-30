@@ -54,9 +54,21 @@ void Shape::RenderUI()
         translation = Algebra::Vector4(translation.x, translation.y, translation.z, 0);
     }
 
-    ImGui::InputFloat("Scale", &scaling.x);
+    static float prevScaling = scaling.x;
+    float tempScaling = scaling.x;
+    if (ImGui::InputFloat("Scaling", &tempScaling))
+    {
+        if (tempScaling > 0.1f)
+        {
+            prevScaling = tempScaling;
+        }
+        else
+        {
+            tempScaling = prevScaling;
+        }
+    }
     if (ImGui::IsItemDeactivatedAfterEdit())
     {
-        scaling = Algebra::Vector4(scaling.x, scaling.y, scaling.z, 0);
+        scaling = Algebra::Vector4(tempScaling, tempScaling, tempScaling, 0);
     }
 }
