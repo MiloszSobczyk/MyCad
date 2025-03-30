@@ -162,6 +162,10 @@ void App::DisplayMainMenu()
 	ImGui::Separator();
 	DisplayShapeSelection();
 	ImGui::Separator();
+	DisplayAxisCursorControls();
+	ImGui::Separator();
+	DisplayAddShapeButtons();
+	ImGui::Separator();
 	DisplayShapeProperties();
 }
 
@@ -252,7 +256,37 @@ void App::DisplayShapeProperties()
 	}
 }
 
+void App::DisplayAddShapeButtons()
+{
+	ImGui::Text("Add Shape:");
 
+	if (ImGui::Button("Add Torus"))
+	{
+		auto torus = std::make_shared<Torus>();
+		torus->SetTranslation(axisCursor.GetTranslation());
+		shapes.push_back(torus);
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Add Point"))
+	{
+		auto point = std::make_shared<Point>();
+		point->SetTranslation(axisCursor.GetTranslation());
+		shapes.push_back(point);
+	}
+}
+
+void App::DisplayAxisCursorControls()
+{
+	ImGui::Text("Axis Cursor Position:");
+	static float axisPos[3] = { axisCursor.GetTranslation().x, axisCursor.GetTranslation().y, axisCursor.GetTranslation().z };
+
+	if (ImGui::InputFloat3("##AxisCursorPos", axisPos))
+	{
+		axisCursor.SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
+	}
+}
 
 void App::Render()
 {

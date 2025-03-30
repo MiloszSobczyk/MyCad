@@ -61,4 +61,6 @@ public:
 	void DisplayModeSelection();
 	void DisplayShapeSelection();
 	void DisplayShapeProperties();
+	void DisplayAddShapeButtons();
+	void DisplayAxisCursorControls();
 };

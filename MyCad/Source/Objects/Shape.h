@@ -38,6 +38,7 @@ public:
 	inline void SetRotation(Algebra::Quaternion rotation) { this->rotation = rotation; }
 	inline void AddRotation(Algebra::Quaternion rotation) { this->rotation = rotation * this->rotation; }
 	
+	inline Algebra::Vector4 GetTranslation() const { return this->translation; }
 	inline void SetTranslation(Algebra::Vector4 translation) { this->translation = translation; }
 	inline void AddTranslation(Algebra::Vector4 translation) { this->translation = this->translation + translation; }
 	
