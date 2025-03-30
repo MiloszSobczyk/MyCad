@@ -5,6 +5,7 @@ int Shape::idCounter = 0;
 Shape::Shape() 
 	: id(++idCounter), color(0.5f, 0.f, 0.5f, 1.0f), scaling(1.f, 1.f, 1.f)
 {
+    name = "Shape" + std::to_string(GetId());
 }
 
 Algebra::Matrix4 Shape::GetRotationMatrix()
@@ -33,34 +34,29 @@ Algebra::Matrix4 Shape::GetModelMatrix()
 
 void Shape::RenderUI()
 {
-    if (ImGui::Begin("Shape Properties"))
+    char nameBuffer[128];
+    strncpy_s(nameBuffer, name.c_str(), sizeof(nameBuffer));
+    nameBuffer[sizeof(nameBuffer) - 1] = '\0';
+    if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer)))
     {
-        char nameBuffer[128];
-        strncpy_s(nameBuffer, name.c_str(), sizeof(nameBuffer));
-        nameBuffer[sizeof(nameBuffer) - 1] = '\0';
-        if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer)))
-        {
-            name = std::string(nameBuffer);
-        }
+        name = std::string(nameBuffer);
+    }
 
-        float colorArray[4] = { color.x, color.y, color.z, color.w };
-        if (ImGui::ColorEdit4("Color", colorArray))
-        {
-            color = Algebra::Vector4(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
-        }
+    float colorArray[4] = { color.x, color.y, color.z, color.w };
+    if (ImGui::ColorEdit4("Color", colorArray))
+    {
+        color = Algebra::Vector4(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
+    }
 
-        ImGui::InputFloat3("Translation", &translation.x);
-        if (ImGui::IsItemDeactivatedAfterEdit())
-        {
-            translation = Algebra::Vector4(translation.x, translation.y, translation.z, 0);
-        }
+    ImGui::InputFloat3("Translation", &translation.x);
+    if (ImGui::IsItemDeactivatedAfterEdit())
+    {
+        translation = Algebra::Vector4(translation.x, translation.y, translation.z, 0);
+    }
 
-        ImGui::InputFloat("Scale", &scaling.x);
-        if (ImGui::IsItemDeactivatedAfterEdit())
-        {
-            scaling = Algebra::Vector4(scaling.x, scaling.y, scaling.z, 0);
-        }
-
-        ImGui::End();
+    ImGui::InputFloat("Scale", &scaling.x);
+    if (ImGui::IsItemDeactivatedAfterEdit())
+    {
+        scaling = Algebra::Vector4(scaling.x, scaling.y, scaling.z, 0);
     }
 }

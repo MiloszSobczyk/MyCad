@@ -13,32 +13,14 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(),
-	axisCursor(), mode(AppMode::None), selectedShapes()
+	axisCursor(), mode(AppMode::Camera), selectedShapes()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
 
-	rotation.SetState(RotationState::Z);
-
 	shapes.push_back(std::make_shared<Torus>());
-
-	//std::shared_ptr<Point> p1 = std::make_shared<Point>();
-	//std::shared_ptr<Point> p2 = std::make_shared<Point>();
-	//std::shared_ptr<Point> p3 = std::make_shared<Point>();
-
-	//p2->SetTranslation(Algebra::Vector4(0.f, 0.f, 10.f, 0.f));
-	//p3->SetTranslation(Algebra::Vector4(0.f, 0.f, 0.f, 0.f));
-
-	//std::shared_ptr<Polyline> pl = std::make_shared<Polyline>();
-	//pl->AddPoint(p1);
-	//pl->AddPoint(p2);
-	//pl->AddPoint(p3);
-
-	//shapes.push_back(p1);
-	//shapes.push_back(p2);
-	//shapes.push_back(p3);
-	//shapes.push_back(pl);
-
+	shapes.push_back(std::make_shared<Torus>());
+	shapes.push_back(std::make_shared<Torus>());
 
 	HandleResize();
 }
@@ -63,13 +45,10 @@ void App::Run()
 
 		//axisCursor.HandleInput();
 
-		//HandleInput();
-
-
 		DisplayParameters();
 		Render();
 
-		ApplyOperation();
+		HandleInput();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -85,7 +64,41 @@ void App::HandleInput()
 		return;
 	}
 
-	camera.HandleInput();
+	switch (mode)
+	{
+	case AppMode::Camera:
+	{
+		camera.HandleInput();
+		break;
+	}
+	case AppMode::Translation:
+	{
+		auto t = translation.HandleInput();
+		for (auto shape : selectedShapes)
+		{
+			shape->AddTranslation(t);
+		}
+		break;
+	}
+	case AppMode::Rotation:
+	{
+		auto r = rotation.HandleInput();
+		for (auto shape : selectedShapes)
+		{
+			shape->AddRotation(r);
+		}
+		break;
+	}
+	case AppMode::Scaling:
+	{
+		auto s = scaling.HandleInput();
+		for (auto shape : selectedShapes)
+		{
+			shape->AddScaling(s);
+		}
+		break;
+	}
+	}
 }
 
 void App::HandleResize()
@@ -113,7 +126,7 @@ void App::DisplayParameters()
     ImGui::Checkbox("Show grid", &showGrid);
 
     // Mode selection
-    const char* modeNames[] = { "None", "Translation", "Rotation", "Scaling" };
+    const char* modeNames[] = { "Camera", "Translation", "Rotation", "Scaling" };
     int currentMode = static_cast<int>(mode);
 
     if (ImGui::BeginCombo("Mode", modeNames[currentMode]))
@@ -151,10 +164,9 @@ void App::DisplayParameters()
         for (const auto& shape : shapes)
         {
             Shape* shapePtr = shape.get();
-            std::string label = "Shape " + std::to_string(shape->GetId());
             bool isSelected = selectedShapes.count(shapePtr) > 0;
 
-            if (ImGui::Selectable(label.c_str(), isSelected))
+            if (ImGui::Selectable(shapePtr->GetName().c_str(), isSelected))
             {
                 if (ctrlPressed)
                 {
@@ -179,27 +191,14 @@ void App::DisplayParameters()
 
     ImGui::EndChild();
 
-    if (!shapes.empty()) 
+	if (selectedShapes.size() == 1)
 	{
-        shapes[0]->RenderUI();
-    }
+		(*selectedShapes.begin())->RenderUI();
+	}
+
+
 
     ImGui::End();
-}
-
-
-void App::ApplyOperation()
-{
-	//auto t = translation.HandleInput();
-	//auto r = rotation.HandleInput();
-	if (ImGui::IsAnyItemActive())
-		return;
-
-	auto s = scaling.HandleInput();
-	for (auto shape : selectedShapes)
-	{
-		shape->AddScaling(s);
-	}
 }
 
 void App::Render()
@@ -214,11 +213,11 @@ void App::Render()
 	shader->Bind();
 	shader->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	shader->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-	shader->SetUniformVec4f("u_color", shapes[0]->GetColor());
 
 	for (auto shape : shapes)
 	{
 		auto mat = shape->GetModelMatrix();
+		shader->SetUniformVec4f("u_color", shape->GetColor());
 		shader->SetUniformMat4f("u_modelMatrix", shape->GetModelMatrix());
 		shape->Render();
 	}

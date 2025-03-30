@@ -17,7 +17,7 @@
 
 enum class AppMode
 {
-	None,
+	Camera,
 	Translation,
 	Rotation,
 	Scaling
