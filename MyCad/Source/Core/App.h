@@ -24,7 +24,7 @@ enum class AppMode
 	Scaling
 };
 
-enum class RotationMode
+enum class OperationMode
 {
 	Local,
 	MiddlePoint,
@@ -51,7 +51,7 @@ private:
 	Algebra::Vector4 draggingPoint;
 
 	AppMode appMode;
-	RotationMode rotationMode;
+	OperationMode operationMode;
 	Translation translation;
 	Rotation rotation;
 	Scaling scaling;

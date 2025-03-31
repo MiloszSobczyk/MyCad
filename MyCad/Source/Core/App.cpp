@@ -126,19 +126,19 @@ void App::HandleInput()
 		for (auto shape : selectedShapes)
 		{
 			Algebra::Vector4 point;
-			switch (rotationMode)
+			switch (operationMode)
 			{
-			case RotationMode::Local:
+			case OperationMode::Local:
 			{
 				point = shape->GetTranslation();
 				break;
 			}
-			case RotationMode::Cursor:
+			case OperationMode::Cursor:
 			{
 				point = axisCursor.GetTranslation();
 				break;
 			}
-			case RotationMode::MiddlePoint:
+			case OperationMode::MiddlePoint:
 			{
 				point = middlePoint.GetTranslation();
 				break;
@@ -154,7 +154,27 @@ void App::HandleInput()
 		auto s = scaling.HandleInput();
 		for (auto shape : selectedShapes)
 		{
-			shape->AddScaling(s);
+			Algebra::Vector4 point;
+			switch (operationMode)
+			{
+			case OperationMode::Local:
+			{
+				point = shape->GetTranslation();
+				break;
+			}
+			case OperationMode::Cursor:
+			{
+				point = axisCursor.GetTranslation();
+				break;
+			}
+			case OperationMode::MiddlePoint:
+			{
+				point = middlePoint.GetTranslation();
+				break;
+			}
+			}
+
+			shape->ScaleAroundPoint(point, s);
 		}
 		break;
 	}
@@ -225,7 +245,7 @@ void App::DisplayModeSelection()
 	}
 
 	const char* modeNames2[] = { "Local", "MiddlePoint", "AxisCursor" };
-	currentMode = static_cast<int>(rotationMode);
+	currentMode = static_cast<int>(operationMode);
 
 	if (ImGui::BeginCombo("RotationMode", modeNames2[currentMode]))
 	{
@@ -234,7 +254,7 @@ void App::DisplayModeSelection()
 			bool isSelected = (currentMode == i);
 			if (ImGui::Selectable(modeNames2[i], isSelected))
 			{
-				rotationMode = static_cast<RotationMode>(i);
+				operationMode = static_cast<OperationMode>(i);
 			}
 			if (isSelected)
 			{

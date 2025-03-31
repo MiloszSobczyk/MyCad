@@ -51,4 +51,5 @@ public:
 	virtual void RenderUI();
 
 	virtual void RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q);
+	void ScaleAroundPoint(Algebra::Vector4 point, Algebra::Vector4 scaleFactor);
 };
