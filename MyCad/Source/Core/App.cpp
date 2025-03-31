@@ -13,7 +13,7 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(),
-	axisCursor(), mode(AppMode::Camera), selectedShapes(), translation(&camera), middlePoint()
+	axisCursor(), appMode(AppMode::Camera), selectedShapes(), translation(&camera), middlePoint()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -67,23 +67,23 @@ void App::HandleInput()
 
 	if (ImGui::IsKeyPressed(ImGuiKey_C))
 	{
-		mode = AppMode::Camera;
+		appMode = AppMode::Camera;
 	}
 	else if (ImGui::IsKeyPressed(ImGuiKey_A))
 	{
-		mode = AppMode::AxisCursor;
+		appMode = AppMode::AxisCursor;
 	}	
 	else if (ImGui::IsKeyPressed(ImGuiKey_T))
 	{
-		mode = AppMode::Translation;
+		appMode = AppMode::Translation;
 	}
 	else if (ImGui::IsKeyPressed(ImGuiKey_R))
 	{
-		mode = AppMode::Rotation;
+		appMode = AppMode::Rotation;
 	}
 	else if (ImGui::IsKeyPressed(ImGuiKey_S))
 	{
-		mode = AppMode::Scaling;
+		appMode = AppMode::Scaling;
 	}	
 	else if (ImGui::IsKeyPressed(ImGuiKey_E))
 	{
@@ -96,7 +96,7 @@ void App::HandleInput()
 		return;
 	}
 
-	switch (mode)
+	switch (appMode)
 	{
 	case AppMode::Camera:
 	{
@@ -183,16 +183,36 @@ void App::DisplayMainMenu()
 void App::DisplayModeSelection()
 {
 	const char* modeNames[] = { "Camera", "AxisCursor", "Translation", "Rotation", "Scaling" };
-	int currentMode = static_cast<int>(mode);
+	int currentMode = static_cast<int>(appMode);
 
-	if (ImGui::BeginCombo("Mode", modeNames[currentMode]))
+	if (ImGui::BeginCombo("AppMode", modeNames[currentMode]))
 	{
 		for (int i = 0; i < 5; ++i)
 		{
 			bool isSelected = (currentMode == i);
 			if (ImGui::Selectable(modeNames[i], isSelected))
 			{
-				mode = static_cast<AppMode>(i);
+				appMode = static_cast<AppMode>(i);
+			}
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	const char* modeNames2[] = { "Local", "MiddlePoint", "AxisCursor" };
+	currentMode = static_cast<int>(rotationMode);
+
+	if (ImGui::BeginCombo("RotationMode", modeNames2[currentMode]))
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			bool isSelected = (currentMode == i);
+			if (ImGui::Selectable(modeNames2[i], isSelected))
+			{
+				rotationMode = static_cast<RotationMode>(i);
 			}
 			if (isSelected)
 			{
