@@ -25,10 +25,6 @@ Algebra::Matrix4 Shape::GetScaleMatrix()
 
 Algebra::Matrix4 Shape::GetModelMatrix()
 {
-	auto t = GetTranslationMatrix();
-	auto r = GetRotationMatrix();
-	auto s = GetScaleMatrix();
-
     return GetTranslationMatrix() * GetRotationMatrix() * GetScaleMatrix();
 }
 

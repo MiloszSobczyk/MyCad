@@ -37,6 +37,7 @@ void App::Run()
 	while (active && !window.ShouldClose())
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
+		//glClear(GL_DEPTH_BUFFER_BIT);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -87,6 +88,11 @@ void App::HandleInput()
 	else if (ImGui::IsKeyPressed(ImGuiKey_E))
 	{
 		GetClickedPoint();
+		return;
+	}
+	else if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+	{
+		selectedShapes.clear();
 		return;
 	}
 
@@ -335,26 +341,50 @@ void App::GetClickedPoint()
 		return;
 	}
 
+	const float similarityThreshold = 0.02f;
+	bool isCtrlPressed = ImGui::GetIO().KeyCtrl; // Check if Ctrl key is pressed
+
 	for (const auto& shape : shapes)
 	{
 		if (auto point = std::dynamic_pointer_cast<Point>(shape))
 		{
-			Algebra::Vector4 worldPos = point->GetTranslation();
-			worldPos.w = 1.f;
-			Algebra::Matrix4 VP = projectionMatrix * viewMatrix;
-			Algebra::Vector4 clipPos = VP * worldPos;
+			Algebra::Vector4 worldPos(0.f, 0.f, 0.f, 1.f);
+			Algebra::Matrix4 MVP = projectionMatrix * camera.GetViewMatrix() * point->GetModelMatrix();
+			Algebra::Vector4 clipPos = MVP * worldPos;
 
-			if (clipPos.w != 0.0f) 
+			clipPos.z = 0.f;
+
+			if (clipPos.w != 0.f)
 			{
 				clipPos = clipPos / clipPos.w;
 			}
 
-			std::cout << clipPos;
+			if (std::abs(ndcPos.x - clipPos.x) < similarityThreshold &&
+				std::abs(ndcPos.y - clipPos.y) < similarityThreshold)
+			{
+				if (isCtrlPressed)
+				{
+					auto it = std::find(selectedShapes.begin(), selectedShapes.end(), shape.get());
+					if (it != selectedShapes.end())
+					{
+						selectedShapes.erase(it);
+					}
+					else
+					{
+						selectedShapes.push_back(shape.get());
+					}
+				}
+				else
+				{
+					selectedShapes.clear();
+					selectedShapes.push_back(shape.get());
+				}
+			}
 		}
 	}
-
-	std::cout << ndcPos;
 }
+
+
 
 void App::Render()
 {
