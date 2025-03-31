@@ -32,3 +32,8 @@ void Point::Render()
 {
 	renderer.Render(GL_TRIANGLES);
 }
+
+void Point::RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q)
+{
+    translation = point + q.Rotate(translation - point);
+}

@@ -49,4 +49,6 @@ public:
 	inline void SetName(std::string name) { this->name = name; }
 
 	virtual void RenderUI();
+
+	virtual void RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q);
 };

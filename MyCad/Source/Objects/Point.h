@@ -15,4 +15,5 @@ public:
     Point();
 
 	void Render() override;
+	void RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q) override;
 };

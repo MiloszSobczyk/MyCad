@@ -65,6 +65,7 @@ void App::HandleInput()
 		return;
 	}
 
+#pragma region Input
 	if (ImGui::IsKeyPressed(ImGuiKey_C))
 	{
 		appMode = AppMode::Camera;
@@ -95,6 +96,7 @@ void App::HandleInput()
 		selectedShapes.clear();
 		return;
 	}
+#pragma endregion Input
 
 	switch (appMode)
 	{
@@ -123,7 +125,27 @@ void App::HandleInput()
 		auto r = rotation.HandleInput();
 		for (auto shape : selectedShapes)
 		{
-			shape->AddRotation(r);
+			Algebra::Vector4 point;
+			switch (rotationMode)
+			{
+			case RotationMode::Local:
+			{
+				point = shape->GetTranslation();
+				break;
+			}
+			case RotationMode::Cursor:
+			{
+				point = axisCursor.GetTranslation();
+				break;
+			}
+			case RotationMode::MiddlePoint:
+			{
+				point = middlePoint.GetTranslation();
+				break;
+			}
+			}
+
+			shape->RotateAroundPoint(point, r);
 		}
 		break;
 	}
