@@ -3,6 +3,7 @@
 Polyline::Polyline()
 	: renderer(VertexDataType::PositionVertexData)
 {
+    name = "Polyline" + std::to_string(id);
 }
 
 

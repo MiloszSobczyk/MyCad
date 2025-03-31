@@ -23,6 +23,7 @@ std::vector<unsigned int> Point::indices = {
 Point::Point() : 
 	renderer(VertexDataType::PositionVertexData)
 {
+    name = "Point" + std::to_string(id);
 	renderer.SetVertices(vertices);
 	renderer.SetIndices(indices);
 }

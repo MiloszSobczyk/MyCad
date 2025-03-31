@@ -46,6 +46,7 @@ void Torus::GeneratePoints()
 Torus::Torus()
 	: renderer(VertexDataType::PositionVertexData)
 {
+	name = "Torus" + std::to_string(id);
 	GeneratePoints();
 }
 
