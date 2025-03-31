@@ -20,8 +20,6 @@ App::App()
 
 	shapes.push_back(std::make_shared<Torus>());
 	shapes.push_back(std::make_shared<Point>());
-	shapes.push_back(std::make_shared<Point>());
-	shapes.push_back(std::make_shared<Point>());
 
 	HandleResize();
 }
@@ -52,6 +50,7 @@ void App::Run()
 		HandleInput();
 
 		ImGui::Render();
+
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		window.ProcessFrame();
@@ -84,6 +83,11 @@ void App::HandleInput()
 	else if (ImGui::IsKeyPressed(ImGuiKey_S))
 	{
 		mode = AppMode::Scaling;
+	}	
+	else if (ImGui::IsKeyPressed(ImGuiKey_E))
+	{
+		GetClickedPoint();
+		return;
 	}
 
 	switch (mode)
@@ -311,6 +315,45 @@ void App::DisplayAxisCursorControls()
 	{
 		axisCursor.SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
 	}
+}
+
+Algebra::Vector4 App::ScreenToNDC(float x, float y)
+{
+	float ndcX = (2.0f * x) / (window.GetWidth() - Globals::RightInterfaceWidth) - 1.0f;
+	float ndcY = 1.0f - (2.0f * y) / window.GetHeight();
+
+	return Algebra::Vector4(ndcX, ndcY, 0.f, 1.f);
+}
+
+void App::GetClickedPoint()
+{
+	auto screenPos = ImGui::GetMousePos();
+	auto ndcPos = ScreenToNDC(screenPos.x, screenPos.y);
+
+	if (std::abs(ndcPos.x) > 1.f || std::abs(ndcPos.y) > 1.f)
+	{
+		return;
+	}
+
+	for (const auto& shape : shapes)
+	{
+		if (auto point = std::dynamic_pointer_cast<Point>(shape))
+		{
+			Algebra::Vector4 worldPos = point->GetTranslation();
+			worldPos.w = 1.f;
+			Algebra::Matrix4 VP = projectionMatrix * viewMatrix;
+			Algebra::Vector4 clipPos = VP * worldPos;
+
+			if (clipPos.w != 0.0f) 
+			{
+				clipPos = clipPos / clipPos.w;
+			}
+
+			std::cout << clipPos;
+		}
+	}
+
+	std::cout << ndcPos;
 }
 
 void App::Render()
