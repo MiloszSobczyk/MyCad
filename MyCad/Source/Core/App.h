@@ -36,6 +36,7 @@ private:
 	std::vector<std::shared_ptr<Shape>> shapes;
 	std::unordered_set<Shape*> selectedShapes;
 	AxisCursor axisCursor;
+	Point middlePoint;
 
 	Algebra::Matrix4 projectionMatrix;
 	Algebra::Matrix4 viewMatrix;

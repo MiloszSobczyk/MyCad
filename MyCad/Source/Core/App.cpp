@@ -13,13 +13,11 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(),
-	axisCursor(), mode(AppMode::Camera), selectedShapes(), translation(&camera)
+	axisCursor(), mode(AppMode::Camera), selectedShapes(), translation(&camera), middlePoint()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
 
-	shapes.push_back(std::make_shared<Torus>());
-	shapes.push_back(std::make_shared<Torus>());
 	shapes.push_back(std::make_shared<Torus>());
 
 	HandleResize();
@@ -300,6 +298,19 @@ void App::Render()
 	shader->Bind();
 	shader->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	shader->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
+
+	if (!selectedShapes.empty())
+	{
+		Algebra::Vector4 middle;
+		for (const auto& selectedShape : selectedShapes)
+		{
+			middle = middle + selectedShape->GetTranslation();
+		}
+		middlePoint.SetTranslation(middle / selectedShapes.size());
+		
+		shader->SetUniformMat4f("u_modelMatrix", middlePoint.GetModelMatrix());
+		middlePoint.Render();
+	}
 
 	for (auto shape : shapes)
 	{
