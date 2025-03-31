@@ -342,7 +342,7 @@ void App::GetClickedPoint()
 	}
 
 	const float similarityThreshold = 0.02f;
-	bool isCtrlPressed = ImGui::GetIO().KeyCtrl; // Check if Ctrl key is pressed
+	bool isCtrlPressed = ImGui::GetIO().KeyCtrl;
 
 	for (const auto& shape : shapes)
 	{
