@@ -34,7 +34,7 @@ private:
 	InfiniteGrid grid;
 
 	std::vector<std::shared_ptr<Shape>> shapes;
-	std::unordered_set<Shape*> selectedShapes;
+	std::vector<Shape*> selectedShapes;
 	AxisCursor axisCursor;
 	Point middlePoint;
 

@@ -11,11 +11,11 @@ class Polyline : public Shape
 private:
 	Renderer<PositionVertexData> renderer;
 
-	std::vector<std::weak_ptr<Point>> points;
+	std::vector<std::weak_ptr<Shape>> points;
 public:
 	Polyline();
 
 	void Render() override;
 
-	void AddPoint(std::shared_ptr<Point> point);
+	void AddPoint(std::shared_ptr<Shape> point);
 };

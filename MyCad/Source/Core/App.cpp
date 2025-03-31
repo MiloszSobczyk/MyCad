@@ -19,6 +19,9 @@ App::App()
 	viewMatrix = Algebra::Matrix4::Identity();
 
 	shapes.push_back(std::make_shared<Torus>());
+	shapes.push_back(std::make_shared<Point>());
+	shapes.push_back(std::make_shared<Point>());
+	shapes.push_back(std::make_shared<Point>());
 
 	HandleResize();
 }
@@ -207,21 +210,25 @@ void App::DisplayShapeSelection()
 		for (const auto& shape : shapes)
 		{
 			Shape* shapePtr = shape.get();
-			bool isSelected = selectedShapes.count(shapePtr) > 0;
+			bool isSelected = std::find(selectedShapes.begin(), selectedShapes.end(), shapePtr) != selectedShapes.end();
 
 			if (ImGui::Selectable(shapePtr->GetName().c_str(), isSelected))
 			{
 				if (ctrlPressed)
 				{
 					if (isSelected)
-						selectedShapes.erase(shapePtr);
+					{
+						selectedShapes.erase(std::remove(selectedShapes.begin(), selectedShapes.end(), shapePtr), selectedShapes.end());
+					}
 					else
-						selectedShapes.insert(shapePtr);
+					{
+						selectedShapes.push_back(shapePtr);
+					}
 				}
 				else
 				{
 					selectedShapes.clear();
-					selectedShapes.insert(shapePtr);
+					selectedShapes.push_back(shapePtr);
 				}
 			}
 		}
@@ -233,7 +240,7 @@ void App::DisplayShapeSelection()
 	{
 		for (auto it = shapes.begin(); it != shapes.end();)
 		{
-			if (selectedShapes.count(it->get()))
+			if (std::find(selectedShapes.begin(), selectedShapes.end(), it->get()) != selectedShapes.end())
 			{
 				it = shapes.erase(it);
 			}
@@ -245,6 +252,7 @@ void App::DisplayShapeSelection()
 		selectedShapes.clear();
 	}
 }
+
 
 void App::DisplayShapeProperties()
 {
@@ -272,6 +280,25 @@ void App::DisplayAddShapeButtons()
 		auto point = std::make_shared<Point>();
 		point->SetTranslation(axisCursor.GetTranslation());
 		shapes.push_back(point);
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Add Polyline"))
+	{
+		auto polyline = std::make_shared<Polyline>();
+
+		for (const auto& shape : shapes)
+		{
+			if (std::find(selectedShapes.begin(), selectedShapes.end(), shape.get()) == selectedShapes.end())
+				continue;
+			if (auto point = std::dynamic_pointer_cast<Point>(shape))
+			{
+				polyline->AddPoint(point);
+			}
+		}
+
+		shapes.push_back(polyline);
 	}
 }
 
@@ -307,7 +334,8 @@ void App::Render()
 			middle = middle + selectedShape->GetTranslation();
 		}
 		middlePoint.SetTranslation(middle / selectedShapes.size());
-		
+
+		shader->SetUniformVec4f("u_color", Algebra::Vector4(1.f, 0.f, 0.f, 1.f));
 		shader->SetUniformMat4f("u_modelMatrix", middlePoint.GetModelMatrix());
 		middlePoint.Render();
 	}
