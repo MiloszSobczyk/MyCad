@@ -278,7 +278,7 @@ void App::DisplayAddShapeButtons()
 void App::DisplayAxisCursorControls()
 {
 	ImGui::Text("Axis Cursor Position:");
-	static float axisPos[3] = { axisCursor.GetTranslation().x, axisCursor.GetTranslation().y, axisCursor.GetTranslation().z };
+	float axisPos[3] = { axisCursor.GetTranslation().x, axisCursor.GetTranslation().y, axisCursor.GetTranslation().z };
 
 	if (ImGui::InputFloat3("##AxisCursorPos", axisPos))
 	{

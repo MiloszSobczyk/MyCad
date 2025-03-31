@@ -19,7 +19,7 @@ Algebra::Vector4 Translation::HandleInput()
     {
         state = TranslationState::Z;
     }
-    else if (ImGui::IsKeyPressed(ImGuiKey_C))
+    else if (ImGui::IsKeyPressed(ImGuiKey_D))
     {
         state = TranslationState::Camera;
     }
