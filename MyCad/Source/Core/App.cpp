@@ -278,13 +278,15 @@ void App::DisplayShapeSelection()
 	else
 	{
 		bool ctrlPressed = ImGui::GetIO().KeyCtrl;
+		int index = 0;
 
 		for (const auto& shape : shapes)
 		{
 			Shape* shapePtr = shape.get();
 			bool isSelected = std::find(selectedShapes.begin(), selectedShapes.end(), shapePtr) != selectedShapes.end();
+			std::string selectableLabel = shapePtr->GetName() + "##" + std::to_string(index++);
 
-			if (ImGui::Selectable(shapePtr->GetName().c_str(), isSelected))
+			if (ImGui::Selectable(selectableLabel.c_str(), isSelected))
 			{
 				if (ctrlPressed)
 				{
