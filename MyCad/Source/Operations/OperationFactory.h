@@ -17,7 +17,6 @@ struct OperationParameters
 	Window* window;
 	AxisCursor* cursor;
 	std::vector<Shape *> selected;
-	
 };
 
 class OperationFactory

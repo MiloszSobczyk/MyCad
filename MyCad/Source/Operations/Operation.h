@@ -19,10 +19,13 @@ struct InputState {
 
 class Operation
 {
+protected:
+	std::vector<std::shared_ptr<Shape>>& selected;
 public:
-	virtual void Start(std::vector<Shape*>& selected) = 0;
-	virtual void Update(InputState input) = 0;
-	virtual void Commit() = 0;
-	virtual void Cancel() = 0;
+	inline Operation(std::vector<std::shared_ptr<Shape>>& selected) 
+		: selected(selected) {}
+	virtual ~Operation() = default;
+
+	virtual void HandleInput() = 0;
 	virtual void DrawGizmos() = 0;
 };
