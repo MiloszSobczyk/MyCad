@@ -1,3 +1,4 @@
 #pragma once
 
-#include "RotationAlongAxesOperation.h"
+#include "RotationAroundAxesOperation.h"
+#include "RotationAroundPointOperation.h"

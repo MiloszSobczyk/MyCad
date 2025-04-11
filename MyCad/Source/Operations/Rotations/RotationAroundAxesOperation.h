@@ -6,7 +6,7 @@
 #include <array>
 
 
-class RotationAlongAxesOperation : public Operation
+class RotationAroundAxesOperation : public Operation
 {
 	enum class AxisMode
 	{
@@ -18,7 +18,7 @@ class RotationAlongAxesOperation : public Operation
 private:
 	AxisMode axisMode;
 public:
-	RotationAlongAxesOperation(std::vector<std::shared_ptr<Shape>>& selected);
+	RotationAroundAxesOperation(std::vector<std::shared_ptr<Shape>>& selected);
 
 	void HandleInput() override;
 	void DrawGizmos() override;

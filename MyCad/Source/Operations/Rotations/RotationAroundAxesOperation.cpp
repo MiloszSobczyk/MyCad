@@ -1,11 +1,11 @@
-#include "RotationAlongAxesOperation.h"
+#include "RotationAroundAxesOperation.h"
 
-RotationAlongAxesOperation::RotationAlongAxesOperation(std::vector<std::shared_ptr<Shape>>& selected)
+RotationAroundAxesOperation::RotationAroundAxesOperation(std::vector<std::shared_ptr<Shape>>& selected)
 	: Operation(selected), axisMode(AxisMode::X)
 {
 }
 
-void RotationAlongAxesOperation::HandleInput()
+void RotationAroundAxesOperation::HandleInput()
 {
     struct AxisBinding {
         AxisMode axisMode;
@@ -46,6 +46,6 @@ void RotationAlongAxesOperation::HandleInput()
     }
 }
 
-void RotationAlongAxesOperation::DrawGizmos()
+void RotationAroundAxesOperation::DrawGizmos()
 {
 }

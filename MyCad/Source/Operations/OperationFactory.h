@@ -19,9 +19,9 @@ enum class OperationType
 
 struct OperationParameters
 {
-	Window* window;
-	Camera* camera;
-	AxisCursor* cursor;
+	std::shared_ptr<Window> window;
+	std::shared_ptr<Camera> camera;
+	std::shared_ptr<AxisCursor> cursor;
 	std::vector<std::shared_ptr<Shape>>& selected;
 	OperationMode mode;
 };

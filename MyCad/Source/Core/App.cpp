@@ -72,7 +72,7 @@ void App::HandleInput()
 	}
 	else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
 	{
-		currentOperation = std::make_unique<RotationAlongAxesOperation>(selectedShapes);
+		currentOperation = std::make_unique<RotationAroundAxesOperation>(selectedShapes);
 	}
 
 	if (currentOperation)
