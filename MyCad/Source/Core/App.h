@@ -14,6 +14,7 @@
 #include "Objects/Objects.h"
 #include "Managers/ShaderManager.h"
 #include "Operations/Operations.h"
+#include "Operations/OperationFactory.h"
 
 
 enum class AppMode
@@ -23,13 +24,6 @@ enum class AppMode
 	Translation,
 	Rotation,
 	Scaling
-};
-
-enum class OperationMode
-{
-	Local,
-	MiddlePoint,
-	Cursor
 };
 
 class App 
@@ -42,9 +36,10 @@ private:
 	InfiniteGrid grid;
 
 	std::vector<std::shared_ptr<Shape>> shapes;
-	std::vector<Shape*> selectedShapes;
+	std::vector<std::shared_ptr<Shape>> selectedShapes;
 	AxisCursor axisCursor;
 	Point middlePoint;
+	std::unique_ptr<Operation> currentOperation;
 
 	Algebra::Matrix4 projectionMatrix;
 	Algebra::Matrix4 viewMatrix;
@@ -56,6 +51,7 @@ private:
 	Translation translation;
 	Rotation rotation;
 	Scaling scaling;
+
 public:
 	App();
 	~App();

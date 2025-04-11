@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <numbers>
+#include <algorithm>
 
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
@@ -65,7 +66,15 @@ void App::HandleInput()
 		return;
 	}
 
-	
+	if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_T))
+	{
+		currentOperation = std::make_unique<TranslationAlongAxesOperation>(selectedShapes);
+	}
+
+	if (currentOperation)
+	{
+		currentOperation->HandleInput();
+	}
 }
 
 void App::HandleResize()
@@ -170,7 +179,8 @@ void App::DisplayShapeSelection()
 		for (const auto& shape : shapes)
 		{
 			Shape* shapePtr = shape.get();
-			bool isSelected = std::find(selectedShapes.begin(), selectedShapes.end(), shapePtr) != selectedShapes.end();
+			bool isSelected = std::any_of(selectedShapes.begin(), selectedShapes.end(), 
+				[&](const std::shared_ptr<Shape>& s) { return s.get() == shapePtr; });
 			std::string selectableLabel = shapePtr->GetName() + "##" + std::to_string(index++);
 
 			if (ImGui::Selectable(selectableLabel.c_str(), isSelected))
@@ -179,17 +189,16 @@ void App::DisplayShapeSelection()
 				{
 					if (isSelected)
 					{
-						selectedShapes.erase(std::remove(selectedShapes.begin(), selectedShapes.end(), shapePtr), selectedShapes.end());
 					}
 					else
 					{
-						selectedShapes.push_back(shapePtr);
+						selectedShapes.push_back(shape);
 					}
 				}
 				else
 				{
 					selectedShapes.clear();
-					selectedShapes.push_back(shapePtr);
+					selectedShapes.push_back(shape);
 				}
 			}
 		}
@@ -201,7 +210,7 @@ void App::DisplayShapeSelection()
 	{
 		for (auto it = shapes.begin(); it != shapes.end();)
 		{
-			if (std::find(selectedShapes.begin(), selectedShapes.end(), it->get()) != selectedShapes.end())
+			if (std::find(selectedShapes.begin(), selectedShapes.end(), *it) != selectedShapes.end())
 			{
 				it = shapes.erase(it);
 			}
@@ -214,12 +223,11 @@ void App::DisplayShapeSelection()
 	}
 }
 
-
 void App::DisplayShapeProperties()
 {
 	if (selectedShapes.size() == 1)
 	{
-		(*selectedShapes.begin())->RenderUI();
+		selectedShapes.front()->RenderUI();
 	}
 }
 
@@ -227,40 +235,40 @@ void App::DisplayAddShapeButtons()
 {
 	ImGui::Text("Add Shape:");
 
-	if (ImGui::Button("Add Torus"))
-	{
-		auto torus = std::make_shared<Torus>();
-		torus->SetTranslation(axisCursor.GetTranslation());
-		shapes.push_back(torus);
-	}
+	//if (ImGui::Button("Add Torus"))
+	//{
+	//	auto torus = std::make_shared<Torus>();
+	//	torus->SetTranslation(axisCursor.GetTranslation());
+	//	shapes.push_back(torus);
+	//}
 
-	ImGui::SameLine();
+	//ImGui::SameLine();
 
-	if (ImGui::Button("Add Point"))
-	{
-		auto point = std::make_shared<Point>();
-		point->SetTranslation(axisCursor.GetTranslation());
-		shapes.push_back(point);
-	}
+	//if (ImGui::Button("Add Point"))
+	//{
+	//	auto point = std::make_shared<Point>();
+	//	point->SetTranslation(axisCursor.GetTranslation());
+	//	shapes.push_back(point);
+	//}
 
-	ImGui::SameLine();
+	//ImGui::SameLine();
 
-	if (ImGui::Button("Add Polyline"))
-	{
-		auto polyline = std::make_shared<Polyline>();
+	//if (ImGui::Button("Add Polyline"))
+	//{
+	//	auto polyline = std::make_shared<Polyline>();
 
-		for (const auto& shape : shapes)
-		{
-			if (std::find(selectedShapes.begin(), selectedShapes.end(), shape.get()) == selectedShapes.end())
-				continue;
-			if (auto point = std::dynamic_pointer_cast<Point>(shape))
-			{
-				polyline->AddPoint(point);
-			}
-		}
+	//	for (const auto& shape : shapes)
+	//	{
+	//		if (std::find(selectedShapes.begin(), selectedShapes.end(), shape.get()) == selectedShapes.end())
+	//			continue;
+	//		if (auto point = std::dynamic_pointer_cast<Point>(shape))
+	//		{
+	//			polyline->AddPoint(point);
+	//		}
+	//	}
 
-		shapes.push_back(polyline);
-	}
+	//	shapes.push_back(polyline);
+	//}
 }
 
 void App::DisplayAxisCursorControls()
@@ -295,47 +303,45 @@ void App::GetClickedPoint()
 	const float similarityThreshold = 0.02f;
 	bool isCtrlPressed = ImGui::GetIO().KeyCtrl;
 
-	for (const auto& shape : shapes)
-	{
-		if (auto point = std::dynamic_pointer_cast<Point>(shape))
-		{
-			Algebra::Vector4 worldPos(0.f, 0.f, 0.f, 1.f);
-			Algebra::Matrix4 MVP = projectionMatrix * camera.GetViewMatrix() * point->GetModelMatrix();
-			Algebra::Vector4 clipPos = MVP * worldPos;
+	//for (const auto& shape : shapes)
+	//{
+	//	if (auto point = std::dynamic_pointer_cast<Point>(shape))
+	//	{
+	//		Algebra::Vector4 worldPos(0.f, 0.f, 0.f, 1.f);
+	//		Algebra::Matrix4 MVP = projectionMatrix * camera.GetViewMatrix() * point->GetModelMatrix();
+	//		Algebra::Vector4 clipPos = MVP * worldPos;
 
-			clipPos.z = 0.f;
+	//		clipPos.z = 0.f;
 
-			if (clipPos.w != 0.f)
-			{
-				clipPos = clipPos / clipPos.w;
-			}
+	//		if (clipPos.w != 0.f)
+	//		{
+	//			clipPos = clipPos / clipPos.w;
+	//		}
 
-			if (std::abs(ndcPos.x - clipPos.x) < similarityThreshold &&
-				std::abs(ndcPos.y - clipPos.y) < similarityThreshold)
-			{
-				if (isCtrlPressed)
-				{
-					auto it = std::find(selectedShapes.begin(), selectedShapes.end(), shape.get());
-					if (it != selectedShapes.end())
-					{
-						selectedShapes.erase(it);
-					}
-					else
-					{
-						selectedShapes.push_back(shape.get());
-					}
-				}
-				else
-				{
-					selectedShapes.clear();
-					selectedShapes.push_back(shape.get());
-				}
-			}
-		}
-	}
+	//		if (std::abs(ndcPos.x - clipPos.x) < similarityThreshold &&
+	//			std::abs(ndcPos.y - clipPos.y) < similarityThreshold)
+	//		{
+	//			if (isCtrlPressed)
+	//			{
+	//				auto it = std::find(selectedShapes.begin(), selectedShapes.end(), shape.get());
+	//				if (it != selectedShapes.end())
+	//				{
+	//					selectedShapes.erase(it);
+	//				}
+	//				else
+	//				{
+	//					selectedShapes.push_back(shape);
+	//				}
+	//			}
+	//			else
+	//			{
+	//				selectedShapes.clear();
+	//				selectedShapes.push_back(shape);
+	//			}
+	//		}
+	//	}
+	//}
 }
-
-
 
 void App::Render()
 {
