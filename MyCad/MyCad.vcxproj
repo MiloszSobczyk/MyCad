@@ -172,6 +172,7 @@
     <ClCompile Include="Source\Operations\OperationFactory.cpp" />
     <ClCompile Include="Source\Operations\OperationFactory.h" />
     <ClCompile Include="Source\Operations\Rotation.cpp" />
+    <ClCompile Include="Source\Operations\Rotations\RotationAlongAxesOperation.cpp" />
     <ClCompile Include="Source\Operations\Scaling.cpp" />
     <ClCompile Include="Source\Operations\Translation.cpp" />
     <ClCompile Include="Source\Operations\Translations\TranslationAlongAxesOperation.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Source\Operations\Operation.h" />
     <ClInclude Include="Source\Operations\Operations.h" />
     <ClInclude Include="Source\Operations\Rotation.h" />
+    <ClInclude Include="Source\Operations\Rotations\RotationAlongAxesOperation.h" />
     <ClInclude Include="Source\Operations\Rotations\Rotations.h" />
     <ClInclude Include="Source\Operations\Scaling.h" />
     <ClInclude Include="Source\Operations\Scalings\Scalings.h" />

@@ -6,6 +6,7 @@
 #include "Engine/Camera.h"
 
 #include "Translations/Translations.h"
+#include "Rotations/Rotations.h"
 
 enum class OperationType
 {

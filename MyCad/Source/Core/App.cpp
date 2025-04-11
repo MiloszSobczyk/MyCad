@@ -70,6 +70,10 @@ void App::HandleInput()
 	{
 		currentOperation = std::make_unique<TranslationAlongAxesOperation>(selectedShapes);
 	}
+	else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
+	{
+		currentOperation = std::make_unique<RotationAlongAxesOperation>(selectedShapes);
+	}
 
 	if (currentOperation)
 	{
