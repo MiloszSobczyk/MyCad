@@ -175,6 +175,8 @@
     <ClCompile Include="Source\Operations\Rotations\RotationAroundAxesOperation.cpp" />
     <ClCompile Include="Source\Operations\Rotations\RotationAroundPointOperation.cpp" />
     <ClCompile Include="Source\Operations\Scaling.cpp" />
+    <ClCompile Include="Source\Operations\Scalings\ScalingAroundPoint.cpp" />
+    <ClCompile Include="Source\Operations\Scalings\ScalingUniformly.cpp" />
     <ClCompile Include="Source\Operations\Translation.cpp" />
     <ClCompile Include="Source\Operations\Translations\TranslationAlongAxesOperation.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
@@ -207,7 +209,9 @@
     <ClInclude Include="Source\Operations\Rotations\RotationAroundPointOperation.h" />
     <ClInclude Include="Source\Operations\Rotations\Rotations.h" />
     <ClInclude Include="Source\Operations\Scaling.h" />
+    <ClInclude Include="Source\Operations\Scalings\ScalingAroundPoint.h" />
     <ClInclude Include="Source\Operations\Scalings\Scalings.h" />
+    <ClInclude Include="Source\Operations\Scalings\ScalingUniformly.h" />
     <ClInclude Include="Source\Operations\Translation.h" />
     <ClInclude Include="Source\Operations\Translations\TranslationAlongAxesOperation.h" />
     <ClInclude Include="Source\Operations\Translations\Translations.h" />

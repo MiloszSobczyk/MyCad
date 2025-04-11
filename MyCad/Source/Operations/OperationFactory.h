@@ -7,6 +7,7 @@
 
 #include "Translations/Translations.h"
 #include "Rotations/Rotations.h"
+#include "Scalings/Scalings.h"
 
 enum class OperationType
 {

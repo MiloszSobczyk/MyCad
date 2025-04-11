@@ -14,7 +14,7 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(),
-	axisCursor(), appMode(AppMode::Camera), selectedShapes(), translation(&camera), middlePoint()
+	axisCursor(std::make_shared<AxisCursor>()), appMode(AppMode::Camera), selectedShapes(), translation(&camera), middlePoint()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -73,6 +73,10 @@ void App::HandleInput()
 	else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
 	{
 		currentOperation = std::make_unique<RotationAroundAxesOperation>(selectedShapes);
+	}
+	else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
+	{
+		currentOperation = std::make_unique<ScalingAroundPoint>(selectedShapes, axisCursor);
 	}
 
 	if (currentOperation)
@@ -278,11 +282,11 @@ void App::DisplayAddShapeButtons()
 void App::DisplayAxisCursorControls()
 {
 	ImGui::Text("Axis Cursor Position:");
-	float axisPos[3] = { axisCursor.GetTranslation().x, axisCursor.GetTranslation().y, axisCursor.GetTranslation().z };
+	float axisPos[3] = { axisCursor->GetTranslation().x, axisCursor->GetTranslation().y, axisCursor->GetTranslation().z };
 
 	if (ImGui::InputFloat3("##AxisCursorPos", axisPos))
 	{
-		axisCursor.SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
+		axisCursor->SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
 	}
 }
 
@@ -389,9 +393,9 @@ void App::Render()
 	shaderC->Bind();
 	shaderC->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	shaderC->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-	shaderC->SetUniformMat4f("u_modelMatrix", axisCursor.GetModelMatrix());
+	shaderC->SetUniformMat4f("u_modelMatrix", axisCursor->GetModelMatrix());
 
-	axisCursor.Render();
+	axisCursor->Render();
 
 	shaderC->Unbind();
 }

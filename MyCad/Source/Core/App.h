@@ -37,7 +37,7 @@ private:
 
 	std::vector<std::shared_ptr<Shape>> shapes;
 	std::vector<std::shared_ptr<Shape>> selectedShapes;
-	AxisCursor axisCursor;
+	std::shared_ptr<AxisCursor> axisCursor;
 	Point middlePoint;
 	std::unique_ptr<Operation> currentOperation;
 
