@@ -7,6 +7,12 @@ TranslationAlongAxesOperation::TranslationAlongAxesOperation(std::vector<std::sh
 
 void TranslationAlongAxesOperation::HandleInput()
 {
+    static const std::vector<std::pair<AxisMode, ImGuiKey>> axisModeMap = {
+        { AxisMode::X, ImGuiKey_X },
+        { AxisMode::Y, ImGuiKey_Y },
+        { AxisMode::Z, ImGuiKey_Z }
+    };
+
 	for (const auto& axis : axisModeMap)
 	{
 		if (ImGui::IsKeyPressed(axis.second))

@@ -14,7 +14,6 @@
 #include "Objects/Objects.h"
 #include "Managers/ShaderManager.h"
 #include "Operations/Operations.h"
-#include "Operations/Translations/Translations.h"
 
 
 enum class AppMode
@@ -57,8 +56,6 @@ private:
 	Translation translation;
 	Rotation rotation;
 	Scaling scaling;
-
-	TranslationAlongAxesOperation TAxis;
 public:
 	App();
 	~App();

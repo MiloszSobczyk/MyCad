@@ -15,12 +15,6 @@ enum class AxisMode
 class TranslationAlongAxesOperation : public Operation
 {
 private:
-	inline static const std::vector<std::pair<AxisMode, ImGuiKey>> axisModeMap = {
-		{ AxisMode::X, ImGuiKey_X },
-		{ AxisMode::Y, ImGuiKey_Y },
-		{ AxisMode::Z, ImGuiKey_Z }
-	};
-
 	AxisMode axisMode;
 public:
 	TranslationAlongAxesOperation(std::vector<std::shared_ptr<Shape>>& selected);

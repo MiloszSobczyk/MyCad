@@ -7,9 +7,8 @@
 enum class OperationMode
 {
 	Local = 0,
-	Global = 1,
-	AroundPoint = 2,
-	AroundCenter = 3,
+	AroundPoint = 1,
+	AroundCenter = 2,
 	SIZE,
 };
 
@@ -26,6 +25,7 @@ public:
 		: selected(selected) {}
 	virtual ~Operation() = default;
 
+	inline void SetSelected(std::vector<std::shared_ptr<Shape>>& selected) { this->selected = selected; }
 	virtual void HandleInput() = 0;
 	virtual void DrawGizmos() = 0;
 };

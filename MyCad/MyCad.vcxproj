@@ -169,6 +169,7 @@
     <ClCompile Include="Source\Objects\Polyline.cpp" />
     <ClCompile Include="Source\Objects\Shape.cpp" />
     <ClCompile Include="Source\Objects\Torus.cpp" />
+    <ClCompile Include="Source\Operations\OperationFactory.cpp" />
     <ClCompile Include="Source\Operations\OperationFactory.h" />
     <ClCompile Include="Source\Operations\Rotation.cpp" />
     <ClCompile Include="Source\Operations\Scaling.cpp" />
