@@ -14,7 +14,7 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(),
-	axisCursor(std::make_shared<AxisCursor>()), appMode(AppMode::Camera), selectedShapes(), translation(&camera), middlePoint()
+	axisCursor(std::make_shared<AxisCursor>()), appMode(AppMode::Camera), selectedShapes(), middlePoint()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -72,7 +72,7 @@ void App::HandleInput()
 	}
 	else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
 	{
-		currentOperation = std::make_unique<RotationAroundAxesOperation>(selectedShapes);
+		currentOperation = std::make_unique<RotationAroundPointOperation>(selectedShapes, axisCursor);
 	}
 	else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
 	{

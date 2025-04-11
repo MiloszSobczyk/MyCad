@@ -13,7 +13,6 @@
 #include "Engine/Camera.h"
 #include "Objects/Objects.h"
 #include "Managers/ShaderManager.h"
-#include "Operations/Operations.h"
 #include "Operations/OperationFactory.h"
 
 
@@ -48,9 +47,6 @@ private:
 
 	AppMode appMode;
 	OperationMode operationMode;
-	Translation translation;
-	Rotation rotation;
-	Scaling scaling;
 
 public:
 	App();
