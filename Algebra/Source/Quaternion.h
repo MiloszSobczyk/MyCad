@@ -38,4 +38,4 @@ namespace Algebra
     Quaternion operator*(float scalar, const Quaternion& q);
     Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
 
-} // namespace Algebra
+}

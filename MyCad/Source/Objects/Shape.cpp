@@ -72,7 +72,7 @@ void Shape::RenderUI()
 void Shape::RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q)
 {
     translation = point + q.Rotate(translation - point);
-    rotation = rotation * q.Conjugate();
+    rotation = (rotation * q.Conjugate()).Normalize();
 }
 
 void Shape::ScaleAroundPoint(Algebra::Vector4 point, Algebra::Vector4 scaleFactor)
