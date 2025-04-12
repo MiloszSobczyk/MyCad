@@ -225,19 +225,25 @@ void App::DisplayAddShapeButtons()
 
 	if (ImGui::Button("Add Polyline"))
 	{
-		//auto polyline = std::make_shared<Polyline>();
+		auto polyline = std::make_shared<Polyline>();
 
-		//for (const auto& shape : shapes)
-		//{
-		//	if (std::find(selectedShapes.begin(), selectedShapes.end(), shape.get()) == selectedShapes.end())
-		//		continue;
-		//	if (auto point = std::dynamic_pointer_cast<Point>(shape))
-		//	{
-		//		polyline->AddPoint(point);
-		//	}
-		//}
+		for (const auto& shape : shapes)
+		{
+			if (std::find_if(selectedShapes.begin(), selectedShapes.end(),
+				[&shape](const std::shared_ptr<Shape>& selectedShape) { 
+					return selectedShape == shape; 
+				}) == selectedShapes.end())
+			{
+				continue;
+			}
 
-		//shapes.push_back(polyline);
+			if (auto point = std::dynamic_pointer_cast<Point>(shape))
+			{
+				polyline->AddPoint(point);
+			}
+		}
+
+		shapes.push_back(polyline);
 	}
 }
 
