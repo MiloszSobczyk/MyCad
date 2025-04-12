@@ -78,7 +78,11 @@ void App::HandleInput()
 
 	operationFactory.HandleInput();
 
-	if (currentOperation)
+	if (!currentOperation)
+	{
+		camera.HandleInput();
+	}
+	else
 	{
 		currentOperation->HandleInput();
 	}

@@ -41,6 +41,11 @@ std::shared_ptr<Operation> OperationFactory::CreateOperation(OperationParameters
 
     switch (operationType)
     {
+    case OperationType::Camera:
+    {
+        lastOperation = nullptr;
+        break;
+    }
     case OperationType::Translation:
     {
         lastOperation = std::make_shared<TranslationAlongAxesOperation>(params.selected);
