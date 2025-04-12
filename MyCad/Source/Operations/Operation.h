@@ -28,4 +28,5 @@ public:
 	inline void SetSelected(std::vector<std::shared_ptr<Shape>>& selected) { this->selected = selected; }
 	virtual void HandleInput() = 0;
 	virtual void DrawGizmos() = 0;
+	virtual void RenderUI() = 0;
 };

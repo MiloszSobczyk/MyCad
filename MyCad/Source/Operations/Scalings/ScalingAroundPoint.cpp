@@ -67,3 +67,10 @@ void ScalingAroundPoint::HandleInput()
 void ScalingAroundPoint::DrawGizmos()
 {
 }
+
+void ScalingAroundPoint::RenderUI()
+{
+    ImGui::Text("Scaling around point");
+
+    ImGui::Text("Current point: %s", pointMode == PointMode::AxisCursor ? "axis cursor" : "middle point");
+}

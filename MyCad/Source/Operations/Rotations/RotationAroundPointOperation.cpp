@@ -88,3 +88,10 @@ void RotationAroundPointOperation::HandleInput()
 void RotationAroundPointOperation::DrawGizmos()
 {
 }
+
+void RotationAroundPointOperation::RenderUI()
+{
+    ImGui::Text("Rotation around point");
+
+    ImGui::Text("Current point: %s", pointMode == PointMode::AxisCursor ? "axis cursor" : "middle point");
+}

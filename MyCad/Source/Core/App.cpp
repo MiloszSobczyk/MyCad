@@ -118,6 +118,10 @@ void App::DisplayParameters()
 void App::DisplayMainMenu()
 {
 	ImGui::Checkbox("Show grid", &showGrid);
+	if (currentOperation)
+	{
+		currentOperation->RenderUI();
+	}
 	DisplayShapeSelection();
 	ImGui::Separator();
 	DisplayAxisCursorControls();
@@ -201,40 +205,40 @@ void App::DisplayAddShapeButtons()
 {
 	ImGui::Text("Add Shape:");
 
-	//if (ImGui::Button("Add Torus"))
-	//{
-	//	auto torus = std::make_shared<Torus>();
-	//	torus->SetTranslation(axisCursor.GetTranslation());
-	//	shapes.push_back(torus);
-	//}
+	if (ImGui::Button("Add Torus"))
+	{
+		auto torus = std::make_shared<Torus>();
+		torus->SetTranslation(axisCursor->GetTranslation());
+		shapes.push_back(torus);
+	}
 
-	//ImGui::SameLine();
+	ImGui::SameLine();
 
-	//if (ImGui::Button("Add Point"))
-	//{
-	//	auto point = std::make_shared<Point>();
-	//	point->SetTranslation(axisCursor.GetTranslation());
-	//	shapes.push_back(point);
-	//}
+	if (ImGui::Button("Add Point"))
+	{
+		auto point = std::make_shared<Point>();
+		point->SetTranslation(axisCursor->GetTranslation());
+		shapes.push_back(point);
+	}
 
-	//ImGui::SameLine();
+	ImGui::SameLine();
 
-	//if (ImGui::Button("Add Polyline"))
-	//{
-	//	auto polyline = std::make_shared<Polyline>();
+	if (ImGui::Button("Add Polyline"))
+	{
+		//auto polyline = std::make_shared<Polyline>();
 
-	//	for (const auto& shape : shapes)
-	//	{
-	//		if (std::find(selectedShapes.begin(), selectedShapes.end(), shape.get()) == selectedShapes.end())
-	//			continue;
-	//		if (auto point = std::dynamic_pointer_cast<Point>(shape))
-	//		{
-	//			polyline->AddPoint(point);
-	//		}
-	//	}
+		//for (const auto& shape : shapes)
+		//{
+		//	if (std::find(selectedShapes.begin(), selectedShapes.end(), shape.get()) == selectedShapes.end())
+		//		continue;
+		//	if (auto point = std::dynamic_pointer_cast<Point>(shape))
+		//	{
+		//		polyline->AddPoint(point);
+		//	}
+		//}
 
-	//	shapes.push_back(polyline);
-	//}
+		//shapes.push_back(polyline);
+	}
 }
 
 void App::DisplayAxisCursorControls()

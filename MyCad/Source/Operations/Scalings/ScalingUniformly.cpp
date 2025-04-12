@@ -27,3 +27,8 @@ void ScalingUniformly::HandleInput()
 void ScalingUniformly::DrawGizmos()
 {
 }
+
+void ScalingUniformly::RenderUI()
+{
+    ImGui::Text("Scaling uniformly");
+}

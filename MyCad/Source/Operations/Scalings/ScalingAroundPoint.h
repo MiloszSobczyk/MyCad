@@ -23,4 +23,5 @@ public:
 
 	void HandleInput() override;
 	void DrawGizmos() override;
+	void RenderUI() override;
 };

@@ -49,3 +49,12 @@ void RotationAroundAxesOperation::HandleInput()
 void RotationAroundAxesOperation::DrawGizmos()
 {
 }
+
+void RotationAroundAxesOperation::RenderUI()
+{
+    ImGui::Text("Rotation around axes");
+    ImGui::Text("Current axis: %s",
+        axisMode == AxisMode::X ? "X" :
+        axisMode == AxisMode::Y ? "Y" :
+        axisMode == AxisMode::Z ? "Z" : "");
+}

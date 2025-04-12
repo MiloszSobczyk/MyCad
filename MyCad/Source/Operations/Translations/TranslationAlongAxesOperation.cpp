@@ -41,3 +41,13 @@ void TranslationAlongAxesOperation::HandleInput()
 void TranslationAlongAxesOperation::DrawGizmos()
 {
 }
+
+void TranslationAlongAxesOperation::RenderUI()
+{
+    ImGui::Text("Translation along axes");
+
+    ImGui::Text("Current axis: %s",
+        axisMode == AxisMode::X ? "X" :
+        axisMode == AxisMode::Y ? "Y" :
+        axisMode == AxisMode::Z ? "Z" : "");
+}
