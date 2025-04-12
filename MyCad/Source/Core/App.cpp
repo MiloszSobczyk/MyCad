@@ -51,6 +51,16 @@ void App::Run()
 
 		HandleInput();
 
+		if (operationFactory.OperationUpdated)
+		{
+			OperationParameters params {
+				.camera = std::make_shared<Camera>(camera),
+				.cursor = axisCursor,
+				.selected = selectedShapes,
+			};
+			currentOperation = operationFactory.CreateOperation(params);
+		}
+
 		ImGui::Render();
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -66,18 +76,7 @@ void App::HandleInput()
 		return;
 	}
 
-	if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_T))
-	{
-		currentOperation = std::make_unique<TranslationAlongAxesOperation>(selectedShapes);
-	}
-	else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
-	{
-		currentOperation = std::make_unique<RotationAroundPointOperation>(selectedShapes, axisCursor);
-	}
-	else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
-	{
-		currentOperation = std::make_unique<ScalingAroundPoint>(selectedShapes, axisCursor);
-	}
+	operationFactory.HandleInput();
 
 	if (currentOperation)
 	{
@@ -115,8 +114,6 @@ void App::DisplayParameters()
 void App::DisplayMainMenu()
 {
 	ImGui::Checkbox("Show grid", &showGrid);
-	DisplayModeSelection();
-	ImGui::Separator();
 	DisplayShapeSelection();
 	ImGui::Separator();
 	DisplayAxisCursorControls();
@@ -124,49 +121,6 @@ void App::DisplayMainMenu()
 	DisplayAddShapeButtons();
 	ImGui::Separator();
 	DisplayShapeProperties();
-}
-
-void App::DisplayModeSelection()
-{
-	const char* modeNames[] = { "Camera", "AxisCursor", "Translation", "Rotation", "Scaling" };
-	int currentMode = static_cast<int>(appMode);
-
-	if (ImGui::BeginCombo("AppMode", modeNames[currentMode]))
-	{
-		for (int i = 0; i < 5; ++i)
-		{
-			bool isSelected = (currentMode == i);
-			if (ImGui::Selectable(modeNames[i], isSelected))
-			{
-				appMode = static_cast<AppMode>(i);
-			}
-			if (isSelected)
-			{
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
-
-	const char* modeNames2[] = { "Local", "MiddlePoint", "AxisCursor" };
-	currentMode = static_cast<int>(operationMode);
-
-	if (ImGui::BeginCombo("RotationMode", modeNames2[currentMode]))
-	{
-		for (int i = 0; i < 3; ++i)
-		{
-			bool isSelected = (currentMode == i);
-			if (ImGui::Selectable(modeNames2[i], isSelected))
-			{
-				operationMode = static_cast<OperationMode>(i);
-			}
-			if (isSelected)
-			{
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
 }
 
 void App::DisplayShapeSelection()

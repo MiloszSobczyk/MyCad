@@ -9,6 +9,8 @@
 #include "Rotations/Rotations.h"
 #include "Scalings/Scalings.h"
 
+#include <imgui/imgui.h>
+
 enum class OperationType
 {
 	Translation = 0,
@@ -20,15 +22,20 @@ enum class OperationType
 
 struct OperationParameters
 {
-	std::shared_ptr<Window> window;
 	std::shared_ptr<Camera> camera;
 	std::shared_ptr<AxisCursor> cursor;
 	std::vector<std::shared_ptr<Shape>>& selected;
-	OperationMode mode;
 };
 
 class OperationFactory
 {
+private:
+	std::shared_ptr<Operation> lastOperation;
+	OperationType operationType;
+	ImGuiKey lastKey;
 public:
-	static std::unique_ptr<Operation> CreateOperation(OperationType type, OperationParameters& params);
+	bool OperationUpdated = false;
+
+	void HandleInput();
+	std::shared_ptr<Operation> CreateOperation(OperationParameters& params);
 };

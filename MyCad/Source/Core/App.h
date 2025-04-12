@@ -38,7 +38,9 @@ private:
 	std::vector<std::shared_ptr<Shape>> selectedShapes;
 	std::shared_ptr<AxisCursor> axisCursor;
 	Point middlePoint;
-	std::unique_ptr<Operation> currentOperation;
+	std::shared_ptr<Operation> currentOperation;
+
+	OperationFactory operationFactory;
 
 	Algebra::Matrix4 projectionMatrix;
 	Algebra::Matrix4 viewMatrix;
@@ -59,7 +61,6 @@ public:
 
 	void DisplayParameters();
 	void DisplayMainMenu();
-	void DisplayModeSelection();
 	void DisplayShapeSelection();
 	void DisplayShapeProperties();
 	void DisplayAddShapeButtons();
