@@ -3,29 +3,14 @@
 int Shape::idCounter = 0;
 
 Shape::Shape() 
-	: id(++idCounter), color(0.5f, 0.f, 0.5f, 1.0f), scaling(1.f, 1.f, 1.f)
+	: id(++idCounter), color(0.5f, 0.f, 0.5f, 1.0f)
 {
+    //TODO: Consider if Shape should have the components allocated or they should be nullptrs
+    scalingComponent = std::make_unique<ScalingComponent>();
+    rotationComponent = std::make_unique<RotationComponent>();
+    translationComponent = std::make_unique<TranslationComponent>();
+
     name = "Shape" + std::to_string(GetId());
-}
-
-Algebra::Matrix4 Shape::GetRotationMatrix()
-{
-    return rotation.ToMatrix();
-}
-
-Algebra::Matrix4 Shape::GetTranslationMatrix()
-{
-    return Algebra::Matrix4::Translation(translation);
-}
-
-Algebra::Matrix4 Shape::GetScaleMatrix()
-{
-    return Algebra::Matrix4::Scale(scaling);
-}
-
-Algebra::Matrix4 Shape::GetModelMatrix()
-{
-    return GetTranslationMatrix() * GetRotationMatrix() * GetScaleMatrix();
 }
 
 void Shape::RenderUI()
@@ -44,39 +29,92 @@ void Shape::RenderUI()
         color = Algebra::Vector4(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
     }
 
-    ImGui::InputFloat3("Translation", &translation.x);
-    if (ImGui::IsItemDeactivatedAfterEdit())
-    {
-        translation = Algebra::Vector4(translation.x, translation.y, translation.z, 0);
-    }
+    if (translationComponent)
+        translationComponent->RenderUI();
 
-    static float prevScaling = scaling.x;
-    float tempScaling = scaling.x;
-    if (ImGui::InputFloat("Scaling", &tempScaling))
-    {
-        if (tempScaling > 0.1f)
-        {
-            prevScaling = tempScaling;
-        }
-        else
-        {
-            tempScaling = prevScaling;
-        }
-    }
-    if (ImGui::IsItemDeactivatedAfterEdit())
-    {
-        scaling = Algebra::Vector4(tempScaling, tempScaling, tempScaling, 0);
-    }
+    if (scalingComponent)
+        scalingComponent->RenderUI();
 }
 
 void Shape::RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q)
 {
-    translation = point + q.Rotate(translation - point);
-    rotation = (rotation * q.Conjugate()).Normalize();
+    SetTranslation(point + q.Rotate(GetTranslation() - point));
+    SetRotation((GetRotation() * q.Conjugate()).Normalize());
 }
 
 void Shape::ScaleAroundPoint(Algebra::Vector4 point, Algebra::Vector4 scaleFactor)
 {
-    translation = point + (translation - point).Scale(scaleFactor);
-    scaling = scaling.Scale(scaleFactor);
+    SetTranslation(point + (GetTranslation() - point).Scale(scaleFactor));
+    SetScaling(GetScaling().Scale(scaleFactor));
+}
+
+Algebra::Matrix4 Shape::GetModelMatrix() const
+{
+    return GetTranslationMatrix() * GetRotationMatrix() * GetScalingMatrix();
+}
+
+void Shape::SetScaling(const Algebra::Vector4& scaling) const
+{
+    if (scalingComponent)
+        scalingComponent->SetScaling(scaling);
+}
+
+void Shape::AddScaling(const Algebra::Vector4& scaling) const
+{
+    if (scalingComponent)
+        scalingComponent->AddScaling(scaling);
+}
+
+Algebra::Vector4 Shape::GetScaling() const
+{
+    return scalingComponent ? scalingComponent->GetScaling() : Algebra::Vector4(1.f, 1.f, 1.f);
+}
+
+Algebra::Matrix4 Shape::GetScalingMatrix() const
+{
+    return scalingComponent ? scalingComponent->GetScalingMatrix() : Algebra::Matrix4::Identity();
+}
+
+void Shape::SetRotation(const Algebra::Quaternion& rotation) const
+{
+    if (rotationComponent)
+        rotationComponent->SetRotation(rotation);
+}
+
+void Shape::AddRotation(const Algebra::Quaternion& rotation) const
+{
+    if (rotationComponent)
+        rotationComponent->AddRotation(rotation);
+}
+
+Algebra::Quaternion Shape::GetRotation() const
+{
+    return rotationComponent ? rotationComponent->GetRotation() : Algebra::Quaternion(1.f, 0.f, 0.f, 0.f);
+}
+
+Algebra::Matrix4 Shape::GetRotationMatrix() const
+{
+    return rotationComponent ? rotationComponent->GetRotationMatrix() : Algebra::Matrix4::Identity();
+}
+
+void Shape::SetTranslation(const Algebra::Vector4& translation) const
+{
+    if (translationComponent)
+        translationComponent->SetTranslation(translation);
+}
+
+void Shape::AddTranslation(const Algebra::Vector4& translation) const
+{
+    if (translationComponent)
+        translationComponent->AddTranslation(translation);
+}
+
+Algebra::Vector4 Shape::GetTranslation() const
+{
+    return translationComponent ? translationComponent->GetTranslation() : Algebra::Vector4();
+}
+
+Algebra::Matrix4 Shape::GetTranslationMatrix() const
+{
+    return translationComponent ? translationComponent->GetTranslationMatrix() : Algebra::Matrix4::Identity();
 }

@@ -43,7 +43,7 @@ void AxisCursor::HandleInput()
                 direction = direction.Normalize();
             }
 
-            translation += direction / 10.f;
+            //translation += direction / 10.f;
         }
     }
 
@@ -60,7 +60,7 @@ void AxisCursor::HandleInput()
                 direction = direction.Normalize();
             }
 
-            translation += direction / 10.f;
+            //translation += direction / 10.f;
         }
     }
 }

@@ -15,4 +15,6 @@ public:
     void SetTranslation(const Algebra::Vector4& translation);
     void AddTranslation(const Algebra::Vector4& translation);
     Algebra::Matrix4 GetTranslationMatrix() const;
+
+    void RenderUI();
 };

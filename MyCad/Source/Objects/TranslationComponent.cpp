@@ -1,4 +1,5 @@
 #include "TranslationComponent.h"
+#include <imgui/imgui.h>
 
 TranslationComponent::TranslationComponent()
 	: translation(0.f, 0.f, 0.f, 0.f)
@@ -28,4 +29,13 @@ void TranslationComponent::AddTranslation(const Algebra::Vector4& translation)
 Algebra::Matrix4 TranslationComponent::GetTranslationMatrix() const
 {
 	return Algebra::Matrix4::Translation(translation);
+}
+
+void TranslationComponent::RenderUI()
+{
+	ImGui::InputFloat3("Translation", &translation.x);
+	if (ImGui::IsItemDeactivatedAfterEdit())
+	{
+		translation = Algebra::Vector4(translation.x, translation.y, translation.z, 0);
+	}
 }

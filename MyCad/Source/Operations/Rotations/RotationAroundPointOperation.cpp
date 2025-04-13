@@ -92,6 +92,9 @@ void RotationAroundPointOperation::DrawGizmos()
 void RotationAroundPointOperation::RenderUI()
 {
     ImGui::Text("Rotation around point");
-
     ImGui::Text("Current point: %s", pointMode == PointMode::AxisCursor ? "axis cursor" : "middle point");
+    ImGui::Text("Current axis: %s",
+        axisMode == AxisMode::X ? "X" :
+        axisMode == AxisMode::Y ? "Y" :
+        axisMode == AxisMode::Z ? "Z" : "");
 }

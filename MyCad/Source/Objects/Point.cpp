@@ -35,5 +35,5 @@ void Point::Render()
 
 void Point::RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q)
 {
-    translation = point + q.Rotate(translation - point);
+    //translation = point + q.Rotate(translation - point);
 }

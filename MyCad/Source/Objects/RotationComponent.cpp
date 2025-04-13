@@ -1,4 +1,5 @@
 #include "RotationComponent.h"
+#include <imgui/imgui.h>
 
 RotationComponent::RotationComponent()
     : rotation(1.f, 0.f, 0.f, 0.f)
@@ -28,4 +29,8 @@ void RotationComponent::AddRotation(const Algebra::Quaternion& rotation)
 Algebra::Matrix4 RotationComponent::GetRotationMatrix() const
 {
     return this->rotation.ToMatrix();
+}
+
+void RotationComponent::RenderUI()
+{
 }
