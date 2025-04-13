@@ -20,8 +20,8 @@ std::vector<unsigned int> Point::indices = {
     3, 2, 6,  6, 7, 3
 };
 
-Point::Point() : 
-	renderer(VertexDataType::PositionVertexData)
+Point::Point() 
+    : Shape(ComponentFlags::Translation), renderer(VertexDataType::PositionVertexData)
 {
     name = "Point" + std::to_string(id);
 	renderer.SetVertices(vertices);
@@ -31,9 +31,4 @@ Point::Point() :
 void Point::Render()
 {
 	renderer.Render(GL_TRIANGLES);
-}
-
-void Point::RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q)
-{
-    //translation = point + q.Rotate(translation - point);
 }

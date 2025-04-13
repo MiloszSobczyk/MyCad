@@ -2,13 +2,15 @@
 
 int Shape::idCounter = 0;
 
-Shape::Shape() 
-	: id(++idCounter), color(0.5f, 0.f, 0.5f, 1.0f)
+Shape::Shape(ComponentFlags flags)
+    : id(++idCounter), color(0.5f, 0.f, 0.5f, 1.0f)
 {
-    //TODO: Consider if Shape should have the components allocated or they should be nullptrs
-    scalingComponent = std::make_unique<ScalingComponent>();
-    rotationComponent = std::make_unique<RotationComponent>();
-    translationComponent = std::make_unique<TranslationComponent>();
+    if (flags & ComponentFlags::Scaling)
+        scalingComponent = std::make_unique<ScalingComponent>();
+    if (flags & ComponentFlags::Rotation)
+        rotationComponent = std::make_unique<RotationComponent>();
+    if (flags & ComponentFlags::Translation)
+        translationComponent = std::make_unique<TranslationComponent>();
 
     name = "Shape" + std::to_string(GetId());
 }
@@ -34,18 +36,6 @@ void Shape::RenderUI()
 
     if (scalingComponent)
         scalingComponent->RenderUI();
-}
-
-void Shape::RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q)
-{
-    SetTranslation(point + q.Rotate(GetTranslation() - point));
-    SetRotation((GetRotation() * q.Conjugate()).Normalize());
-}
-
-void Shape::ScaleAroundPoint(Algebra::Vector4 point, Algebra::Vector4 scaleFactor)
-{
-    SetTranslation(point + (GetTranslation() - point).Scale(scaleFactor));
-    SetScaling(GetScaling().Scale(scaleFactor));
 }
 
 Algebra::Matrix4 Shape::GetModelMatrix() const
@@ -117,4 +107,16 @@ Algebra::Vector4 Shape::GetTranslation() const
 Algebra::Matrix4 Shape::GetTranslationMatrix() const
 {
     return translationComponent ? translationComponent->GetTranslationMatrix() : Algebra::Matrix4::Identity();
+}
+
+void Shape::RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q)
+{
+    SetTranslation(point + q.Rotate(GetTranslation() - point));
+    SetRotation((GetRotation() * q.Conjugate()).Normalize());
+}
+
+void Shape::ScaleAroundPoint(Algebra::Vector4 point, Algebra::Vector4 scaleFactor)
+{
+    SetTranslation(point + (GetTranslation() - point).Scale(scaleFactor));
+    SetScaling(GetScaling().Scale(scaleFactor));
 }

@@ -17,7 +17,7 @@ std::vector<unsigned int> AxisCursor::indices = {
 };
 
 AxisCursor::AxisCursor()
-	: visible(true), renderer(VertexDataType::PositionColorVertexData)
+	: Shape(ComponentFlags::Translation), visible(true), renderer(VertexDataType::PositionColorVertexData)
 {
 	renderer.SetVertices(vertices);
 	renderer.SetIndices(indices);
@@ -43,7 +43,7 @@ void AxisCursor::HandleInput()
                 direction = direction.Normalize();
             }
 
-            //translation += direction / 10.f;
+            SetTranslation(GetTranslation() + direction / 10.f);
         }
     }
 
@@ -59,8 +59,8 @@ void AxisCursor::HandleInput()
             {
                 direction = direction.Normalize();
             }
-
-            //translation += direction / 10.f;
+        
+            SetTranslation(GetTranslation() + direction / 10.f);
         }
     }
 }

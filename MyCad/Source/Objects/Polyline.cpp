@@ -1,7 +1,7 @@
 #include "Polyline.h"
 
 Polyline::Polyline()
-	: renderer(VertexDataType::PositionVertexData)
+	: Shape(ComponentFlags::None), renderer(VertexDataType::PositionVertexData)
 {
     name = "Polyline" + std::to_string(id);
 }
