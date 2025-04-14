@@ -169,7 +169,9 @@
     <ClCompile Include="Source\Objects\Polyline.cpp" />
     <ClCompile Include="Source\Objects\RotationComponent.cpp" />
     <ClCompile Include="Source\Objects\ScalingComponent.cpp" />
+    <ClCompile Include="Source\Objects\SelectedShapes.cpp" />
     <ClCompile Include="Source\Objects\Shape.cpp" />
+    <ClCompile Include="Source\Objects\ShapeCreator.cpp" />
     <ClCompile Include="Source\Objects\Torus.cpp" />
     <ClCompile Include="Source\Objects\TranslationComponent.cpp" />
     <ClCompile Include="Source\Objects\TranslationComponent.h" />
@@ -202,8 +204,10 @@
     <ClInclude Include="Source\Objects\Polyline.h" />
     <ClInclude Include="Source\Objects\RotationComponent.h" />
     <ClInclude Include="Source\Objects\ScalingComponent.h" />
+    <ClInclude Include="Source\Objects\SelectedShapes.h" />
     <ClInclude Include="Source\Objects\Shape.h" />
     <ClInclude Include="Source\Objects\Objects.h" />
+    <ClInclude Include="Source\Objects\ShapeCreator.h" />
     <ClInclude Include="Source\Objects\Torus.h" />
     <ClInclude Include="Source\Operations\Operation.h" />
     <ClInclude Include="Source\Operations\Rotations\RotationAroundAxesOperation.h" />

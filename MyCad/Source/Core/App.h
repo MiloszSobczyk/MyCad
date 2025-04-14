@@ -14,7 +14,7 @@
 #include "Objects/Objects.h"
 #include "Managers/ShaderManager.h"
 #include "Operations/OperationFactory.h"
-
+#include "Objects/SelectedShapes.h"
 
 enum class AppMode
 {
