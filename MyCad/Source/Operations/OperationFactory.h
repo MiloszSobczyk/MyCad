@@ -10,6 +10,7 @@
 #include "Scalings/Scalings.h"
 
 #include <imgui/imgui.h>
+#include <Objects/SelectedShapes.h>
 
 enum class OperationType
 {
@@ -24,7 +25,7 @@ struct OperationParameters
 {
 	std::shared_ptr<Camera> camera;
 	std::shared_ptr<AxisCursor> cursor;
-	std::vector<std::shared_ptr<Shape>>& selected;
+	std::shared_ptr<SelectedShapes> selected;
 };
 
 class OperationFactory

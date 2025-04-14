@@ -56,7 +56,7 @@ void App::Run()
 			OperationParameters params {
 				.camera = std::make_shared<Camera>(camera),
 				.cursor = axisCursor,
-				.selected = shapes,
+				.selected = selectedShapes,
 			};
 			currentOperation = operationFactory.CreateOperation(params);
 		}
@@ -75,6 +75,12 @@ void App::HandleInput()
 	{
 		return;
 	}
+
+	if (ImGui::IsKeyDown(ImGuiKey_E))
+	{
+		GetClickedPoint();
+	}
+
 
 	if (ImGui::IsKeyDown(ImGuiKey_Escape))
 	{
@@ -200,7 +206,6 @@ void App::DisplayShapeSelection()
 	}
 }
 
-
 void App::DisplayShapeProperties()
 {
 	if (selectedShapes->Size() == 1)
@@ -277,44 +282,44 @@ void App::GetClickedPoint()
 	const float similarityThreshold = 0.02f;
 	bool isCtrlPressed = ImGui::GetIO().KeyCtrl;
 
-	//for (const auto& shape : shapes)
-	//{
-	//	if (auto point = std::dynamic_pointer_cast<Point>(shape))
-	//	{
-	//		Algebra::Vector4 worldPos(0.f, 0.f, 0.f, 1.f);
-	//		Algebra::Matrix4 MVP = projectionMatrix * camera.GetViewMatrix() * point->GetModelMatrix();
-	//		Algebra::Vector4 clipPos = MVP * worldPos;
+	for (const auto& shape : shapes)
+	{
+		if (auto point = std::dynamic_pointer_cast<Point>(shape))
+		{
+			Algebra::Vector4 worldPos(0.f, 0.f, 0.f, 1.f);
+			Algebra::Matrix4 MVP = projectionMatrix * camera.GetViewMatrix() * point->GetModelMatrix();
+			Algebra::Vector4 clipPos = MVP * worldPos;
 
-	//		clipPos.z = 0.f;
+			clipPos.z = 0.f;
 
-	//		if (clipPos.w != 0.f)
-	//		{
-	//			clipPos = clipPos / clipPos.w;
-	//		}
+			if (clipPos.w != 0.f)
+			{
+				clipPos = clipPos / clipPos.w;
+			}
 
-	//		if (std::abs(ndcPos.x - clipPos.x) < similarityThreshold &&
-	//			std::abs(ndcPos.y - clipPos.y) < similarityThreshold)
-	//		{
-	//			if (isCtrlPressed)
-	//			{
-	//				auto it = std::find(selectedShapes.begin(), selectedShapes.end(), shape.get());
-	//				if (it != selectedShapes.end())
-	//				{
-	//					selectedShapes.erase(it);
-	//				}
-	//				else
-	//				{
-	//					selectedShapes.push_back(shape);
-	//				}
-	//			}
-	//			else
-	//			{
-	//				selectedShapes.clear();
-	//				selectedShapes.push_back(shape);
-	//			}
-	//		}
-	//	}
-	//}
+			if (std::abs(ndcPos.x - clipPos.x) < similarityThreshold &&
+				std::abs(ndcPos.y - clipPos.y) < similarityThreshold)
+			{
+				if (isCtrlPressed)
+				{
+					if (selectedShapes->IsSelected(shape))
+					{
+						selectedShapes->RemoveShape(shape);
+					}
+					else
+					{
+						selectedShapes->AddShape(shape);
+					}
+				}
+				else
+				{
+					selectedShapes->Clear();
+					selectedShapes->AddShape(shape);
+				}
+			}
+		}
+	}
+
 }
 
 void App::Render()

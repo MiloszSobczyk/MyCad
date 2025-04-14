@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Objects/Shape.h"
+#include "Objects/SelectedShapes.h"
 
 #include <vector>
 
@@ -19,13 +20,13 @@ struct InputState {
 class Operation
 {
 protected:
-	std::vector<std::shared_ptr<Shape>>& selected;
+	std::shared_ptr<SelectedShapes> selected;
 public:
-	inline Operation(std::vector<std::shared_ptr<Shape>>& selected) 
+	inline Operation(std::shared_ptr<SelectedShapes> selected)
 		: selected(selected) {}
 	virtual ~Operation() = default;
 
-	inline void SetSelected(std::vector<std::shared_ptr<Shape>>& selected) { this->selected = selected; }
+	inline void SetSelected(std::shared_ptr<SelectedShapes> selected) { this->selected = selected; }
 	virtual void HandleInput() = 0;
 	virtual void DrawGizmos() = 0;
 	virtual void RenderUI() = 0;

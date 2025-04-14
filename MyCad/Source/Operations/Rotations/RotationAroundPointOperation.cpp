@@ -1,31 +1,7 @@
 #include "RotationAroundPointOperation.h"
 
-Algebra::Vector4 RotationAroundPointOperation::CalculateMiddlePoint() const
-{
-    if (selected.empty())
-    {
-        return Algebra::Vector4(0.f, 0.f, 0.f, 1.f);
-    }
-
-    Algebra::Vector4 middlePoint(0.f, 0.f, 0.f, 1.f);
-
-    for (const auto& shape : selected)
-    {
-        middlePoint = middlePoint + shape->GetTranslation();
-    }
-
-    middlePoint = middlePoint / selected.size();
-
-    return middlePoint;
-}
-
-Algebra::Vector4 RotationAroundPointOperation::ResolvePoint() const
-{
-    return pointMode == PointMode::AxisCursor ? axisCursor->GetTranslation() : CalculateMiddlePoint();
-}
-
-RotationAroundPointOperation::RotationAroundPointOperation(std::vector<std::shared_ptr<Shape>>& selected, std::shared_ptr<AxisCursor>& axisCursor)
-	: Operation(selected), axisMode(AxisMode::X), pointMode(PointMode::AxisCursor), axisCursor(axisCursor)
+RotationAroundPointOperation::RotationAroundPointOperation(std::shared_ptr<SelectedShapes>, std::shared_ptr<AxisCursor>& axisCursor)
+	: Operation(selected), axisCursor(axisCursor) , axisMode(AxisMode::X), pointMode(PointMode::AxisCursor)
 {
 }
 
@@ -64,22 +40,24 @@ void RotationAroundPointOperation::HandleInput()
         }
     }
 
-    if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+    if (auto avgPos = selected->GetAveragePosition())
     {
-        ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
-        ImGui::ResetMouseDragDelta(ImGuiMouseButton_Left);
-
-        if (fabs(delta.x) > FLT_EPSILON || fabs(delta.y) > FLT_EPSILON)
+        if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
         {
-            float angle = delta.x * 0.01f;
-            auto axis = std::find_if(axisBindingMap.begin(), axisBindingMap.end(),
-                [this](const AxisBinding& binding) { return binding.axisMode == axisMode; })->axis;
+            ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
+            ImGui::ResetMouseDragDelta(ImGuiMouseButton_Left);
 
-            Algebra::Vector4 point = ResolvePoint();
-
-            for (const auto& shape : selected)
+            if (fabs(delta.x) > FLT_EPSILON || fabs(delta.y) > FLT_EPSILON)
             {
-                shape->RotateAroundPoint(point, Algebra::Quaternion::CreateFromAxisAngle(axis, angle));
+                float angle = delta.x * 0.01f;
+                auto axis = std::find_if(axisBindingMap.begin(), axisBindingMap.end(),
+                    [this](const AxisBinding& binding) { return binding.axisMode == axisMode; })->axis;
+
+                Algebra::Vector4 point = pointMode == PointMode::AxisCursor ? axisCursor->GetTranslation() : avgPos.value();
+                for (const auto& shape : *selected)
+                {
+                    shape->RotateAroundPoint(point, Algebra::Quaternion::CreateFromAxisAngle(axis, angle));
+                }
             }
         }
     }

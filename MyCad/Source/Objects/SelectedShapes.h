@@ -16,6 +16,13 @@ public:
 	bool IsSelected(std::shared_ptr<Shape> shapePtr) const;
 	inline bool IsEmpty() const { return selectedShapes.empty(); }
 	inline int Size() const { return selectedShapes.size(); }
+
+	inline auto begin() { return selectedShapes.begin(); }
+	inline auto end() { return selectedShapes.end(); }
+
+	inline auto begin() const { return selectedShapes.begin(); }
+	inline auto end() const { return selectedShapes.end(); }
+
 	std::shared_ptr<Shape> GetAt(int index) const;
 
 	std::optional<Algebra::Vector4> GetAveragePosition() const;

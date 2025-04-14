@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Operations/Operation.h"
+#include "Objects/SelectedShapes.h"
 
 #include <imgui/imgui.h>
 #include <array>
@@ -18,7 +19,7 @@ class RotationAroundAxesOperation : public Operation
 private:
 	AxisMode axisMode;
 public:
-	RotationAroundAxesOperation(std::vector<std::shared_ptr<Shape>>& selected);
+	RotationAroundAxesOperation(std::shared_ptr<SelectedShapes> selected);
 
 	void HandleInput() override;
 	void DrawGizmos() override;

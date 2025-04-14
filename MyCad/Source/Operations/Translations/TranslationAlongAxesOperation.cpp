@@ -1,6 +1,7 @@
 #include "TranslationAlongAxesOperation.h"
 
-TranslationAlongAxesOperation::TranslationAlongAxesOperation(std::vector<std::shared_ptr<Shape>>& selected)
+
+TranslationAlongAxesOperation::TranslationAlongAxesOperation(std::shared_ptr<SelectedShapes> selected)
 	: Operation(selected), axisMode(AxisMode::X)
 {
 }
@@ -30,7 +31,7 @@ void TranslationAlongAxesOperation::HandleInput()
             auto normDelta = Algebra::Vector4(delta.x, -delta.y, 0.f, 0.f).Normalize();
             Algebra::Vector4 translation(0, 0, 0, 0);
             translation[static_cast<int>(axisMode)] = axisMode == AxisMode::Y ? normDelta.y : normDelta.x;
-            for (const auto& shape : selected)
+            for (const auto& shape : *selected)
             {
                 shape->AddTranslation(translation);
             }

@@ -1,6 +1,6 @@
 #include "RotationAroundAxesOperation.h"
 
-RotationAroundAxesOperation::RotationAroundAxesOperation(std::vector<std::shared_ptr<Shape>>& selected)
+RotationAroundAxesOperation::RotationAroundAxesOperation(std::shared_ptr<SelectedShapes> selected)
 	: Operation(selected), axisMode(AxisMode::X)
 {
 }
@@ -38,7 +38,7 @@ void RotationAroundAxesOperation::HandleInput()
             auto axis = std::find_if(axisBindingMap.begin(), axisBindingMap.end(),
                 [this](const AxisBinding& binding) { return binding.axisMode == axisMode; })->axis;
 
-            for (const auto& shape : selected)
+            for (const auto& shape : *selected)
             {
                 shape->AddRotation(Algebra::Quaternion::CreateFromAxisAngle(axis, angle));
             }

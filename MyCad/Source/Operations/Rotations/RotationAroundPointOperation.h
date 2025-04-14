@@ -2,6 +2,7 @@
 
 #include "Operations/Operation.h"
 #include "Objects/AxisCursor.h"
+#include "Objects/SelectedShapes.h"
 
 #include <imgui/imgui.h>
 #include <array>
@@ -26,11 +27,8 @@ private:
 	PointMode pointMode;
 	std::shared_ptr<AxisCursor> axisCursor;
 
-	Algebra::Vector4 CalculateMiddlePoint() const;
-	Algebra::Vector4 ResolvePoint() const;
-
 public:
-	RotationAroundPointOperation(std::vector<std::shared_ptr<Shape>>& selected, std::shared_ptr<AxisCursor>& axisCursor);
+	RotationAroundPointOperation(std::shared_ptr<SelectedShapes> selected, std::shared_ptr<AxisCursor>& axisCursor);
 
 	void HandleInput() override;
 	void DrawGizmos() override;

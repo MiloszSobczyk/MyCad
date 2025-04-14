@@ -1,6 +1,6 @@
 #include "ScalingUniformly.h"
 
-ScalingUniformly::ScalingUniformly(std::vector<std::shared_ptr<Shape>>& selected)
+ScalingUniformly::ScalingUniformly(std::shared_ptr<SelectedShapes> selected)
 	: Operation(selected)
 {
 }
@@ -16,7 +16,7 @@ void ScalingUniformly::HandleInput()
         {
             float scaleFactor = 1.0f - delta.y * 0.01f;
 
-            for (const auto& shape : selected)
+            for (const auto& shape : *selected)
             {
                 shape->AddScaling(Algebra::Vector4(scaleFactor, scaleFactor, scaleFactor, 0.f));
             }
