@@ -37,6 +37,15 @@ bool SelectedShapes::IsSelected(std::shared_ptr<Shape> shapePtr) const
 	return std::find(selectedShapes.begin(), selectedShapes.end(), shapePtr) != selectedShapes.end();
 }
 
+std::shared_ptr<Shape> SelectedShapes::GetAt(int index) const
+{
+	if (index >= 0 && index < static_cast<int>(selectedShapes.size()))
+	{
+		return selectedShapes[index];
+	}
+	return nullptr;
+}
+
 std::optional<Algebra::Vector4> SelectedShapes::GetAveragePosition() const
 {
 	if (IsEmpty())
@@ -45,10 +54,19 @@ std::optional<Algebra::Vector4> SelectedShapes::GetAveragePosition() const
 	}
 
 	Algebra::Vector4 result;
+	int count = 0;
 	for (auto& selected : selectedShapes)
 	{
-		result += selected->GetTranslation();
+		if (selected->HasTranslation())
+		{
+			result += selected->GetTranslation();
+			count = 1;
+		}
 	}
+	
+	if (count == 0) 
+		return std::nullopt;
+	
 	result = result / selectedShapes.size();
 	return result;
 }

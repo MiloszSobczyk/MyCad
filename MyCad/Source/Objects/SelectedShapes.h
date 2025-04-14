@@ -15,8 +15,10 @@ public:
 	void ToggleShape(std::shared_ptr<Shape> shapePtr);
 	bool IsSelected(std::shared_ptr<Shape> shapePtr) const;
 	inline bool IsEmpty() const { return selectedShapes.empty(); }
-	std::optional<Algebra::Vector4> GetAveragePosition() const;
+	inline int Size() const { return selectedShapes.size(); }
+	std::shared_ptr<Shape> GetAt(int index) const;
 
+	std::optional<Algebra::Vector4> GetAveragePosition() const;
 	template<typename T>
 	inline std::vector<std::shared_ptr<T>> GetSelectedWithType() const;
 };

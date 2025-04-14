@@ -36,7 +36,7 @@ private:
 	InfiniteGrid grid;
 
 	std::vector<std::shared_ptr<Shape>> shapes;
-	std::vector<std::shared_ptr<Shape>> selectedShapes;
+	std::shared_ptr<SelectedShapes> selectedShapes;
 	std::shared_ptr<AxisCursor> axisCursor;
 	Point middlePoint;
 	std::shared_ptr<Operation> currentOperation;

@@ -77,4 +77,6 @@ public:
 	Algebra::Matrix4 GetModelMatrix() const;
 
 	virtual void RenderUI();
+
+	inline bool HasTranslation() const { return !(!translationComponent); };
 };

@@ -14,7 +14,8 @@
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
 	active(true), camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f), showGrid(true), shapes(),
-	axisCursor(std::make_shared<AxisCursor>()), appMode(AppMode::Camera), selectedShapes(), middlePoint()
+	axisCursor(std::make_shared<AxisCursor>()), appMode(AppMode::Camera), selectedShapes(std::make_shared<SelectedShapes>()), 
+	middlePoint()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -51,10 +52,11 @@ void App::Run()
 
 		if (operationFactory.OperationUpdated)
 		{
+			useCursor = false;
 			OperationParameters params {
 				.camera = std::make_shared<Camera>(camera),
 				.cursor = axisCursor,
-				.selected = selectedShapes,
+				.selected = shapes,
 			};
 			currentOperation = operationFactory.CreateOperation(params);
 		}
@@ -76,8 +78,11 @@ void App::HandleInput()
 
 	if (ImGui::IsKeyDown(ImGuiKey_Escape))
 	{
-		useCursor = !useCursor;
+		useCursor = true;
+		currentOperation = nullptr;
 	}
+
+	operationFactory.HandleInput();
 
 	if (useCursor)
 	{
@@ -85,7 +90,6 @@ void App::HandleInput()
 		return;
 	}
 
-	operationFactory.HandleInput();
 
 	if (!currentOperation)
 	{
@@ -158,26 +162,19 @@ void App::DisplayShapeSelection()
 		for (const auto& shape : shapes)
 		{
 			Shape* shapePtr = shape.get();
-			bool isSelected = std::any_of(selectedShapes.begin(), selectedShapes.end(), 
-				[&](const std::shared_ptr<Shape>& s) { return s.get() == shapePtr; });
+			bool isSelected = selectedShapes->IsSelected(shape);
 			std::string selectableLabel = shapePtr->GetName() + "##" + std::to_string(index++);
 
 			if (ImGui::Selectable(selectableLabel.c_str(), isSelected))
 			{
 				if (ctrlPressed)
 				{
-					if (isSelected)
-					{
-					}
-					else
-					{
-						selectedShapes.push_back(shape);
-					}
+					selectedShapes->ToggleShape(shape);
 				}
 				else
 				{
-					selectedShapes.clear();
-					selectedShapes.push_back(shape);
+					selectedShapes->Clear();
+					selectedShapes->AddShape(shape);
 				}
 			}
 		}
@@ -187,26 +184,28 @@ void App::DisplayShapeSelection()
 
 	if (ImGui::Button("Delete Selected"))
 	{
-		for (auto it = shapes.begin(); it != shapes.end();)
+		auto shapesCopy = shapes;
+		for (const auto& shape : shapesCopy)
 		{
-			if (std::find(selectedShapes.begin(), selectedShapes.end(), *it) != selectedShapes.end())
+			if (selectedShapes->IsSelected(shape))
 			{
-				it = shapes.erase(it);
-			}
-			else
-			{
-				++it;
+				auto it = std::find(shapes.begin(), shapes.end(), shape);
+				if (it != shapes.end())
+				{
+					shapes.erase(it);
+				}
 			}
 		}
-		selectedShapes.clear();
+		selectedShapes->Clear();
 	}
 }
 
+
 void App::DisplayShapeProperties()
 {
-	if (selectedShapes.size() == 1)
+	if (selectedShapes->Size() == 1)
 	{
-		selectedShapes.front()->RenderUI();
+		selectedShapes->GetAt(0)->RenderUI();
 	}
 }
 
@@ -236,20 +235,10 @@ void App::DisplayAddShapeButtons()
 	{
 		auto polyline = std::make_shared<Polyline>();
 
-		for (const auto& shape : shapes)
+		auto selectedPoints = selectedShapes->GetSelectedWithType<Point>();
+		for (const auto& point : selectedPoints)
 		{
-			if (std::find_if(selectedShapes.begin(), selectedShapes.end(),
-				[&shape](const std::shared_ptr<Shape>& selectedShape) { 
-					return selectedShape == shape; 
-				}) == selectedShapes.end())
-			{
-				continue;
-			}
-
-			if (auto point = std::dynamic_pointer_cast<Point>(shape))
-			{
-				polyline->AddPoint(point);
-			}
+			polyline->AddPoint(point);
 		}
 
 		shapes.push_back(polyline);
@@ -341,14 +330,11 @@ void App::Render()
 	shader->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	shader->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
 
-	if (!selectedShapes.empty())
+	if (auto avgPos = selectedShapes->GetAveragePosition())
 	{
-		Algebra::Vector4 middle;
-		for (const auto& selectedShape : selectedShapes)
-		{
-			middle = middle + selectedShape->GetTranslation();
-		}
-		middlePoint.SetTranslation(middle / selectedShapes.size());
+		Algebra::Vector4 middle = avgPos.value();
+
+		middlePoint.SetTranslation(middle);
 
 		shader->SetUniformVec4f("u_color", Algebra::Vector4(1.f, 0.f, 0.f, 1.f));
 		shader->SetUniformMat4f("u_modelMatrix", middlePoint.GetModelMatrix());
