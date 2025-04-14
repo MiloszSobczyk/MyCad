@@ -44,8 +44,6 @@ void App::Run()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		//axisCursor.HandleInput();
-
 		DisplayParameters();
 		Render();
 
@@ -73,6 +71,17 @@ void App::HandleInput()
 {
 	if (ImGui::IsAnyItemActive() || ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
 	{
+		return;
+	}
+
+	if (ImGui::IsKeyDown(ImGuiKey_Escape))
+	{
+		useCursor = !useCursor;
+	}
+
+	if (useCursor)
+	{
+		axisCursor->HandleInput();
 		return;
 	}
 

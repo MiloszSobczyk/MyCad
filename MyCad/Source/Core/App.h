@@ -30,6 +30,7 @@ class App
 private:
 	bool active;
 	bool showGrid;
+	bool useCursor = true;
 	Window window;
 	Camera camera;
 	InfiniteGrid grid;

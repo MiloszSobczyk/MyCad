@@ -11,8 +11,6 @@ std::shared_ptr<Shape> ShapeCreator::CreateShape(ShapeEnum shape) const
         return std::make_shared<Point>();
     case ShapeEnum::Torus:
         return std::make_shared<Torus>();
-    case ShapeEnum::Polyline:
-        return std::make_shared<Polyline>(selectedShapes->GetSelectedWithType<Point>());
     }
     throw std::runtime_error("Invalid shape");
 }
