@@ -1,7 +1,7 @@
 #include "RotationAroundPointOperation.h"
 
-RotationAroundPointOperation::RotationAroundPointOperation(std::shared_ptr<SelectedShapes>, std::shared_ptr<AxisCursor>& axisCursor)
-	: Operation(selected), axisCursor(axisCursor) , axisMode(AxisMode::X), pointMode(PointMode::AxisCursor)
+RotationAroundPointOperation::RotationAroundPointOperation(std::shared_ptr<SelectedShapes> selected, std::shared_ptr<AxisCursor>& axisCursor)
+	: Operation(selected), axisCursor(axisCursor), axisMode(AxisMode::X), pointMode(PointMode::AxisCursor)
 {
 }
 
