@@ -3,9 +3,13 @@
 #include "Shape.h"
 #include "Engine/Renderer.h"
 
-class Torus : public Shape
+class Torus : public Shape, public IScaling, public IRotation, public ITranslation
 {
 private:
+	ScalingComponent scalingComponent;
+	RotationComponent rotationComponent;
+	TranslationComponent translationComponent;
+
 	Renderer<PositionVertexData> renderer;
 
 	float majorRadius = 15.f;
@@ -20,7 +24,13 @@ private:
 
 public:
 	Torus();
+
 	void Render() override;
 	void RenderUI() override;
-};
 
+	const ScalingComponent& GetScalingComponent() const override;
+	const RotationComponent& GetRotationComponent() const override;
+	const TranslationComponent& GetTranslationComponent() const override;
+
+	Algebra::Matrix4 GetModelMatrix() const override;
+};

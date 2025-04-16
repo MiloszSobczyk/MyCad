@@ -26,7 +26,7 @@ void TranslationComponent::AddTranslation(const Algebra::Vector4& translation)
 	this->translation += translation;
 }
 
-Algebra::Matrix4 TranslationComponent::GetTranslationMatrix() const
+Algebra::Matrix4 TranslationComponent::GetMatrix() const
 {
 	return Algebra::Matrix4::Translation(translation);
 }

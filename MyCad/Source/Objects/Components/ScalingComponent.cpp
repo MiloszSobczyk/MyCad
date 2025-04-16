@@ -26,7 +26,7 @@ void ScalingComponent::AddScaling(const Algebra::Vector4& scaling)
     this->scaling = this->scaling.Scale(scaling);
 }
 
-Algebra::Matrix4 ScalingComponent::GetScalingMatrix() const
+Algebra::Matrix4 ScalingComponent::GetMatrix() const
 {
     return Algebra::Matrix4::Scale(scaling);
 }

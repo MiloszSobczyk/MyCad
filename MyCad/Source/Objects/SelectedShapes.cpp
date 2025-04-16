@@ -57,11 +57,12 @@ std::optional<Algebra::Vector4> SelectedShapes::GetAveragePosition() const
 	int count = 0;
 	for (auto& selected : selectedShapes)
 	{
-		if (selected->HasTranslation())
-		{
-			result += selected->GetTranslation();
-			count = 1;
-		}
+		// TODO:
+		//if (selected->HasTranslation())
+		//{
+		//	result += selected->GetTranslation();
+		//	count = 1;
+		//}
 	}
 	
 	if (count == 0) 

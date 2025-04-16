@@ -26,11 +26,12 @@ void RotationComponent::AddRotation(const Algebra::Quaternion& rotation)
     this->rotation = (rotation * this->rotation).Normalize();
 }
 
-Algebra::Matrix4 RotationComponent::GetRotationMatrix() const
+Algebra::Matrix4 RotationComponent::GetMatrix() const
 {
     return this->rotation.ToMatrix();
 }
 
 void RotationComponent::RenderUI()
 {
+    ImGui::Text("Rotation :3");
 }

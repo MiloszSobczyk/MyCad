@@ -17,5 +17,6 @@ public:
 
 	void Render() override;
 
+	//TODO: to be removed
 	void AddPoint(std::shared_ptr<Shape> point);
 };

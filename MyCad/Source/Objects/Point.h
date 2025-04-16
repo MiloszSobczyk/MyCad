@@ -3,16 +3,20 @@
 #include "Shape.h"
 #include "Engine/Renderer.h"
 
-class Point : public Shape
+class Point : public Shape, public ITranslation
 {
 private:
-	Renderer<PositionVertexData> renderer;
+	TranslationComponent translationComponent;
 
-    static std::vector<PositionVertexData> vertices;
-	static std::vector<unsigned int> indices;
+	// TODO: extract into Shape
+	Renderer<PositionVertexData> renderer;
 
 public:
     Point();
 
 	void Render() override;
+	//TOOD: RenderUI override 
+
+	const TranslationComponent& GetTranslationComponent() const override;
+	Algebra::Matrix4 GetModelMatrix() const override;
 };

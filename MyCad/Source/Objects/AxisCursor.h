@@ -4,18 +4,18 @@
 #include "Engine/Renderer.h"
 #include "Shape.h"
 
-class AxisCursor : public Shape
+class AxisCursor : public Shape, public ITranslation
 {
 private:
-	static std::vector<PositionColorVertexData> vertices;
-	static std::vector<unsigned int> indices;
-
-	bool visible;
+	TranslationComponent translationComponent;
 
 	Renderer<PositionColorVertexData> renderer;
 public:
 	AxisCursor();
 	
-	void Render();
+	void Render() override;
 	void HandleInput();
+
+	const TranslationComponent& GetTranslationComponent() const override;
+	Algebra::Matrix4 GetModelMatrix() const override;
 };

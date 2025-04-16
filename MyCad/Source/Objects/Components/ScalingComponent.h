@@ -14,7 +14,7 @@ public:
     Algebra::Vector4 GetScaling() const;
     void SetScaling(const Algebra::Vector4& scaling);
     void AddScaling(const Algebra::Vector4& scaling);
-    Algebra::Matrix4 GetScalingMatrix() const;
+    Algebra::Matrix4 GetMatrix() const;
 
     void RenderUI();
 };

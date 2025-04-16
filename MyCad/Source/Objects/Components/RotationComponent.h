@@ -14,7 +14,7 @@ public:
     Algebra::Quaternion GetRotation() const;
     void SetRotation(const Algebra::Quaternion& rotation);
     void AddRotation(const Algebra::Quaternion& rotation);
-    Algebra::Matrix4 GetRotationMatrix() const;
+    Algebra::Matrix4 GetMatrix() const;
 
     void RenderUI();
 };

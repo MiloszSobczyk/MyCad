@@ -1,7 +1,7 @@
 #include "Polyline.h"
 
 Polyline::Polyline()
-	: Shape(ComponentFlags::None), renderer(VertexDataType::PositionVertexData)
+	: renderer(VertexDataType::PositionVertexData)
 {
     name = "Polyline" + std::to_string(id);
 }
@@ -18,10 +18,11 @@ void Polyline::Render()
         {
             if (auto point = it->lock())
             {
-                auto position = point->GetTranslation();
-                position.w = 1.f;
-                vertices.push_back(PositionVertexData{ .Position = position });
-                ++it;
+                //TODO:
+                //auto position = point->GetTranslation();
+                //position.w = 1.f;
+                //vertices.push_back(PositionVertexData{ .Position = position });
+                //++it;
             }
             else
             {

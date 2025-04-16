@@ -8,19 +8,19 @@ class ITranslation
 {
 public:
 	virtual ~ITranslation() = default;
-	virtual TranslationComponent& GetTranslationComponent() = 0;
+	virtual const TranslationComponent& GetTranslationComponent() const = 0;
 };
 
 class IRotation
 {
 public:
 	virtual ~IRotation() = default;
-	virtual RotationComponent& GetRotationComponent() = 0;
+	virtual const RotationComponent& GetRotationComponent() const = 0;
 };
 
 class IScaling
 {
 public:
 	virtual ~IScaling() = default;
-	virtual ScalingComponent& GetScalingComponent() = 0;
+	virtual const ScalingComponent& GetScalingComponent() const = 0;
 };

@@ -2,16 +2,8 @@
 
 int Shape::idCounter = 0;
 
-Shape::Shape(ComponentFlags flags)
-    : id(++idCounter), color(0.5f, 0.f, 0.5f, 1.0f)
+Shape::Shape()
 {
-    if (flags & ComponentFlags::Scaling)
-        scalingComponent = std::make_unique<ScalingComponent>();
-    if (flags & ComponentFlags::Rotation)
-        rotationComponent = std::make_unique<RotationComponent>();
-    if (flags & ComponentFlags::Translation)
-        translationComponent = std::make_unique<TranslationComponent>();
-
     name = "Shape" + std::to_string(GetId());
 }
 
@@ -30,93 +22,22 @@ void Shape::RenderUI()
     {
         color = Algebra::Vector4(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
     }
-
-    if (translationComponent)
-        translationComponent->RenderUI();
-
-    if (scalingComponent)
-        scalingComponent->RenderUI();
 }
 
 Algebra::Matrix4 Shape::GetModelMatrix() const
 {
-    return GetTranslationMatrix() * GetRotationMatrix() * GetScalingMatrix();
+    return Algebra::Matrix4::Identity();
 }
 
-void Shape::SetScaling(const Algebra::Vector4& scaling) const
-{
-    if (scalingComponent)
-        scalingComponent->SetScaling(scaling);
-}
-
-void Shape::AddScaling(const Algebra::Vector4& scaling) const
-{
-    if (scalingComponent)
-        scalingComponent->AddScaling(scaling);
-}
-
-Algebra::Vector4 Shape::GetScaling() const
-{
-    return scalingComponent ? scalingComponent->GetScaling() : Algebra::Vector4(1.f, 1.f, 1.f);
-}
-
-Algebra::Matrix4 Shape::GetScalingMatrix() const
-{
-    return scalingComponent ? scalingComponent->GetScalingMatrix() : Algebra::Matrix4::Identity();
-}
-
-void Shape::SetRotation(const Algebra::Quaternion& rotation) const
-{
-    if (rotationComponent)
-        rotationComponent->SetRotation(rotation);
-}
-
-void Shape::AddRotation(const Algebra::Quaternion& rotation) const
-{
-    if (rotationComponent)
-        rotationComponent->AddRotation(rotation);
-}
-
-Algebra::Quaternion Shape::GetRotation() const
-{
-    return rotationComponent ? rotationComponent->GetRotation() : Algebra::Quaternion(1.f, 0.f, 0.f, 0.f);
-}
-
-Algebra::Matrix4 Shape::GetRotationMatrix() const
-{
-    return rotationComponent ? rotationComponent->GetRotationMatrix() : Algebra::Matrix4::Identity();
-}
-
-void Shape::SetTranslation(const Algebra::Vector4& translation) const
-{
-    if (translationComponent)
-        translationComponent->SetTranslation(translation);
-}
-
-void Shape::AddTranslation(const Algebra::Vector4& translation) const
-{
-    if (translationComponent)
-        translationComponent->AddTranslation(translation);
-}
-
-Algebra::Vector4 Shape::GetTranslation() const
-{
-    return translationComponent ? translationComponent->GetTranslation() : Algebra::Vector4();
-}
-
-Algebra::Matrix4 Shape::GetTranslationMatrix() const
-{
-    return translationComponent ? translationComponent->GetTranslationMatrix() : Algebra::Matrix4::Identity();
-}
 
 void Shape::RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q)
 {
-    SetTranslation(point + q.Rotate(GetTranslation() - point));
-    SetRotation((GetRotation() * q.Conjugate()).Normalize());
+    //SetTranslation(point + q.Rotate(GetTranslation() - point));
+    //SetRotation((GetRotation() * q.Conjugate()).Normalize());
 }
 
 void Shape::ScaleAroundPoint(Algebra::Vector4 point, Algebra::Vector4 scaleFactor)
 {
-    SetTranslation(point + (GetTranslation() - point).Scale(scaleFactor));
-    SetScaling(GetScaling().Scale(scaleFactor));
+    //SetTranslation(point + (GetTranslation() - point).Scale(scaleFactor));
+    //SetScaling(GetScaling().Scale(scaleFactor));
 }

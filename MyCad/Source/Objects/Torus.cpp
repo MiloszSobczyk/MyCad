@@ -71,3 +71,24 @@ void Torus::RenderUI()
 	stateChanged |= ImGui::SliderScalar("Major Segments", ImGuiDataType_U32, &majorSegments, &minValue, &maxValue);
 	stateChanged |= ImGui::SliderScalar("Minor Segments", ImGuiDataType_U32, &minorSegments, &minValue, &maxValue);
 }
+
+const ScalingComponent& Torus::GetScalingComponent() const
+{
+	return scalingComponent;
+}
+
+const RotationComponent& Torus::GetRotationComponent() const 
+{
+	return rotationComponent;
+}
+
+const TranslationComponent& Torus::GetTranslationComponent() const
+{
+	return translationComponent;
+}
+
+Algebra::Matrix4 Torus::GetModelMatrix() const
+{
+	return translationComponent.GetMatrix() * 
+		rotationComponent.GetMatrix() * scalingComponent.GetMatrix();
+}

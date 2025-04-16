@@ -1,24 +1,27 @@
 #include "AxisCursor.h"
 #include <imgui/imgui.h>
 
-std::vector<PositionColorVertexData> AxisCursor::vertices = {
-	{{ -2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
-	{{ +2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
-	{{ +0.f, -2.f, +0.f, 1.f }, { 0.f, 1.f, 0.f, 1.f }},
-	{{ +0.f, +2.f, +0.f, 1.f }, { 0.f, 1.f, 0.f, 1.f }},
-	{{ +0.f, +0.f, -2.f, 1.f }, { 0.f, 0.f, 1.f, 1.f }},
-	{{ +0.f, +0.f, +2.f, 1.f }, { 0.f, 0.f, 1.f, 1.f }},
-};
 
-std::vector<unsigned int> AxisCursor::indices = {
-	0, 1,
-	2, 3,
-	4, 5,
-};
 
-AxisCursor::AxisCursor()
-	: Shape(ComponentFlags::Translation), visible(true), renderer(VertexDataType::PositionColorVertexData)
+AxisCursor::AxisCursor() 
+    : renderer(VertexDataType::PositionVertexData)
 {
+    static std::vector<PositionColorVertexData> vertices = {
+        {{ -2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
+        {{ +2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
+        {{ +0.f, -2.f, +0.f, 1.f }, { 0.f, 1.f, 0.f, 1.f }},
+        {{ +0.f, +2.f, +0.f, 1.f }, { 0.f, 1.f, 0.f, 1.f }},
+        {{ +0.f, +0.f, -2.f, 1.f }, { 0.f, 0.f, 1.f, 1.f }},
+        {{ +0.f, +0.f, +2.f, 1.f }, { 0.f, 0.f, 1.f, 1.f }},
+    };
+
+    static std::vector<unsigned int> indices = {
+        0, 1,
+        2, 3,
+        4, 5,
+    };
+
+    name = "AxisCursor" + std::to_string(id);
 	renderer.SetVertices(vertices);
 	renderer.SetIndices(indices);
 }
@@ -43,7 +46,7 @@ void AxisCursor::HandleInput()
                 direction = direction.Normalize();
             }
 
-            SetTranslation(GetTranslation() + direction / 2.f);
+            translationComponent.AddTranslation(direction / 2.f);
         }
     }
 
@@ -60,7 +63,17 @@ void AxisCursor::HandleInput()
                 direction = direction.Normalize();
             }
         
-            SetTranslation(GetTranslation() + direction / 2.f);
+            translationComponent.AddTranslation(direction / 2.f);
         }
     }
+}
+
+const TranslationComponent& AxisCursor::GetTranslationComponent() const
+{
+    return translationComponent;
+}
+
+Algebra::Matrix4 AxisCursor::GetModelMatrix() const
+{
+    return translationComponent.GetMatrix();
 }
