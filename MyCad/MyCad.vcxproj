@@ -188,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Managers\ShaderManager.h" />
+    <ClInclude Include="Source\Objects\Components\Transformations.h" />
     <ClInclude Include="Source\Objects\Point.h" />
     <ClInclude Include="Source\Core\App.h" />
     <ClInclude Include="Source\Engine\Camera.h" />
