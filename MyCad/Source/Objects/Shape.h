@@ -4,9 +4,9 @@
 #include <imgui/imgui.h>
 
 #include "Algebra.h"
-#include "ScalingComponent.h"
-#include "RotationComponent.h"
-#include "TranslationComponent.h"
+#include "Components/ScalingComponent.h"
+#include "Components/RotationComponent.h"
+#include "Components/TranslationComponent.h"
 
 enum class ComponentFlags : uint8_t
 {
