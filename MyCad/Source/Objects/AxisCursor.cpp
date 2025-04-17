@@ -80,7 +80,7 @@ void AxisCursor::HandleInput()
     }
 }
 
-const TranslationComponent& AxisCursor::GetTranslationComponent() const
+TranslationComponent& AxisCursor::GetTranslationComponent()
 {
     return translationComponent;
 }

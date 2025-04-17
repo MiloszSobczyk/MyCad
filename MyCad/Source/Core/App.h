@@ -65,7 +65,6 @@ public:
 	void DisplayShapeSelection();
 	void DisplayShapeProperties();
 	void DisplayAddShapeButtons();
-	void DisplayAxisCursorControls();
 
 	Algebra::Vector4 ScreenToNDC(float x, float y);
 	void GetClickedPoint();

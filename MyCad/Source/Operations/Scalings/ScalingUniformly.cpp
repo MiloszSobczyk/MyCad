@@ -16,9 +16,9 @@ void ScalingUniformly::HandleInput()
         {
             float scaleFactor = 1.0f - delta.y * 0.01f;
 
-            for (const auto& shape : *selected)
+            for (const auto& shape : selected->GetSelectedWithType<IScaling>())
             {
-                shape->AddScaling(Algebra::Vector4(scaleFactor, scaleFactor, scaleFactor, 0.f));
+                shape->GetScalingComponent().AddScaling(Algebra::Vector4(scaleFactor, scaleFactor, scaleFactor, 0.f));
             }
         }
     }

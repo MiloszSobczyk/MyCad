@@ -53,7 +53,7 @@ void RotationAroundPointOperation::HandleInput()
                 auto axis = std::find_if(axisBindingMap.begin(), axisBindingMap.end(),
                     [this](const AxisBinding& binding) { return binding.axisMode == axisMode; })->axis;
 
-                Algebra::Vector4 point = pointMode == PointMode::AxisCursor ? axisCursor->GetTranslation() : avgPos.value();
+                Algebra::Vector4 point = pointMode == PointMode::AxisCursor ? axisCursor->GetTranslationComponent().GetTranslation() : avgPos.value();
                 for (const auto& shape : *selected)
                 {
                     shape->RotateAroundPoint(point, Algebra::Quaternion::CreateFromAxisAngle(axis, angle));

@@ -17,6 +17,6 @@ public:
 	void RenderUI() override;
 	void HandleInput();
 
-	const TranslationComponent& GetTranslationComponent() const override;
+	TranslationComponent& GetTranslationComponent() override;
 	Algebra::Matrix4 GetModelMatrix() const override;
 };

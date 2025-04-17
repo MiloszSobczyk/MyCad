@@ -48,7 +48,7 @@ void Point::RenderUI()
     }
 }
 
-const TranslationComponent& Point::GetTranslationComponent() const
+TranslationComponent& Point::GetTranslationComponent()
 {
     return translationComponent;
 }

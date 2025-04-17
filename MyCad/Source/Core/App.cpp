@@ -143,7 +143,7 @@ void App::DisplayMainMenu()
 	}
 	DisplayShapeSelection();
 	ImGui::Separator();
-	DisplayAxisCursorControls();
+	axisCursor->RenderUI();
 	ImGui::Separator();
 	DisplayAddShapeButtons();
 	ImGui::Separator();
@@ -216,12 +216,13 @@ void App::DisplayShapeProperties()
 
 void App::DisplayAddShapeButtons()
 {
+	//TODO: Add constructors with parameters
 	ImGui::Text("Add Shape:");
 
 	if (ImGui::Button("Add Torus"))
 	{
 		auto torus = std::make_shared<Torus>();
-		torus->SetTranslation(axisCursor->GetTranslation());
+		torus->GetTranslationComponent().SetTranslation(axisCursor->GetTranslationComponent().GetTranslation());
 		shapes.push_back(torus);
 	}
 
@@ -230,7 +231,7 @@ void App::DisplayAddShapeButtons()
 	if (ImGui::Button("Add Point"))
 	{
 		auto point = std::make_shared<Point>();
-		point->SetTranslation(axisCursor->GetTranslation());
+		point->GetTranslationComponent().SetTranslation(axisCursor->GetTranslationComponent().GetTranslation());
 		shapes.push_back(point);
 	}
 
@@ -247,17 +248,6 @@ void App::DisplayAddShapeButtons()
 		}
 
 		shapes.push_back(polyline);
-	}
-}
-
-void App::DisplayAxisCursorControls()
-{
-	ImGui::Text("Axis Cursor Position:");
-	float axisPos[3] = { axisCursor->GetTranslation().x, axisCursor->GetTranslation().y, axisCursor->GetTranslation().z };
-
-	if (ImGui::InputFloat3("##AxisCursorPos", axisPos))
-	{
-		axisCursor->SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
 	}
 }
 
@@ -339,7 +329,7 @@ void App::Render()
 	{
 		Algebra::Vector4 middle = avgPos.value();
 
-		middlePoint.SetTranslation(middle);
+		middlePoint.GetTranslationComponent().SetTranslation(middle);
 
 		shader->SetUniformVec4f("u_color", Algebra::Vector4(1.f, 0.f, 0.f, 1.f));
 		shader->SetUniformMat4f("u_modelMatrix", middlePoint.GetModelMatrix());

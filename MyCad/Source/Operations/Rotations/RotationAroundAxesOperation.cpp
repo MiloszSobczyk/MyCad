@@ -38,9 +38,9 @@ void RotationAroundAxesOperation::HandleInput()
             auto axis = std::find_if(axisBindingMap.begin(), axisBindingMap.end(),
                 [this](const AxisBinding& binding) { return binding.axisMode == axisMode; })->axis;
 
-            for (const auto& shape : *selected)
+            for (const auto& shape : selected->GetSelectedWithType<IRotation>())
             {
-                shape->AddRotation(Algebra::Quaternion::CreateFromAxisAngle(axis, angle));
+                shape->GetRotationComponent().AddRotation(Algebra::Quaternion::CreateFromAxisAngle(axis, angle));
             }
         }
     }

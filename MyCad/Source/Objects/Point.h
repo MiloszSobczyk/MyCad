@@ -17,6 +17,6 @@ public:
 	void Render() override;
 	void RenderUI() override;
 
-	const TranslationComponent& GetTranslationComponent() const override;
+	TranslationComponent& GetTranslationComponent() override;
 	Algebra::Matrix4 GetModelMatrix() const override;
 };
