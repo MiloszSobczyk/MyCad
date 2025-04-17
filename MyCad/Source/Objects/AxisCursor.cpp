@@ -4,7 +4,7 @@
 
 
 AxisCursor::AxisCursor() 
-    : renderer(VertexDataType::PositionColorVertexData)
+    : renderer(VertexDataType::PositionColorVertexData), translationComponent(std::make_shared<TranslationComponent>())
 {
     static std::vector<PositionColorVertexData> vertices = {
         {{ -2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
@@ -34,12 +34,12 @@ void AxisCursor::Render()
 void AxisCursor::RenderUI()
 {
     ImGui::Text("Axis Cursor Position:");
-    auto translation = translationComponent.GetTranslation();
+    auto translation = translationComponent->GetTranslation();
     float axisPos[3] = { translation.x, translation.y, translation.z};
 
     if (ImGui::InputFloat3("##AxisCursorPos", axisPos))
     {
-        translationComponent.SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
+        translationComponent->SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
     }
 }
 
@@ -58,7 +58,7 @@ void AxisCursor::HandleInput()
                 direction = direction.Normalize();
             }
 
-            translationComponent.AddTranslation(direction / 2.f);
+            translationComponent->AddTranslation(direction / 2.f);
         }
     }
 
@@ -75,17 +75,17 @@ void AxisCursor::HandleInput()
                 direction = direction.Normalize();
             }
         
-            translationComponent.AddTranslation(direction / 2.f);
+            translationComponent->AddTranslation(direction / 2.f);
         }
     }
 }
 
-TranslationComponent& AxisCursor::GetTranslationComponent()
+std::shared_ptr<TranslationComponent> AxisCursor::GetTranslationComponent()
 {
     return translationComponent;
 }
 
 Algebra::Matrix4 AxisCursor::GetModelMatrix() const
 {
-    return translationComponent.GetMatrix();
+    return translationComponent->GetMatrix();
 }

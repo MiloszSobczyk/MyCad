@@ -33,7 +33,7 @@ void TranslationAlongAxesOperation::HandleInput()
             translation[static_cast<int>(axisMode)] = axisMode == AxisMode::Y ? normDelta.y : normDelta.x;
             for (const auto& shape : selected->GetSelectedWithType<ITranslation>())
             {
-                shape->GetTranslationComponent().AddTranslation(translation);
+                shape->GetTranslationComponent()->AddTranslation(translation);
             }
         }
     }

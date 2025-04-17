@@ -223,7 +223,7 @@ void App::DisplayAddShapeButtons()
 	if (ImGui::Button("Add Torus"))
 	{
 		auto torus = std::make_shared<Torus>();
-		torus->GetTranslationComponent().SetTranslation(axisCursor->GetTranslationComponent().GetTranslation());
+		torus->GetTranslationComponent()->SetTranslation(axisCursor->GetTranslationComponent()->GetTranslation());
 		shapes.push_back(torus);
 	}
 
@@ -232,7 +232,7 @@ void App::DisplayAddShapeButtons()
 	if (ImGui::Button("Add Point"))
 	{
 		auto point = std::make_shared<Point>();
-		point->GetTranslationComponent().SetTranslation(axisCursor->GetTranslationComponent().GetTranslation());
+		point->GetTranslationComponent()->SetTranslation(axisCursor->GetTranslationComponent()->GetTranslation());
 		shapes.push_back(point);
 	}
 
@@ -330,7 +330,7 @@ void App::Render()
 	{
 		Algebra::Vector4 middle = avgPos.value();
 
-		middlePoint.GetTranslationComponent().SetTranslation(middle);
+		middlePoint.GetTranslationComponent()->SetTranslation(middle);
 
 		shader->SetUniformVec4f("u_color", Algebra::Vector4(1.f, 0.f, 0.f, 1.f));
 		shader->SetUniformMat4f("u_modelMatrix", middlePoint.GetModelMatrix());

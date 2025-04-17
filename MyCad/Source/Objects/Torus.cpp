@@ -44,7 +44,10 @@ void Torus::GeneratePoints()
 }
 
 Torus::Torus()
-	: renderer(VertexDataType::PositionVertexData)
+	: renderer(VertexDataType::PositionVertexData),
+	  scalingComponent(std::make_shared<ScalingComponent>()),
+	  rotationComponent(std::make_shared<RotationComponent>()),
+	  translationComponent(std::make_shared<TranslationComponent>())
 {
 	name = "Torus" + std::to_string(id);
 	GeneratePoints();
@@ -73,23 +76,23 @@ void Torus::RenderUI()
 	stateChanged |= ImGui::SliderScalar("Minor Segments", ImGuiDataType_U32, &minorSegments, &minValue, &maxValue);
 }
 
-ScalingComponent& Torus::GetScalingComponent()
+std::shared_ptr<ScalingComponent> Torus::GetScalingComponent()
 {
 	return scalingComponent;
 }
 
-RotationComponent& Torus::GetRotationComponent() 
+std::shared_ptr<RotationComponent> Torus::GetRotationComponent()
 {
 	return rotationComponent;
 }
 
-TranslationComponent& Torus::GetTranslationComponent()
+std::shared_ptr<TranslationComponent> Torus::GetTranslationComponent()
 {
 	return translationComponent;
 }
 
 Algebra::Matrix4 Torus::GetModelMatrix() const
 {
-	return translationComponent.GetMatrix() * 
-		rotationComponent.GetMatrix() * scalingComponent.GetMatrix();
+	return translationComponent->GetMatrix() * 
+		rotationComponent->GetMatrix() * scalingComponent->GetMatrix();
 }

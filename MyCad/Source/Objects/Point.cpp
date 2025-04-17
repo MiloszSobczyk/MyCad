@@ -3,7 +3,8 @@
 
 
 Point::Point() 
-    : renderer(VertexDataType::PositionVertexData)
+    : renderer(VertexDataType::PositionVertexData), 
+	  translationComponent(std::make_shared<ObservableTranslationComponent>())
 {
     std::vector<PositionVertexData> vertices = {
         {{ -0.5f, -0.5f, -0.5f, 1.0f }},
@@ -39,21 +40,21 @@ void Point::RenderUI()
 {
     Shape::RenderUI();
     ImGui::Text("Point Position:");
-    auto translation = translationComponent.GetTranslation();
+    auto translation = translationComponent->GetTranslation();
     float axisPos[3] = { translation.x, translation.y, translation.z };
 
     if (ImGui::InputFloat3(("##PointPos" + std::to_string(id)).c_str(), axisPos))
     {
-        translationComponent.SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
+        translationComponent->SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
     }
 }
 
-TranslationComponent& Point::GetTranslationComponent()
+std::shared_ptr<TranslationComponent> Point::GetTranslationComponent()
 {
     return translationComponent;
 }
 
 Algebra::Matrix4 Point::GetModelMatrix() const
 {
-    return translationComponent.GetMatrix();
+    return translationComponent->GetMatrix();
 }

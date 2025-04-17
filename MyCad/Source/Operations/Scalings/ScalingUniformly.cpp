@@ -18,7 +18,7 @@ void ScalingUniformly::HandleInput()
 
             for (const auto& shape : selected->GetSelectedWithType<IScaling>())
             {
-                shape->GetScalingComponent().AddScaling(Algebra::Vector4(scaleFactor, scaleFactor, scaleFactor, 0.f));
+                shape->GetScalingComponent()->AddScaling(Algebra::Vector4(scaleFactor, scaleFactor, scaleFactor, 0.f));
             }
         }
     }

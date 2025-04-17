@@ -40,7 +40,7 @@ void RotationAroundAxesOperation::HandleInput()
 
             for (const auto& shape : selected->GetSelectedWithType<IRotation>())
             {
-                shape->GetRotationComponent().AddRotation(Algebra::Quaternion::CreateFromAxisAngle(axis, angle));
+                shape->GetRotationComponent()->AddRotation(Algebra::Quaternion::CreateFromAxisAngle(axis, angle));
             }
         }
     }

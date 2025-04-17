@@ -6,9 +6,9 @@
 class Torus : public Shape, public IScaling, public IRotation, public ITranslation
 {
 private:
-	ScalingComponent scalingComponent;
-	RotationComponent rotationComponent;
-	TranslationComponent translationComponent;
+	std::shared_ptr<ScalingComponent> scalingComponent;
+	std::shared_ptr<RotationComponent> rotationComponent;
+	std::shared_ptr<TranslationComponent> translationComponent;
 
 	Renderer<PositionVertexData> renderer;
 
@@ -28,9 +28,9 @@ public:
 	void Render() override;
 	void RenderUI() override;
 
-	ScalingComponent& GetScalingComponent() override;
-	RotationComponent& GetRotationComponent() override;
-	TranslationComponent& GetTranslationComponent() override;
+	std::shared_ptr<ScalingComponent> GetScalingComponent() override;
+	std::shared_ptr<RotationComponent> GetRotationComponent() override;
+	std::shared_ptr<TranslationComponent> GetTranslationComponent() override;
 
 	Algebra::Matrix4 GetModelMatrix() const override;
 };

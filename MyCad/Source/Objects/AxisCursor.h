@@ -7,7 +7,7 @@
 class AxisCursor : public Shape, public ITranslation
 {
 private:
-	TranslationComponent translationComponent;
+	std::shared_ptr<TranslationComponent> translationComponent;
 
 	Renderer<PositionColorVertexData> renderer;
 public:
@@ -17,6 +17,6 @@ public:
 	void RenderUI() override;
 	void HandleInput();
 
-	TranslationComponent& GetTranslationComponent() override;
+	std::shared_ptr<TranslationComponent> GetTranslationComponent() override;
 	Algebra::Matrix4 GetModelMatrix() const override;
 };

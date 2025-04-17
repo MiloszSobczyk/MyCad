@@ -12,8 +12,8 @@ public:
     TranslationComponent(const Algebra::Vector4& translation);
 
     Algebra::Vector4 GetTranslation() const;
-    void SetTranslation(const Algebra::Vector4& translation);
-    void AddTranslation(const Algebra::Vector4& translation);
+    virtual void SetTranslation(const Algebra::Vector4& translation);
+    virtual void AddTranslation(const Algebra::Vector4& translation);
     Algebra::Matrix4 GetMatrix() const;
 
     void RenderUI();

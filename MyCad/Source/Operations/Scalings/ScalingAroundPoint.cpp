@@ -32,7 +32,7 @@ void ScalingAroundPoint::HandleInput()
                 float scaleFactor = 1.0f - delta.y * 0.01f;
 
                 Algebra::Vector4 point = pointMode == PointMode::AxisCursor
-                    ? axisCursor->GetTranslationComponent().GetTranslation() : avgPos.value();
+                    ? axisCursor->GetTranslationComponent()->GetTranslation() : avgPos.value();
 
                 for (const auto& shape : *selected)
                 {
