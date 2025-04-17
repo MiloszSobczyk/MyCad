@@ -3,8 +3,8 @@
 int Shape::idCounter = 0;
 
 Shape::Shape()
+    : id(idCounter++), name("Shape" + std::to_string(id)), color(0.5f, 0.1f, 0.5f, 1.0f)
 {
-    name = "Shape" + std::to_string(GetId());
 }
 
 void Shape::RenderUI()

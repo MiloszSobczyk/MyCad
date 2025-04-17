@@ -136,6 +136,7 @@ void App::DisplayParameters()
 
 void App::DisplayMainMenu()
 {
+	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 	ImGui::Checkbox("Show grid", &showGrid);
 	if (currentOperation)
 	{

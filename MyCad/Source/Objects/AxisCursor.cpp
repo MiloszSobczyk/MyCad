@@ -4,7 +4,7 @@
 
 
 AxisCursor::AxisCursor() 
-    : renderer(VertexDataType::PositionVertexData)
+    : renderer(VertexDataType::PositionColorVertexData)
 {
     static std::vector<PositionColorVertexData> vertices = {
         {{ -2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
@@ -21,9 +21,9 @@ AxisCursor::AxisCursor()
         4, 5,
     };
 
-    name = "AxisCursor" + std::to_string(id);
 	renderer.SetVertices(vertices);
 	renderer.SetIndices(indices);
+    name = "AxisCursor" + std::to_string(id);
 }
 
 void AxisCursor::Render()

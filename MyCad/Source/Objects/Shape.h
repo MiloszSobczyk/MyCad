@@ -22,8 +22,6 @@ public:
 
     virtual void Render() = 0;
 
-    inline int GetId() const { return id; }
-
     inline Algebra::Vector4 GetColor() const { return color; }
     inline void SetColor(Algebra::Vector4 color) { this->color = color; }
 
