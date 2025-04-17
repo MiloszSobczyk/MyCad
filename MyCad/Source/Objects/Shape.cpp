@@ -28,16 +28,3 @@ Algebra::Matrix4 Shape::GetModelMatrix() const
 {
     return Algebra::Matrix4::Identity();
 }
-
-
-void Shape::RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q)
-{
-    //SetTranslation(point + q.Rotate(GetTranslation() - point));
-    //SetRotation((GetRotation() * q.Conjugate()).Normalize());
-}
-
-void Shape::ScaleAroundPoint(Algebra::Vector4 point, Algebra::Vector4 scaleFactor)
-{
-    //SetTranslation(point + (GetTranslation() - point).Scale(scaleFactor));
-    //SetScaling(GetScaling().Scale(scaleFactor));
-}

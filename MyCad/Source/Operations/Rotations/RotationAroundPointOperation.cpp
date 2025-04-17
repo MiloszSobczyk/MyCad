@@ -54,9 +54,17 @@ void RotationAroundPointOperation::HandleInput()
                     [this](const AxisBinding& binding) { return binding.axisMode == axisMode; })->axis;
 
                 Algebra::Vector4 point = pointMode == PointMode::AxisCursor ? axisCursor->GetTranslationComponent()->GetTranslation() : avgPos.value();
-                for (const auto& shape : *selected)
+                auto q = Algebra::Quaternion::CreateFromAxisAngle(axis, angle);
+                
+                for (const auto& shape : selected->GetSelectedWithType<ITranslation>())
                 {
-                    shape->RotateAroundPoint(point, Algebra::Quaternion::CreateFromAxisAngle(axis, angle));
+                    auto translationComponent = shape->GetTranslationComponent();
+                    translationComponent->SetTranslation(point + q.Rotate(translationComponent->GetTranslation() - point));
+                }
+                for (const auto& shape : selected->GetSelectedWithType<IRotation>())
+                {
+                    auto rotationComponent = shape->GetRotationComponent();
+                    rotationComponent->SetRotation((rotationComponent->GetRotation() * q.Conjugate()).Normalize());
                 }
             }
         }

@@ -34,9 +34,17 @@ void ScalingAroundPoint::HandleInput()
                 Algebra::Vector4 point = pointMode == PointMode::AxisCursor
                     ? axisCursor->GetTranslationComponent()->GetTranslation() : avgPos.value();
 
-                for (const auto& shape : *selected)
+                Algebra::Vector4 scaleVector(scaleFactor, scaleFactor, scaleFactor, 0.f);
+
+                for (const auto& shape : selected->GetSelectedWithType<ITranslation>())
                 {
-                    shape->ScaleAroundPoint(point, Algebra::Vector4(scaleFactor, scaleFactor, scaleFactor, 0.f));
+                    auto translationComponent = shape->GetTranslationComponent();
+                    translationComponent->SetTranslation(point + (translationComponent->GetTranslation() - point).Scale(scaleVector));
+                }
+                for (const auto& shape : selected->GetSelectedWithType<IScaling>())
+                {
+                    auto scalingComponent = shape->GetScalingComponent();
+                    scalingComponent->SetScaling(scalingComponent->GetScaling().Scale(scaleVector));
                 }
             }
         }

@@ -30,8 +30,4 @@ public:
 
     virtual Algebra::Matrix4 GetModelMatrix() const;
     virtual void RenderUI();
-
-    //TODO: remove and move whole logic to operations code
-	virtual void RotateAroundPoint(Algebra::Vector4 point, Algebra::Quaternion q);
-	void ScaleAroundPoint(Algebra::Vector4 point, Algebra::Vector4 scaleFactor);
 };
