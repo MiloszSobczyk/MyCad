@@ -5,36 +5,36 @@ void SelectedShapes::Clear()
 	selectedShapes.clear();
 }
 
-void SelectedShapes::AddShape(std::shared_ptr<Shape> shapePtr)
+void SelectedShapes::AddShape(std::shared_ptr<Shape> shape)
 {
-	if (IsSelected(shapePtr))
+	if (IsSelected(shape))
 	{
 		return;
 	}
 
-	selectedShapes.push_back(shapePtr);
+	selectedShapes.push_back(shape);
 }
 
-void SelectedShapes::RemoveShape(std::shared_ptr<Shape> shapePtr)
+void SelectedShapes::RemoveShape(std::shared_ptr<Shape> shape)
 {
-	selectedShapes.erase(std::find(selectedShapes.begin(), selectedShapes.end(), shapePtr));
+	selectedShapes.erase(std::find(selectedShapes.begin(), selectedShapes.end(), shape));
 }
 
-void SelectedShapes::ToggleShape(std::shared_ptr<Shape> shapePtr)
+void SelectedShapes::ToggleShape(std::shared_ptr<Shape> shape)
 {
-	if (IsSelected(shapePtr))
+	if (IsSelected(shape))
 	{
-		RemoveShape(shapePtr);
+		RemoveShape(shape);
 	}
 	else
 	{
-		AddShape(shapePtr);
+		AddShape(shape);
 	}
 }
 
-bool SelectedShapes::IsSelected(std::shared_ptr<Shape> shapePtr) const
+bool SelectedShapes::IsSelected(std::shared_ptr<Shape> shape) const
 {
-	return std::find(selectedShapes.begin(), selectedShapes.end(), shapePtr) != selectedShapes.end();
+	return std::find(selectedShapes.begin(), selectedShapes.end(), shape) != selectedShapes.end();
 }
 
 std::shared_ptr<Shape> SelectedShapes::GetAt(int index) const
@@ -48,26 +48,18 @@ std::shared_ptr<Shape> SelectedShapes::GetAt(int index) const
 
 std::optional<Algebra::Vector4> SelectedShapes::GetAveragePosition() const
 {
-	if (IsEmpty())
+	Algebra::Vector4 result;
+	auto castShapes = GetSelectedWithType<ITranslation>();
+	if (castShapes.empty())
 	{
 		return std::nullopt;
 	}
 
-	Algebra::Vector4 result;
-	int count = 0;
-	for (auto& selected : selectedShapes)
+	for (auto& shape : castShapes)
 	{
-		// TODO:
-		//if (selected->HasTranslation())
-		//{
-		//	result += selected->GetTranslation();
-		//	count = 1;
-		//}
+		result += shape->GetTranslationComponent()->GetTranslation();
 	}
-	
-	if (count == 0) 
-		return std::nullopt;
-	
-	result = result / selectedShapes.size();
+
+	result = result / castShapes.size();
 	return result;
 }
