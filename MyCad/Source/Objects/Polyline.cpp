@@ -45,10 +45,42 @@ void Polyline::UpdatePoints()
     renderer.SetIndices(indices);
 }
 
-void Polyline::AddPoint(std::shared_ptr<Point> point)
+void Polyline::AddPoint(const std::shared_ptr<Point>& point)
 {
-	points.push_back(point);
+    if (!point) return;
+
+    for (const auto& p : points)
+    {
+        if (auto sp = p.lock())
+        {
+            if (sp == point)
+                return;
+        }
+    }
+
+    points.push_back(point);
     point->AddObserver(shared_from_this());
+    UpdatePoints();
+}
+
+void Polyline::RemovePoint(const std::shared_ptr<Point>& point)
+{
+    points.erase(
+        std::remove_if(points.begin(), points.end(),
+            [&](const std::weak_ptr<Point>& p) {
+                auto sp = p.lock();
+                return !sp || sp == point;
+            }),
+        points.end()
+    );
+
+    UpdatePoints();
+}
+
+void Polyline::SwapPoints(int index1, int index2)
+{
+    std::swap(points[index1], points[index2]);
+
     UpdatePoints();
 }
 

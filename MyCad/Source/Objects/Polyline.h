@@ -18,7 +18,9 @@ public:
 	void Render() override;
 	void UpdatePoints();
 
-	void AddPoint(std::shared_ptr<Point> point);
+	void AddPoint(const std::shared_ptr<Point>& point);
+	void RemovePoint(const std::shared_ptr<Point>& point);
+	void SwapPoints(int index1, int index2);
 
 	void OnNotified() override;
 };

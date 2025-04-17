@@ -220,7 +220,6 @@ void App::DisplayShapeProperties()
 
 void App::DisplayAddShapeButtons()
 {
-	//TODO: Add constructors with parameters
 	ImGui::Text("Add Shape:");
 
 	if (ImGui::Button("Add Torus"))
@@ -253,6 +252,19 @@ void App::DisplayAddShapeButtons()
 		}
 
 		shapes.push_back(polyline);
+	}
+
+	if (ImGui::Button("Add Bezier Curve"))
+	{
+		auto bezierCurve = std::make_shared<BezierCurve>();
+
+		auto selectedPoints = selectedShapes->GetSelectedWithType<Point>();
+		for (const auto& point : selectedPoints)
+		{
+			bezierCurve->AddPoint(point);
+		}
+
+		shapes.push_back(bezierCurve);
 	}
 }
 
