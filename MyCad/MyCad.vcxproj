@@ -194,6 +194,7 @@
     <ClInclude Include="Source\Core\Observable.h" />
     <ClInclude Include="Source\Managers\ShaderManager.h" />
     <ClInclude Include="Source\Objects\BezierCurve.h" />
+    <ClInclude Include="Source\Objects\Collection.h" />
     <ClInclude Include="Source\Objects\Components\ObservableTranslationComponent.h" />
     <ClInclude Include="Source\Objects\Components\Transformations.h" />
     <ClInclude Include="Source\Objects\Point.h" />

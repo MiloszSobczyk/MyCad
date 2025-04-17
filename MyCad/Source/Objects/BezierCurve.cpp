@@ -40,6 +40,7 @@ void BezierCurve::RenderUI()
             if (ImGui::Button("X"))
             {
                 RemovePoint(point);
+                // Move to RemovePoint
                 polyline->RemovePoint(point);
                 changed = true;
                 ImGui::PopID();
