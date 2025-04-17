@@ -17,6 +17,6 @@ public:
 
 	void Render() override;
 
-	//TODO: to be removed
+	//TODO: to be removed, should use SelectedShapes class
 	void AddPoint(std::shared_ptr<Shape> point);
 };

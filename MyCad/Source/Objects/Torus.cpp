@@ -56,6 +56,7 @@ void Torus::Render()
 	{
 		GeneratePoints();
 	}
+
 	renderer.Render(GL_LINES);
 }
 

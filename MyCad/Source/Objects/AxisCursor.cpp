@@ -31,6 +31,18 @@ void AxisCursor::Render()
 	renderer.Render(GL_LINES);
 }
 
+void AxisCursor::RenderUI()
+{
+    ImGui::Text("Axis Cursor Position:");
+    auto translation = translationComponent.GetTranslation();
+    float axisPos[3] = { translation.x, translation.y, translation.z};
+
+    if (ImGui::InputFloat3("##AxisCursorPos", axisPos))
+    {
+        translationComponent.SetTranslation(Algebra::Vector4(axisPos[0], axisPos[1], axisPos[2], 1.f));
+    }
+}
+
 void AxisCursor::HandleInput()
 {
     if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))

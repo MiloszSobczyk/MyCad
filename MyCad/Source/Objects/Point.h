@@ -15,7 +15,7 @@ public:
     Point();
 
 	void Render() override;
-	//TOOD: RenderUI override 
+	void RenderUI() override;
 
 	const TranslationComponent& GetTranslationComponent() const override;
 	Algebra::Matrix4 GetModelMatrix() const override;

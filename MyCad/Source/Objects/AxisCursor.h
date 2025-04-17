@@ -14,6 +14,7 @@ public:
 	AxisCursor();
 	
 	void Render() override;
+	void RenderUI() override;
 	void HandleInput();
 
 	const TranslationComponent& GetTranslationComponent() const override;
