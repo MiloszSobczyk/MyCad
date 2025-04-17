@@ -21,7 +21,10 @@ App::App()
 	viewMatrix = Algebra::Matrix4::Identity();
 
 	shapes.push_back(std::make_shared<Torus>());
-	shapes.push_back(std::make_shared<Point>());
+
+	auto pointPtr = std::make_shared<Point>();
+	pointPtr->Init();
+	shapes.push_back(pointPtr);
 
 	HandleResize();
 }
@@ -233,6 +236,7 @@ void App::DisplayAddShapeButtons()
 	{
 		auto point = std::make_shared<Point>();
 		point->GetTranslationComponent()->SetTranslation(axisCursor->GetTranslationComponent()->GetTranslation());
+		point->Init();
 		shapes.push_back(point);
 	}
 

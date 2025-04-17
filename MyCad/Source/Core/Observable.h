@@ -6,7 +6,7 @@
 
 #include "IObserver.h"
 
-class Observable : public std::enable_shared_from_this<Observable> 
+class Observable
 {
 private:
     std::vector<std::weak_ptr<IObserver>> observers;

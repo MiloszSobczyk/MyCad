@@ -7,5 +7,5 @@ class IObserver
 public:
     virtual ~IObserver() = default;
 
-    virtual void OnNotified(std::shared_ptr<void> sender) = 0;
+    virtual void OnNotified() = 0;
 };

@@ -2,7 +2,7 @@
 
 
 
-Point::Point() 
+Point::Point()
     : renderer(VertexDataType::PositionVertexData), 
 	  translationComponent(std::make_shared<ObservableTranslationComponent>())
 {
@@ -25,10 +25,14 @@ Point::Point()
         0, 1, 5,  5, 4, 0,
         3, 2, 6,  6, 7, 3
     };
-
     name = "Point" + std::to_string(id);
 	renderer.SetVertices(vertices);
 	renderer.SetIndices(indices);
+}
+
+void Point::Init()
+{
+    translationComponent->AddObserver(shared_from_this());
 }
 
 void Point::Render()
@@ -57,4 +61,9 @@ std::shared_ptr<TranslationComponent> Point::GetTranslationComponent()
 Algebra::Matrix4 Point::GetModelMatrix() const
 {
     return translationComponent->GetMatrix();
+}
+
+void Point::OnNotified()
+{
+    NotifyObservers();
 }

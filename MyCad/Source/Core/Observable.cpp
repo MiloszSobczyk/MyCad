@@ -4,10 +4,9 @@ void Observable::NotifyObservers()
 {
 	for (auto it = observers.begin(); it != observers.end(); )
 	{
-		auto self = shared_from_this();
 		if (auto observer = it->lock())
 		{
-			observer->OnNotified(self);
+			observer->OnNotified();
 			++it;
 		}
 		else

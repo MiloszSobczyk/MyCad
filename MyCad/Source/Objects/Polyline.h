@@ -6,17 +6,19 @@
 #include "Point.h"
 #include "Engine/Renderer.h"
 
-class Polyline : public Shape
+class Polyline : public std::enable_shared_from_this<Polyline>, public Shape, public IObserver
 {
 private:
 	Renderer<PositionVertexData> renderer;
 
-	std::vector<std::weak_ptr<Shape>> points;
+	std::vector<std::weak_ptr<Point>> points;
 public:
 	Polyline();
 
 	void Render() override;
+	void UpdatePoints();
 
-	//TODO: to be removed, should use SelectedShapes class
-	void AddPoint(std::shared_ptr<Shape> point);
+	void AddPoint(std::shared_ptr<Point> point);
+
+	void OnNotified() override;
 };
