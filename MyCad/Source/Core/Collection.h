@@ -1,38 +1,29 @@
 #pragma once
 
 #include <vector>
-#include <memory>
 #include <algorithm>
 #include <string>
 
 #include "imgui/imgui.h"
 
-template <typename T>
-concept HasGetName = requires(T t) 
-{
-    { t.GetName() } -> std::convertible_to<std::string>;
-};
+
 
 template <typename T>
 class Collection
 {
-private:
-    std::vector<std::shared_ptr<T>> items;
-
 protected:
+    std::vector<T> items;
     bool itemsChanged = false;
 
 public:
-    Collection() : items()
-    {
-    }
+    Collection() = default;
 
     inline virtual void Clear()
     {
         items.clear();
     }
 
-    inline virtual void AddItem(std::shared_ptr<T>& item)
+    inline virtual void AddItem(const T& item)
     {
         if (!IsPresent(item))
         {
@@ -40,12 +31,12 @@ public:
         }
     }
 
-    inline virtual void RemoveItem(std::shared_ptr<T>& item)
+    inline virtual void RemoveItem(const T& item)
     {
         items.erase(std::remove(items.begin(), items.end(), item), items.end());
     }
 
-    inline virtual void ToggleItem(std::shared_ptr<T>& item)
+    inline virtual void ToggleItem(const T& item)
     {
         if (IsPresent(item))
         {
@@ -61,7 +52,7 @@ public:
     {
         if (index1 < 0 || index1 >= static_cast<int>(items.size()) ||
             index2 < 0 || index2 >= static_cast<int>(items.size()) ||
-            index1 == index2) 
+            index1 == index2)
         {
             return;
         }
@@ -69,16 +60,16 @@ public:
         std::swap(items[index1], items[index2]);
     }
 
-    inline bool IsPresent(std::shared_ptr<T>& item) const
+    inline bool IsPresent(const T& item) const
     {
         return std::find(items.begin(), items.end(), item) != items.end();
     }
 
-    inline std::shared_ptr<T> GetAt(int index) const
+    inline const T* GetAt(int index) const
     {
         if (index >= 0 && index < static_cast<int>(items.size()))
         {
-            return items[index];
+            return &items[index];
         }
         return nullptr;
     }
@@ -92,59 +83,56 @@ public:
     inline auto begin() const { return items.begin(); }
     inline auto end() const { return items.end(); }
 
-    inline void RenderUI() 
-    {
-        if (items.empty())
-        {
-            ImGui::Text("No items.");
-            return;
-        }
+    //inline void RenderUI()
+    //{
+    //    if (items.empty())
+    //    {
+    //        ImGui::Text("No items.");
+    //        return;
+    //    }
 
-        ImGui::SeparatorText("Items");
+    //    ImGui::SeparatorText("Items");
 
-        for (size_t i = 0; i < items.size(); ++i)
-        {
-            if (auto item = items[i].lock())
-            {
-                ImGui::PushID(static_cast<int>(i));
+    //    for (size_t i = 0; i < items.size(); ++i)
+    //    {
+    //        ImGui::PushID(static_cast<int>(i));
 
-                if (ImGui::Button("X"))
-                {
-                    RemoveItem(item);
-                    itemsChanged = true;
-                    ImGui::PopID();
-                    break;
-                }
+    //        if (ImGui::Button("X"))
+    //        {
+    //            RemoveItem(items[i]);
+    //            itemsChanged = true;
+    //            ImGui::PopID();
+    //            break;
+    //        }
 
-                ImGui::SameLine();
-                ImGui::Text("%s", item->GetName().c_str());
+    //        ImGui::SameLine();
+    //        ImGui::Text("%s", items[i].GetName().c_str());
 
-                if (i > 0)
-                {
-                    ImGui::SameLine();
-                    if (ImGui::ArrowButton("up", ImGuiDir_Up))
-                    {
-                        Swap(i, i - 1);
-                        itemsChanged = true;
-                        ImGui::PopID();
-                        break;
-                    }
-                }
+    //        if (i > 0)
+    //        {
+    //            ImGui::SameLine();
+    //            if (ImGui::ArrowButton("up", ImGuiDir_Up))
+    //            {
+    //                Swap(i, i - 1);
+    //                itemsChanged = true;
+    //                ImGui::PopID();
+    //                break;
+    //            }
+    //        }
 
-                if (i < items.size() - 1)
-                {
-                    ImGui::SameLine();
-                    if (ImGui::ArrowButton("down", ImGuiDir_Down))
-                    {
-                        Swap(i, i + 1);
-                        itemsChanged = true;
-                        ImGui::PopID();
-                        break;
-                    }
-                }
+    //        if (i < items.size() - 1)
+    //        {
+    //            ImGui::SameLine();
+    //            if (ImGui::ArrowButton("down", ImGuiDir_Down))
+    //            {
+    //                Swap(i, i + 1);
+    //                itemsChanged = true;
+    //                ImGui::PopID();
+    //                break;
+    //            }
+    //        }
 
-                ImGui::PopID();
-            }
-        }
-    }
+    //        ImGui::PopID();
+    //    }
+    //}
 };
