@@ -19,6 +19,7 @@ private:
 public:
 	Shader(const std::string& filepath);
 	Shader(const std::string& vsFilepath, const std::string& fsFilepath);
+	Shader(const std::string& vsFilepath, const std::string& tcsFilepath, const std::string& tesFilepath, const std::string& fsFilepath);
 	~Shader();
 
 	void SetUniformMat4f(const std::string& name, const Algebra::Matrix4& matrix);
@@ -30,6 +31,14 @@ private:
 	std::stringstream ParseShader(const std::string& filepath);
 	ShaderProgramSource GetShaderFromFiles(const std::string& filepath);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
-	unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
+	unsigned int CreateShader(
+		const std::string& vertexShader,
+		const std::string& fragmentShader);
+	unsigned int CreateShader(
+		const std::string& vertexShader,
+		const std::string& fragmentShader,
+		const std::string& tessControlShader,
+		const std::string& tessEvalShader);
+
 	int GetUniformLocation(const std::string& name);
 };

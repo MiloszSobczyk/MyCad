@@ -32,6 +32,26 @@ Shader::Shader(const std::string& vsFilepath, const std::string& fsFilepath)
     m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 }
 
+Shader::Shader(const std::string& vsFilepath, const std::string& tcsFilepath, const std::string& tesFilepath, const std::string& fsFilepath)
+{
+    std::string vertexShaderSource = ParseShader(vsFilepath).str();
+    std::string tessControlSource = ParseShader(tcsFilepath).str();
+    std::string tessEvalSource = ParseShader(tesFilepath).str();
+    std::string fragmentShaderSource = ParseShader(fsFilepath).str();
+
+    if (vertexShaderSource.empty())
+        std::cerr << "WARNING: Vertex shader (" << vsFilepath << ") is empty\n";
+    if (tessControlSource.empty())
+        std::cerr << "WARNING: Tessellation Control shader (" << tcsFilepath << ") is empty\n";
+    if (tessEvalSource.empty())
+        std::cerr << "WARNING: Tessellation Evaluation shader (" << tesFilepath << ") is empty\n";
+    if (fragmentShaderSource.empty())
+        std::cerr << "WARNING: Fragment shader (" << fsFilepath << ") is empty\n";
+
+    m_RendererID = CreateShader(vertexShaderSource, fragmentShaderSource, tessControlSource, tessEvalSource);
+}
+
+
 Shader::~Shader()
 {
     glDeleteProgram(m_RendererID);
@@ -119,6 +139,42 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 
     return program;
 }
+
+unsigned int Shader::CreateShader(
+    const std::string& vertexShader,
+    const std::string& fragmentShader,
+    const std::string& tessControlShader,
+    const std::string& tessEvalShader)
+{
+    unsigned int program = glCreateProgram();
+    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+    unsigned int tcs = 0;
+    unsigned int tes = 0;
+
+    if (!tessControlShader.empty())
+        tcs = CompileShader(GL_TESS_CONTROL_SHADER, tessControlShader);
+
+    if (!tessEvalShader.empty())
+        tes = CompileShader(GL_TESS_EVALUATION_SHADER, tessEvalShader);
+
+    GLCall(glAttachShader(program, vs));
+    if (tcs) GLCall(glAttachShader(program, tcs));
+    if (tes) GLCall(glAttachShader(program, tes));
+    GLCall(glAttachShader(program, fs));
+
+    GLCall(glLinkProgram(program));
+    GLCall(glValidateProgram(program));
+
+    GLCall(glDeleteShader(vs));
+    if (tcs) GLCall(glDeleteShader(tcs));
+    if (tes) GLCall(glDeleteShader(tes));
+    GLCall(glDeleteShader(fs));
+
+    return program;
+}
+
 
 void Shader::Bind() const
 {

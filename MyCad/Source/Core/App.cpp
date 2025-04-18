@@ -20,11 +20,19 @@ App::App()
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
 
-	shapes.push_back(std::make_shared<Torus>());
-
 	auto pointPtr = std::make_shared<Point>();
 	pointPtr->Init();
 	shapes.push_back(pointPtr);
+
+	auto pointPtr2 = std::make_shared<Point>();
+	pointPtr2->Init();
+	pointPtr2->GetTranslationComponent()->SetTranslation(Algebra::Vector4(0.f, 20.f, 0.f, 1.f));
+	shapes.push_back(pointPtr2);
+
+	auto pointPtr3 = std::make_shared<Point>();
+	pointPtr3->Init();
+	pointPtr3->GetTranslationComponent()->SetTranslation(Algebra::Vector4(20.f, 20.f, 0.f, 1.f));
+	shapes.push_back(pointPtr3);
 
 	HandleResize();
 }
@@ -386,6 +394,28 @@ void App::Render()
 	}
 
 	shader->Unbind();
+
+	std::vector<std::shared_ptr<BezierCurve>> bezierCurves;
+
+	for (const auto& shape : shapes)
+	{
+		if (auto bezier = std::dynamic_pointer_cast<BezierCurve>(shape))
+		{
+			bezierCurves.push_back(bezier);
+		}
+	}
+
+	auto shaderBezier = ShaderManager::GetInstance().GetShader("bezierTess");
+	shaderBezier->Bind();
+	shaderBezier->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
+	shaderBezier->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
+	
+	for (auto curve : bezierCurves)
+	{
+		curve->Render();
+	}
+
+	shaderBezier->Unbind();
 
 	auto shaderC = ShaderManager::GetInstance().GetShader("defaultColor");
 

@@ -12,6 +12,7 @@ private:
 
 	ShaderManager();
 	std::shared_ptr<Shader> AddShader(std::string name, std::string filename);
+	std::shared_ptr<Shader> AddTessShader(std::string name, std::string vsFilepath, std::string tcsFilepath, std::string tesFilepath, std::string fsFilepath);
 public:
 	ShaderManager(ShaderManager& shaderManager) = delete;
 	void operator=(const ShaderManager& shaderManager) = delete;
