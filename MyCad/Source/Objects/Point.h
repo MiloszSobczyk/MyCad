@@ -13,6 +13,7 @@ private:
 	Renderer<PositionVertexData> renderer;
 public:
     Point();
+	~Point();
 	void Init();
 
 	void Render() override;

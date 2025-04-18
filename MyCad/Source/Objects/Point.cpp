@@ -30,6 +30,11 @@ Point::Point()
 	renderer.SetIndices(indices);
 }
 
+Point::~Point()
+{
+    NotifyObservers();
+}
+
 void Point::Init()
 {
     translationComponent->AddObserver(shared_from_this());
