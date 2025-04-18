@@ -15,8 +15,78 @@ void Polyline::Render()
     }
 }
 
+void Polyline::RenderUI()
+{
+    Shape::RenderUI();
+
+    if (points.empty())
+    {
+        ImGui::Text("No points.");
+        return;
+    }
+
+    bool changed = false;
+
+    ImGui::SeparatorText("Control Points");
+
+    for (size_t i = 0; i < points.size(); ++i)
+    {
+        if (auto point = points[i].lock())
+        {
+            ImGui::PushID(static_cast<int>(i));
+
+            if (ImGui::Button("X"))
+            {
+                RemovePoint(point);
+                changed = true;
+                ImGui::PopID();
+                break;
+            }
+
+            ImGui::SameLine();
+            ImGui::Text("%s", point->GetName().c_str());
+
+            if (i > 0)
+            {
+                ImGui::SameLine();
+                if (ImGui::ArrowButton("up", ImGuiDir_Up))
+                {
+                    SwapPoints(i, i - 1);
+                    changed = true;
+                    ImGui::PopID();
+                    break;
+                }
+            }
+
+            if (i < points.size() - 1)
+            {
+                ImGui::SameLine();
+                if (ImGui::ArrowButton("down", ImGuiDir_Down))
+                {
+                    SwapPoints(i, i + 1);
+                    changed = true;
+                    ImGui::PopID();
+                    break;
+                }
+            }
+
+            ImGui::PopID();
+        }
+    }
+
+    if (changed)
+    {
+        UpdatePoints();
+    }
+}
+
 void Polyline::UpdatePoints()
 {
+    if (points.empty())
+    {
+        return;
+    }
+
     std::vector<PositionVertexData> vertices;
     std::vector<unsigned int> indices;
 
@@ -73,6 +143,11 @@ void Polyline::RemovePoint(const std::shared_ptr<Point>& point)
             }),
         points.end()
     );
+
+    if (!point)
+    {
+        point->RemoveObserver(shared_from_this());
+    }
 
     UpdatePoints();
 }

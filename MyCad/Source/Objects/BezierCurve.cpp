@@ -40,8 +40,6 @@ void BezierCurve::RenderUI()
             if (ImGui::Button("X"))
             {
                 RemovePoint(point);
-                // Move to RemovePoint
-                polyline->RemovePoint(point);
                 changed = true;
                 ImGui::PopID();
                 break;
@@ -55,8 +53,7 @@ void BezierCurve::RenderUI()
                 ImGui::SameLine();
                 if (ImGui::ArrowButton("up", ImGuiDir_Up))
                 {
-                    std::swap(controlPoints[i], controlPoints[i - 1]);
-                    polyline->SwapPoints(i, i - 1);
+                    SwapPoints(i, i - 1);
                     changed = true;
                     ImGui::PopID();
                     break;
@@ -68,8 +65,7 @@ void BezierCurve::RenderUI()
                 ImGui::SameLine();
                 if (ImGui::ArrowButton("down", ImGuiDir_Down))
                 {
-                    std::swap(controlPoints[i], controlPoints[i + 1]);
-                    polyline->SwapPoints(i, i + 1);
+                    SwapPoints(i, i + 1);
                     changed = true;
                     ImGui::PopID();
                     break;
@@ -117,6 +113,21 @@ void BezierCurve::RemovePoint(const std::shared_ptr<Point>& point)
             }),
         controlPoints.end()
     );
+
+    if (!point)
+    {
+        point->RemoveObserver(shared_from_this());
+    }
+
+    polyline->RemovePoint(point);
+
+    UpdateCurve();
+}
+
+void BezierCurve::SwapPoints(int index1, int index2)
+{
+    std::swap(controlPoints[index1], controlPoints[index2]);
+    polyline->SwapPoints(index1, index2);
 
     UpdateCurve();
 }

@@ -16,6 +16,7 @@ public:
 	Polyline();
 
 	void Render() override;
+	void RenderUI() override;
 	void UpdatePoints();
 
 	void AddPoint(const std::shared_ptr<Point>& point);
