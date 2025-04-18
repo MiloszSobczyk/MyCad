@@ -151,6 +151,8 @@ void App::DisplayMainMenu()
 	ImGui::Separator();
 	DisplayAddShapeButtons();
 	ImGui::Separator();
+	DisplayAddPointsButton();
+	ImGui::Separator();
 	DisplayShapeProperties();
 }
 
@@ -265,6 +267,28 @@ void App::DisplayAddShapeButtons()
 		}
 
 		shapes.push_back(bezierCurve);
+	}
+}
+
+void App::DisplayAddPointsButton()
+{
+	if (ImGui::Button("Add points to polyline/bezier curve"))
+	{
+		auto points = selectedShapes->GetSelectedWithType<Point>();
+		for(auto line : selectedShapes->GetSelectedWithType<Polyline>())
+		{
+			for (auto point : points)
+			{
+				line->AddPoint(point);
+			}
+		}
+		for (auto curve : selectedShapes->GetSelectedWithType<BezierCurve>())
+		{
+			for (auto point : points)
+			{
+				curve->AddPoint(point);
+			}
+		}
 	}
 }
 

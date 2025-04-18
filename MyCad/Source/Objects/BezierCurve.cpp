@@ -48,24 +48,24 @@ void BezierCurve::RenderUI()
             ImGui::SameLine();
             ImGui::Text("%s", point->GetName().c_str());
 
-            if (i > 0)
-            {
-                ImGui::SameLine();
-                if (ImGui::ArrowButton("up", ImGuiDir_Up))
-                {
-                    SwapPoints(i, i - 1);
-                    changed = true;
-                    ImGui::PopID();
-                    break;
-                }
-            }
-
             if (i < controlPoints.size() - 1)
             {
                 ImGui::SameLine();
                 if (ImGui::ArrowButton("down", ImGuiDir_Down))
                 {
                     SwapPoints(i, i + 1);
+                    changed = true;
+                    ImGui::PopID();
+                    break;
+                }
+            }
+
+            if (i > 0)
+            {
+                ImGui::SameLine();
+                if (ImGui::ArrowButton("up", ImGuiDir_Up))
+                {
+                    SwapPoints(i, i - 1);
                     changed = true;
                     ImGui::PopID();
                     break;
