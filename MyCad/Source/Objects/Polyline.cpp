@@ -1,18 +1,30 @@
 #include "Polyline.h"
 
+#include <GLFW/glfw3.h>
+
 Polyline::Polyline()
-	: renderer(VertexDataType::PositionVertexData)
 {
     name = "Polyline" + std::to_string(id);
+
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ibo);
 }
 
+Polyline::~Polyline()
+{
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ibo);
+}
 
 void Polyline::Render()
 {
-    if (points.size() > 1)
-    {
-        renderer.Render(GL_LINES);
-    }
+    if (indexCount == 0) return;
+
+    glBindVertexArray(vao);
+    glDrawElements(GL_LINES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);
+    glBindVertexArray(0);
 }
 
 void Polyline::RenderUI()
@@ -26,7 +38,6 @@ void Polyline::RenderUI()
     }
 
     bool changed = false;
-
     ImGui::SeparatorText("Control Points");
 
     for (size_t i = 0; i < points.size(); ++i)
@@ -82,12 +93,11 @@ void Polyline::RenderUI()
 
 void Polyline::UpdatePoints()
 {
-    if (points.empty())
-    {
-        return;
-    }
+    if (points.empty()) return;
 
-    std::vector<PositionVertexData> vertices;
+    struct Vertex { Algebra::Vector4 Position; };
+
+    std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
 
     for (auto it = points.begin(); it != points.end();)
@@ -95,8 +105,8 @@ void Polyline::UpdatePoints()
         if (auto point = it->lock())
         {
             auto position = point->GetTranslationComponent()->GetTranslation();
-            position.w = 1.f;
-            vertices.push_back(PositionVertexData{ .Position = position });
+            position.w = 1.0f;
+            vertices.push_back({ position });
             ++it;
         }
         else
@@ -105,14 +115,26 @@ void Polyline::UpdatePoints()
         }
     }
 
-    for (unsigned int i = 0; i < vertices.size() - 1; ++i)
+    for (unsigned int i = 0; i + 1 < vertices.size(); ++i)
     {
         indices.push_back(i);
         indices.push_back(i + 1);
     }
 
-    renderer.SetVertices(vertices);
-    renderer.SetIndices(indices);
+    indexCount = indices.size();
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_DYNAMIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+
+    glBindVertexArray(0);
 }
 
 void Polyline::AddPoint(const std::shared_ptr<Point>& point)
@@ -130,6 +152,7 @@ void Polyline::AddPoint(const std::shared_ptr<Point>& point)
 
     points.push_back(point);
     point->AddObserver(shared_from_this());
+
     UpdatePoints();
 }
 
@@ -144,7 +167,7 @@ void Polyline::RemovePoint(const std::shared_ptr<Point>& point)
         points.end()
     );
 
-    if (!point)
+    if (point)
     {
         point->RemoveObserver(shared_from_this());
     }
@@ -155,7 +178,6 @@ void Polyline::RemovePoint(const std::shared_ptr<Point>& point)
 void Polyline::SwapPoints(int index1, int index2)
 {
     std::swap(points[index1], points[index2]);
-
     UpdatePoints();
 }
 

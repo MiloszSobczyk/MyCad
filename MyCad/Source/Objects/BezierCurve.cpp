@@ -143,12 +143,12 @@ void BezierCurve::OnNotified()
 
 void BezierCurve::UpdateCurve()
 {
-    polyline->UpdatePoints();
-
     if (controlPoints.empty())
     {
         return;
     }
+    
+    polyline->UpdatePoints();
 
     std::vector<PositionVertexData> vertices;
 
