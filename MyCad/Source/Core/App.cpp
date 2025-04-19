@@ -247,6 +247,12 @@ void App::DisplayAddShapeButtons()
 		point->GetTranslationComponent()->SetTranslation(axisCursor->GetTranslationComponent()->GetTranslation());
 		point->Init();
 		shapes.push_back(point);
+
+		auto bezierCurves = selectedShapes->GetSelectedWithType<BezierCurve>();
+		for (auto curve : bezierCurves)
+		{
+			curve->AddPoint(point);
+		}
 	}
 
 	ImGui::SameLine();
