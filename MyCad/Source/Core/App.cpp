@@ -409,6 +409,7 @@ void App::Render()
 	shaderBezier->Bind();
 	shaderBezier->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	shaderBezier->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
+	shaderBezier->SetUniformVec4f("u_cameraPos", camera.GetPosition());
 	
 	for (auto curve : bezierCurves)
 	{
