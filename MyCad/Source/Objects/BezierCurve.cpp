@@ -151,15 +151,24 @@ void BezierCurve::UpdateCurve()
     }
 
     std::vector<PositionVertexData> vertices;
-    std::vector<unsigned int> indices;
+
+    int i = 0;
 
     for (auto it = controlPoints.begin(); it != controlPoints.end();)
     {
+        PositionVertexData vertex;
         if (auto point = it->lock())
         {
-            auto position = point->GetTranslationComponent()->GetTranslation();
-            position.w = 1.f;
-            vertices.push_back(PositionVertexData{ .Position = position });
+            vertex.Position = point->GetTranslationComponent()->GetTranslation();
+            vertex.Position.w = 1.f;
+            vertices.push_back(vertex);
+            ++i;
+            if (i % 4 == 0)
+            {
+                // duplicate for connection with other bezier curve segments
+                vertices.push_back(vertex);
+                ++i;
+            }
             ++it;
         }
         else
@@ -168,12 +177,39 @@ void BezierCurve::UpdateCurve()
         }
     }
 
-    for (unsigned int i = 0; i < vertices.size() - 1; ++i)
+    int rest = vertices.size() % 4;
+
+    if (rest == 1)
     {
-        indices.push_back(i);
-        indices.push_back(i + 1);
+        auto p = vertices[vertices.size() - 1];
+        vertices.push_back(p);
+        vertices.push_back(p);
+        vertices.push_back(p);
+    }
+    else if (rest == 2)
+    {
+        auto p0 = vertices[vertices.size() - 2];
+        auto p1 = vertices[vertices.size() - 1];
+        vertices.pop_back();
+        vertices.pop_back();
+        vertices.push_back(p0);
+        vertices.push_back(p0);
+        vertices.push_back(p1);
+        vertices.push_back(p1);
+    }
+    else if (rest == 3)
+    {
+        auto p0 = vertices[vertices.size() - 3];
+		auto p1 = vertices[vertices.size() - 2];
+		auto p2 = vertices[vertices.size() - 1];
+		vertices.pop_back();
+		vertices.pop_back();
+		vertices.pop_back();
+		vertices.push_back(p0);
+        vertices.push_back(PositionVertexData{ .Position { 1.f / 3.f * p0.Position + 2.f / 3.f * p1.Position } });
+        vertices.push_back(PositionVertexData{ .Position { 2.f / 3.f * p1.Position + 1.f / 3.f * p2.Position } });
+		vertices.push_back(p2);
     }
 
     renderer.SetVertices(vertices);
-    renderer.SetIndices(indices);
 }
