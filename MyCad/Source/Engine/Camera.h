@@ -27,4 +27,6 @@ public:
 
 	Algebra::Vector4 GetUpVector() const;
 	Algebra::Vector4 GetRightVector() const;
+
+	inline float GetZoom() const { return zoom; };
 };

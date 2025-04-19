@@ -416,6 +416,7 @@ void App::Render()
 	shaderBezier->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	shaderBezier->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
 	shaderBezier->SetUniformVec4f("u_cameraPos", camera.GetPosition());
+	shaderBezier->SetUniformVec4f("u_zoomLevel", { camera.GetZoom(), 0.f, 0.f, 0.f });
 	
 	for (auto curve : bezierCurves)
 	{

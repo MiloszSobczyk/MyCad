@@ -5,6 +5,7 @@ layout(vertices = 4) out;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_projectionMatrix;
 uniform vec4 u_cameraPos;
+uniform vec4 u_zoomLevel;
 
 float screenDistance(vec4 a, vec4 b)
 {
@@ -49,7 +50,7 @@ void main()
     
     float distanceFactor = clamp(100.0 / distToCamera, 0.5, 2.0);
 
-    float scale = baseScale * distanceFactor;
+    float scale = baseScale * distanceFactor * u_zoomLevel.x;
 
     gl_TessLevelOuter[0] = clamp(d0 * scale, 32.0, 64.0);
     gl_TessLevelOuter[1] = clamp(d1 * scale, 32.0, 64.0);
