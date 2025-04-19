@@ -51,10 +51,10 @@ void main()
 
     float scale = baseScale * distanceFactor;
 
-    gl_TessLevelOuter[0] = clamp(d0 * scale, 16.0, 64.0);
-    gl_TessLevelOuter[1] = clamp(d1 * scale, 16.0, 64.0);
-    gl_TessLevelOuter[2] = clamp(d2 * scale, 16.0, 64.0);
-    gl_TessLevelOuter[3] = clamp(d3 * scale, 16.0, 64.0);
+    gl_TessLevelOuter[0] = clamp(d0 * scale, 32.0, 64.0);
+    gl_TessLevelOuter[1] = clamp(d1 * scale, 32.0, 64.0);
+    gl_TessLevelOuter[2] = clamp(d2 * scale, 32.0, 64.0);
+    gl_TessLevelOuter[3] = clamp(d3 * scale, 32.0, 64.0);
 
     gl_TessLevelInner[0] = (gl_TessLevelOuter[1] + gl_TessLevelOuter[3]) * 0.5;
     gl_TessLevelInner[1] = (gl_TessLevelOuter[0] + gl_TessLevelOuter[2]) * 0.5;
