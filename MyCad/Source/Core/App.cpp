@@ -374,7 +374,7 @@ void App::Render()
 		grid.Render(camera.GetViewMatrix(), projectionMatrix, camera.GetPosition());
 	}
 
-	auto shader = ShaderManager::GetInstance().GetShader("default");
+	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
 
 	shader->Bind();
 	shader->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
@@ -411,7 +411,7 @@ void App::Render()
 		}
 	}
 
-	auto shaderBezier = ShaderManager::GetInstance().GetShader("bezierTess");
+	auto shaderBezier = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
 	shaderBezier->Bind();
 	shaderBezier->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
 	shaderBezier->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
@@ -425,7 +425,7 @@ void App::Render()
 
 	shaderBezier->Unbind();
 
-	auto shaderC = ShaderManager::GetInstance().GetShader("defaultColor");
+	auto shaderC = ShaderManager::GetInstance().GetShader(ShaderName::DefaultColor);
 
 	shaderC->Bind();
 	shaderC->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());

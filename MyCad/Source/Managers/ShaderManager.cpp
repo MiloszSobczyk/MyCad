@@ -3,10 +3,43 @@
 
 ShaderManager::ShaderManager()
 {
-	AddShader("default", "Resources/Shaders/default");
-	AddShader("defaultColor", "Resources/Shaders/defaultColor");
-	AddShader("infiniteGrid", "Resources/Shaders/infiniteGrid");
-	AddTessShader("bezierTess", "Resources/Shaders/bezier.vert", "Resources/Shaders/bezier.tesc", "Resources/Shaders/bezier.tese", "Resources/Shaders/bezier.frag");
+	AddShader(
+		ShaderName::Default,
+		ShaderBuilder()
+		.SetShaderDirectory("Resources/Shaders/")
+		.AddShader(ShaderType::Vertex, "default")
+		.AddShader(ShaderType::Fragment, "default")
+		.Compile()
+	);
+
+	AddShader(
+		ShaderName::DefaultColor,
+		ShaderBuilder()
+		.SetShaderDirectory("Resources/Shaders/")
+		.AddShader(ShaderType::Vertex, "defaultColor")
+		.AddShader(ShaderType::Fragment, "defaultColor")
+		.Compile()
+	);
+
+	AddShader(
+		ShaderName::InfiniteGrid,
+		ShaderBuilder()
+		.SetShaderDirectory("Resources/Shaders/")
+		.AddShader(ShaderType::Vertex, "infiniteGrid")
+		.AddShader(ShaderType::Fragment, "infiniteGrid")
+		.Compile()
+	);
+
+	AddShader(
+		ShaderName::BezierCurve,
+		ShaderBuilder()
+		.SetShaderDirectory("Resources/Shaders/")
+		.AddShader(ShaderType::Vertex, "bezierCurve")
+		.AddShader(ShaderType::TessControl, "bezierCurve")
+		.AddShader(ShaderType::TessEvaluation, "bezierCurve")
+		.AddShader(ShaderType::Fragment, "bezierCurve")
+		.Compile()
+	);
 }
 
 ShaderManager& ShaderManager::GetInstance()
@@ -16,27 +49,18 @@ ShaderManager& ShaderManager::GetInstance()
 	return instance;
 }
 
-std::shared_ptr<Shader> ShaderManager::GetShader(std::string name)
+void ShaderManager::AddShader(ShaderName name, std::shared_ptr<Shader> shader)
 {
-	return shaders[name];
-}
-
-std::shared_ptr<Shader> ShaderManager::AddShader(std::string name, std::string filename)
-{
-	if (shaders.find(name) == shaders.end())
+	if (shaders.find(name) != shaders.end())
 	{
-		shaders[name] = std::make_shared<Shader>(filename);
+		std::cerr << "Shader already exists: " << static_cast<int>(name) << '\n';
+		return;
 	}
 
-	return shaders[name];
+	shaders[name] = shader;
 }
 
-std::shared_ptr<Shader> ShaderManager::AddTessShader(std::string name, std::string vsFilepath, std::string tcsFilepath, std::string tesFilepath, std::string fsFilepath)
+std::shared_ptr<Shader> ShaderManager::GetShader(ShaderName name)
 {
-	if (shaders.find(name) == shaders.end())
-	{
-		shaders[name] = std::make_shared<Shader>(vsFilepath, tcsFilepath, tesFilepath, fsFilepath);
-	}
-
-	return std::shared_ptr<Shader>();
+	return shaders[name];
 }

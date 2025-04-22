@@ -1,44 +1,26 @@
 #pragma once
 
+#include "Matrix4.h"
+#include "Vector4.h"
+
 #include <string>
 #include <unordered_map>
-#include "Algebra.h"
 
-struct ShaderProgramSource
+class Shader 
 {
-	std::string VertexSource;
-	std::string FragmentSource;
-};
-
-class Shader
-{
-private:
-	std::string m_FilePath;
-	unsigned int m_RendererID;
-	std::unordered_map<std::string, int> m_UniformLocationCache;
 public:
-	Shader(const std::string& filepath);
-	Shader(const std::string& vsFilepath, const std::string& fsFilepath);
-	Shader(const std::string& vsFilepath, const std::string& tcsFilepath, const std::string& tesFilepath, const std::string& fsFilepath);
-	~Shader();
+    Shader(unsigned int programID);
+    ~Shader();
 
-	void SetUniformMat4f(const std::string& name, const Algebra::Matrix4& matrix);
-	void SetUniformVec4f(const std::string& name, const Algebra::Vector4& vector);
+    void Bind() const;
+    void Unbind() const;
 
-	void Bind() const;
-	void Unbind() const;
+    void SetUniformMat4f(const std::string& name, const Algebra::Matrix4& matrix);
+    void SetUniformVec4f(const std::string& name, const Algebra::Vector4& vector);
+
 private:
-	std::stringstream ParseShader(const std::string& filepath);
-	ShaderProgramSource GetShaderFromFiles(const std::string& filepath);
-	unsigned int CompileShader(unsigned int type, const std::string& source);
-	unsigned int CreateShader(
-		const std::string& vertexShader,
-		const std::string& fragmentShader);
-	unsigned int CreateShader(
-		const std::string& vertexShader,
-		const std::string& fragmentShader,
-		const std::string& tessControlShader,
-		const std::string& tessEvalShader);
+    unsigned int m_RendererID;
+    mutable std::unordered_map<std::string, int> m_UniformLocationCache;
 
-	int GetUniformLocation(const std::string& name);
+    int GetUniformLocation(const std::string& name);
 };

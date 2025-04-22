@@ -1,23 +1,30 @@
 #pragma once
 
 #include "Engine/Shader.h"
+#include "Engine/ShaderBuilder.h"
 #include <unordered_map>
 #include <string>
 
+enum class ShaderName
+{
+	Default = 0,
+	DefaultColor = 1,
+	InfiniteGrid = 2,
+	BezierCurve = 3,
+};
 
 class ShaderManager
 {
 private:
-	std::unordered_map<std::string, std::shared_ptr<Shader>> shaders;
+	std::unordered_map<ShaderName, std::shared_ptr<Shader>> shaders;
 
 	ShaderManager();
-	std::shared_ptr<Shader> AddShader(std::string name, std::string filename);
-	std::shared_ptr<Shader> AddTessShader(std::string name, std::string vsFilepath, std::string tcsFilepath, std::string tesFilepath, std::string fsFilepath);
 public:
 	ShaderManager(ShaderManager& shaderManager) = delete;
 	void operator=(const ShaderManager& shaderManager) = delete;
 	
 	static ShaderManager& GetInstance();
 
-	std::shared_ptr<Shader> GetShader(std::string name);
+	void AddShader(ShaderName name, std::shared_ptr<Shader> shader);
+	std::shared_ptr<Shader> GetShader(ShaderName name);
 };

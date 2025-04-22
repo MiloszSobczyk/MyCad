@@ -160,6 +160,7 @@
     <ClCompile Include="Source\Engine\Camera.cpp" />
     <ClCompile Include="Source\Core\InfiniteGrid.cpp" />
     <ClCompile Include="Source\Engine\IndexBuffer.cpp" />
+    <ClCompile Include="Source\Engine\ShaderBuilder.cpp" />
     <ClCompile Include="Source\Engine\VertexArray.cpp" />
     <ClCompile Include="Source\Engine\VertexBuffer.cpp" />
     <ClCompile Include="Source\Engine\VertexLayout.cpp" />
@@ -192,6 +193,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Core\IObserver.h" />
     <ClInclude Include="Source\Core\Observable.h" />
+    <ClInclude Include="Source\Engine\ShaderBuilder.h" />
     <ClInclude Include="Source\Managers\ShaderManager.h" />
     <ClInclude Include="Source\Objects\BezierCurve.h" />
     <ClInclude Include="Source\Core\Collection.h" />
