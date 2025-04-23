@@ -14,7 +14,7 @@ const std::vector<unsigned int> squareIndices = {
 };
 
 InfiniteGrid::InfiniteGrid()
-	: renderer{ VertexDataType::PositionVertexData, squareData, squareIndices }
+	: renderer(VertexDataType::PositionVertexData, squareData, squareIndices)
 {
 	renderer.SetIndices(squareIndices);
 	renderer.SetVertices(squareData);
