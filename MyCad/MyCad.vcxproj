@@ -168,6 +168,7 @@
     <ClCompile Include="Source\Managers\ShaderManager.cpp" />
     <ClCompile Include="Source\Objects\AxisCursor.cpp" />
     <ClCompile Include="Source\Objects\BezierCurve.cpp" />
+    <ClCompile Include="Source\Objects\BezierCurveC2.cpp" />
     <ClCompile Include="Source\Objects\Components\ObservableTranslationComponent.cpp" />
     <ClCompile Include="Source\Objects\Point.cpp" />
     <ClCompile Include="Source\Objects\Polyline.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Source\Managers\ShaderManager.h" />
     <ClInclude Include="Source\Objects\BezierCurve.h" />
     <ClInclude Include="Source\Core\Collection.h" />
+    <ClInclude Include="Source\Objects\BezierCurveC2.h" />
     <ClInclude Include="Source\Objects\Components\ObservableTranslationComponent.h" />
     <ClInclude Include="Source\Objects\Components\Transformations.h" />
     <ClInclude Include="Source\Objects\Point.h" />

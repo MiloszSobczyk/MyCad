@@ -18,12 +18,14 @@ private:
     std::vector<std::weak_ptr<Point>> controlPoints;
     std::shared_ptr<Polyline> polyline;
 
-    void UpdateCurve();
+protected:
+    virtual void UpdateCurve();
+
 public:
     BezierCurve();
 
-    void Render() override;
-    void RenderUI() override;
+    virtual void Render() override;
+    virtual void RenderUI() override;
 
     void AddPoint(const std::shared_ptr<Point>& point);
     void RemovePoint(const std::shared_ptr<Point>& point);

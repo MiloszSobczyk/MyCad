@@ -1,20 +1,19 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <array>
-#include <unordered_set>
-
 #include "Algebra.h"
-
-#include "Utils/Init.h"
-#include "Core/Window.h"
 #include "Core/InfiniteGrid.h"
+#include "Core/Window.h"
 #include "Engine/Camera.h"
-#include "Objects/Objects.h"
 #include "Managers/ShaderManager.h"
-#include "Operations/OperationFactory.h"
+#include "Objects/Objects.h"
 #include "Objects/SelectedShapes.h"
+#include "Operations/OperationFactory.h"
+#include "Utils/Init.h"
+
+#include <array>
+#include <string>
+#include <unordered_set>
+#include <vector>
 
 enum class AppMode
 {
