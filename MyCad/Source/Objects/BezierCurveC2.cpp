@@ -102,7 +102,7 @@ void BezierCurveC2::AddPoint(const std::shared_ptr<Point>& point)
     controlPoints.push_back(point);
     point->AddObserver(shared_from_this());
 
-    //polyline->AddPoint(point);
+    polyline->AddPoint(point);
 
     UpdateCurve();
 }

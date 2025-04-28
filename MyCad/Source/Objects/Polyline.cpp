@@ -177,6 +177,8 @@ void Polyline::RemovePoint(const std::shared_ptr<Point>& point)
 
 void Polyline::SwapPoints(int index1, int index2)
 {
+	if (index1 < 0 || index2 < 0 || index1 >= points.size() || index2 >= points.size())
+		return;
     std::swap(points[index1], points[index2]);
     UpdatePoints();
 }
