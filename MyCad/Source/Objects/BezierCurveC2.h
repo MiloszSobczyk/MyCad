@@ -1,15 +1,35 @@
 #pragma once
-#include "BezierCurve.h"
 
+#include "Shape.h"
+#include "Core/IObserver.h"
+#include "Engine/Renderer.h"
+#include "Point.h"
+#include "Polyline.h"
 
-class BezierCurveC2 : public BezierCurve
+#include <vector>
+#include <memory>
+
+class BezierCurveC2 : public std::enable_shared_from_this<BezierCurveC2>, public Shape, public IObserver
 {
+private:
+    bool drawPolyline = false;
+
+    Renderer<PositionVertexData> renderer;
+    std::vector<std::weak_ptr<Point>> controlPoints;
+    std::shared_ptr<Polyline> polyline;
+
 protected:
-    void UpdateCurve() override;
+    virtual void UpdateCurve();
 
 public:
     BezierCurveC2();
 
-    void Render() override;
-    void RenderUI() override;
+    virtual void Render() override;
+    virtual void RenderUI() override;
+
+    void AddPoint(const std::shared_ptr<Point>& point);
+    void RemovePoint(const std::shared_ptr<Point>& point);
+    void SwapPoints(int index1, int index2);
+
+    void OnNotified() override;
 };

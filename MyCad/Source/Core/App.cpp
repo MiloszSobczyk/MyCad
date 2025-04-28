@@ -270,9 +270,22 @@ void App::DisplayAddShapeButtons()
 		shapes.push_back(polyline);
 	}
 
-	if (ImGui::Button("Add Bezier Curve"))
+	if (ImGui::Button("Add Bezier Curve C0"))
 	{
 		auto bezierCurve = std::make_shared<BezierCurve>();
+
+		auto selectedPoints = selectedShapes->GetSelectedWithType<Point>();
+		for (const auto& point : selectedPoints)
+		{
+			bezierCurve->AddPoint(point);
+		}
+
+		shapes.push_back(bezierCurve);
+	}
+
+	if (ImGui::Button("Add Bezier Curve C2"))
+	{
+		auto bezierCurve = std::make_shared<BezierCurveC2>();
 
 		auto selectedPoints = selectedShapes->GetSelectedWithType<Point>();
 		for (const auto& point : selectedPoints)
@@ -402,12 +415,17 @@ void App::Render()
 	shader->Unbind();
 
 	std::vector<std::shared_ptr<BezierCurve>> bezierCurves;
+	std::vector<std::shared_ptr<BezierCurveC2>> bezierCurvesC2;
 
 	for (const auto& shape : shapes)
 	{
 		if (auto bezier = std::dynamic_pointer_cast<BezierCurve>(shape))
 		{
 			bezierCurves.push_back(bezier);
+		}
+		if (auto bezierC2 = std::dynamic_pointer_cast<BezierCurveC2>(shape))
+		{
+			bezierCurvesC2.push_back(bezierC2);
 		}
 	}
 
@@ -421,6 +439,11 @@ void App::Render()
 	for (auto curve : bezierCurves)
 	{
 		curve->Render();
+	}
+
+	for (auto curveC2 : bezierCurvesC2)
+	{
+		curveC2->Render();
 	}
 
 	shaderBezier->Unbind();

@@ -9,6 +9,7 @@
 #include "Objects/SelectedShapes.h"
 #include "Operations/OperationFactory.h"
 #include "Utils/Init.h"
+#include "Objects/BezierCurveC2.h"
 
 #include <array>
 #include <string>
