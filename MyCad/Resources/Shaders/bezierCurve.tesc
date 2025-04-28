@@ -1,6 +1,7 @@
 #version 460 core
 
 layout(vertices = 4) out;
+out patch float maxU;
 
 uniform mat4 u_viewMatrix;
 uniform mat4 u_projectionMatrix;
@@ -51,12 +52,10 @@ void main()
     float distanceFactor = clamp(100.0 / distToCamera, 0.5, 2.0);
 
     float scale = baseScale * distanceFactor * u_zoomLevel.x;
+    float part = d1 * scale;
 
-    gl_TessLevelOuter[0] = clamp(d0 * scale, 32.0, 64.0);
-    gl_TessLevelOuter[1] = clamp(d1 * scale, 32.0, 64.0);
-    gl_TessLevelOuter[2] = clamp(d2 * scale, 32.0, 64.0);
-    gl_TessLevelOuter[3] = clamp(d3 * scale, 32.0, 64.0);
+    gl_TessLevelOuter[0] = ceil(sqrt(part));
+    gl_TessLevelOuter[1] = ceil(sqrt(part));
 
-    gl_TessLevelInner[0] = (gl_TessLevelOuter[1] + gl_TessLevelOuter[3]) * 0.5;
-    gl_TessLevelInner[1] = (gl_TessLevelOuter[0] + gl_TessLevelOuter[2]) * 0.5;
+    maxU = ceil(sqrt(part));
 }
