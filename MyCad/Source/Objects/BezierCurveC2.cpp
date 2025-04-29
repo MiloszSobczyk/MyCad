@@ -18,13 +18,13 @@ void BezierCurveC2::Render()
     }
     if (drawBernsteinPolygon)
     {
-		bernsteinPolyline->Render();
+		bernsteinPolyline->RenderColor();
     }
     if (drawBernsteinBase)
     {
 		for (const auto point : bernsteinPoints)
 		{
-			point->Render();
+			point->RenderColor();
 		}
     }
     if (controlPoints.size() > 1)
@@ -238,7 +238,7 @@ void BezierCurveC2::HandleInput()
         {
             auto normDelta = Algebra::Vector4(delta.x, -delta.y, 0.f, 0.f).Normalize();
             Algebra::Vector4 translation(0, 0, 0, 0);
-            translation[static_cast<int>(axisMode)] = (axisMode == AxisMode::Y ? normDelta.y : normDelta.x) / 6.f;
+            translation[static_cast<int>(axisMode)] = (axisMode == AxisMode::Y ? normDelta.y : normDelta.x) / 8.f;
             lastTranslation += translation;
 	        auto selectedPoint = bernsteinPoints[selectedBernsteinIndex];
             selectedPoint->GetTranslationComponent()->AddTranslation(translation);
@@ -330,7 +330,6 @@ void BezierCurveC2::UpdateCurve()
             (D0 + 4.0f * D1 + D2) / 6.0f,
             (2.0f * D1 + D2) / 3.0f,
             (D1 + 2.0f * D2) / 3.0f,
-
             (D1 + 4.0f * D2 + D3) / 6.0f
         };
 

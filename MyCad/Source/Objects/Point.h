@@ -17,6 +17,7 @@ public:
 	void Init();
 
 	void Render() override;
+	void RenderColor();
 	void RenderUI() override;
 
 	std::shared_ptr<TranslationComponent> GetTranslationComponent() override;

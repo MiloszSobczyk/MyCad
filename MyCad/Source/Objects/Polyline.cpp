@@ -1,6 +1,8 @@
 #include "Polyline.h"
 
 #include <GLFW/glfw3.h>
+#include <Managers/ShaderManager.h>
+#include <Core/App.h>
 
 Polyline::Polyline()
 {
@@ -21,6 +23,22 @@ Polyline::~Polyline()
 void Polyline::Render()
 {
     if (indexCount == 0) return;
+
+    glBindVertexArray(vao);
+    glDrawElements(GL_LINES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);
+    glBindVertexArray(0);
+}
+
+void Polyline::RenderColor()
+{
+    if (indexCount == 0) return;
+
+    auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
+    shader->Bind();
+    shader->SetUniformVec4f("u_color", Algebra::Vector4(0.f, 0.8f, 0.f, 1.f));
+    shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+    shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+    shader->SetUniformMat4f("u_modelMatrix", GetModelMatrix());
 
     glBindVertexArray(vao);
     glDrawElements(GL_LINES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);
