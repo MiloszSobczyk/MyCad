@@ -1,5 +1,5 @@
 #include "Point.h"
-
+#include "Core/App.h"
 
 
 Point::Point()
@@ -42,6 +42,11 @@ void Point::Init()
 
 void Point::Render()
 {
+    auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
+    shader->Bind();
+    shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+    shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+    shader->SetUniformMat4f("u_modelMatrix", GetModelMatrix());
 	renderer.Render(GL_TRIANGLES);
 }
 

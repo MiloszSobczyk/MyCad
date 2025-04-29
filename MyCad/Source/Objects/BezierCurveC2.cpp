@@ -1,20 +1,40 @@
 #include "BezierCurveC2.h"
+#include "Core/App.h"
 
 BezierCurveC2::BezierCurveC2()
     : renderer(VertexDataType::PositionVertexData),
-    polyline(std::make_shared<Polyline>())
+    polyline(std::make_shared<Polyline>()),
+	bernsteinPolyline(std::make_shared<Polyline>())
 {
     name = "BezierCurveC2_" + std::to_string(id);
 }
 
 void BezierCurveC2::Render()
 {
-    if (drawPolyline)
+    if (drawDeBoorPoints)
     {
         polyline->Render();
     }
+    if (drawBernsteinPolygon)
+    {
+		bernsteinPolyline->Render();
+    }
+    if (drawBernsteinBase)
+    {
+		for (const auto point : bernsteinPoints)
+		{
+			point->Render();
+		}
+    }
     if (controlPoints.size() > 1)
     {
+        auto shaderBezier = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
+        shaderBezier->Bind();
+        shaderBezier->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+        shaderBezier->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+        shaderBezier->SetUniformVec4f("u_cameraPos", App::camera.GetPosition());
+        shaderBezier->SetUniformVec4f("u_zoomLevel", { App::camera.GetZoom(), 0.f, 0.f, 0.f });
+
         renderer.Render(GL_PATCHES);
     }
 }
@@ -23,7 +43,9 @@ void BezierCurveC2::RenderUI()
 {
     Shape::RenderUI();
 
-    ImGui::Checkbox("Draw Polyline", &drawPolyline);
+    ImGui::Checkbox("Draw de Boor points", &drawDeBoorPoints);
+    ImGui::Checkbox("Draw Bernstein base", &drawBernsteinBase);
+    ImGui::Checkbox("Draw Berstein polygon", &drawBernsteinPolygon);
 
     if (controlPoints.empty())
     {
@@ -175,15 +197,23 @@ void BezierCurveC2::UpdateCurve()
         D2.w = 1.0f;
         D3.w = 1.0f;
 
-        Algebra::Vector4 P0 = (D0 + 4.0f * D1 + D2) / 6.0f;
-        Algebra::Vector4 P1 = (2.0f * D1 + D2) / 3.0f;
-        Algebra::Vector4 P2 = (D1 + 2.0f * D2) / 3.0f;
-        Algebra::Vector4 P3 = (D1 + 4.0f * D2 + D3) / 6.0f;
+        Algebra::Vector4 bezierPoints[4] = {
+            (D0 + 4.0f * D1 + D2) / 6.0f,
+            (2.0f * D1 + D2) / 3.0f,
+            (D1 + 2.0f * D2) / 3.0f,
+            (D1 + 4.0f * D2 + D3) / 6.0f
+        };
 
-        vertices.push_back(PositionVertexData{ .Position = P0 });
-        vertices.push_back(PositionVertexData{ .Position = P1 });
-        vertices.push_back(PositionVertexData{ .Position = P2 });
-        vertices.push_back(PositionVertexData{ .Position = P3 });
+        for (const auto& p : bezierPoints)
+        {
+            vertices.push_back(PositionVertexData{ .Position = p });
+            
+            auto pointPtr = std::make_shared<Point>();
+            pointPtr->Init();
+            pointPtr->GetTranslationComponent()->SetTranslation(p);
+			bernsteinPoints.push_back(pointPtr);
+			bernsteinPolyline->AddPoint(pointPtr);
+        }
     }
 
     renderer.SetVertices(vertices);

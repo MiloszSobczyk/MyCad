@@ -9,14 +9,19 @@
 #include <vector>
 #include <memory>
 
+
 class BezierCurveC2 : public std::enable_shared_from_this<BezierCurveC2>, public Shape, public IObserver
 {
 private:
-    bool drawPolyline = false;
+    bool drawDeBoorPoints = false;
+    bool drawBernsteinBase = false;
+    bool drawBernsteinPolygon = false;
 
     Renderer<PositionVertexData> renderer;
     std::vector<std::weak_ptr<Point>> controlPoints;
     std::shared_ptr<Polyline> polyline;
+    std::shared_ptr<Polyline> bernsteinPolyline;
+    std::vector<std::shared_ptr<Point>> bernsteinPoints;
 
 protected:
     virtual void UpdateCurve();

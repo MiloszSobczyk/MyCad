@@ -32,7 +32,6 @@ private:
 	bool showGrid;
 	bool useCursor = true;
 	Window window;
-	Camera camera;
 	InfiniteGrid grid;
 
 	std::vector<std::shared_ptr<Shape>> shapes;
@@ -43,7 +42,6 @@ private:
 
 	OperationFactory operationFactory;
 
-	Algebra::Matrix4 projectionMatrix;
 	Algebra::Matrix4 viewMatrix;
 	
 	Algebra::Vector4 draggingPoint;
@@ -52,6 +50,9 @@ private:
 	OperationMode operationMode;
 
 public:
+	static Camera camera;
+	static Algebra::Matrix4 projectionMatrix;
+
 	App();
 	~App();
 

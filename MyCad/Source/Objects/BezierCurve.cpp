@@ -1,4 +1,5 @@
 #include "BezierCurve.h"
+#include "Core/App.h"
 
 BezierCurve::BezierCurve()
     : renderer(VertexDataType::PositionVertexData),
