@@ -12,9 +12,9 @@
 
 enum class AxisMode
 {
-	X,
-	Y,
-	Z
+	X = 0,
+	Y = 1,
+	Z = 2,
 };
 
 class BezierCurveC2 : public std::enable_shared_from_this<BezierCurveC2>, public Shape, public IObserver
@@ -31,6 +31,7 @@ private:
     std::vector<std::shared_ptr<Point>> bernsteinPoints;
     int selectedBernsteinIndex = -1;
     AxisMode axisMode;
+    Algebra::Vector4 lastTranslation;
 
 protected:
     virtual void UpdateCurve();

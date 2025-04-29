@@ -230,7 +230,8 @@ void BezierCurveC2::HandleInput()
         {
             auto normDelta = Algebra::Vector4(delta.x, -delta.y, 0.f, 0.f).Normalize();
             Algebra::Vector4 translation(0, 0, 0, 0);
-            translation[static_cast<int>(axisMode)] = axisMode == AxisMode::Y ? normDelta.y : normDelta.x;
+            translation[static_cast<int>(axisMode)] = (axisMode == AxisMode::Y ? normDelta.y : normDelta.x) / 6.f;
+            lastTranslation += translation;
 	        auto selectedPoint = bernsteinPoints[selectedBernsteinIndex];
             selectedPoint->GetTranslationComponent()->AddTranslation(translation);
             RecalculateDeBoorPoints();
@@ -240,7 +241,45 @@ void BezierCurveC2::HandleInput()
 
 void BezierCurveC2::RecalculateDeBoorPoints()
 {
+    if (bernsteinPoints.size() < 4)
+    {
+        UpdateCurve();
+        return;
+    }
 
+    int segment = std::max((selectedBernsteinIndex - 1), 0) / 3;
+
+	std::shared_ptr<Point> D0 = controlPoints[segment].lock();
+	std::shared_ptr<Point> D1 = controlPoints[segment + 1].lock();
+	std::shared_ptr<Point> D2 = controlPoints[segment + 2].lock();
+	std::shared_ptr<Point> D3 = controlPoints[segment + 3].lock();
+
+	int modulo = selectedBernsteinIndex % 3;
+    
+    if (modulo == 0)
+    {
+        if (selectedBernsteinIndex == 0)
+        {
+		    D0->GetTranslationComponent()->AddTranslation(6.f * lastTranslation);
+        }
+        else
+        {
+		    D3->GetTranslationComponent()->AddTranslation(6.f * lastTranslation);
+        }
+    }
+    else if (modulo == 1)
+    {
+		D1->GetTranslationComponent()->AddTranslation(2.f * lastTranslation);
+		D2->GetTranslationComponent()->AddTranslation(1.f * lastTranslation);
+    }
+    else if (modulo == 2)
+    {
+        D1->GetTranslationComponent()->AddTranslation(1.f * lastTranslation);
+        D2->GetTranslationComponent()->AddTranslation(2.f * lastTranslation);
+    }
+
+    lastTranslation = Algebra::Vector4(0.f, 0.f, 0.f);
+    UpdateCurve();
 }
 
 void BezierCurveC2::UpdateCurve()
