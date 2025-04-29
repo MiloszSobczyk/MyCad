@@ -116,6 +116,11 @@ void BezierCurveC2::RenderUI()
     }
     else
     {
+        const char* axisNames[] = { "X", "Y", "Z" };
+        ImGui::SeparatorText("Transformation Axis");
+        ImGui::Text("Current axis: %s", axisNames[static_cast<int>(axisMode)]);
+        ImGui::Text("Press X / Y / Z to change axis");
+
         int index = 0;
         for (const auto& point : bernsteinPoints)
         {
@@ -124,7 +129,10 @@ void BezierCurveC2::RenderUI()
 
             if (ImGui::Selectable(label.c_str(), isSelected))
             {
-                selectedBernsteinIndex = index;
+                if (isSelected)
+                    selectedBernsteinIndex = -1;
+                else
+                    selectedBernsteinIndex = index;
             }
 
             ++index;
