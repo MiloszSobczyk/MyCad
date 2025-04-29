@@ -183,6 +183,11 @@ void Polyline::SwapPoints(int index1, int index2)
     UpdatePoints();
 }
 
+void Polyline::ClearPoints()
+{
+    points.clear();
+}
+
 void Polyline::OnNotified()
 {
     UpdatePoints();

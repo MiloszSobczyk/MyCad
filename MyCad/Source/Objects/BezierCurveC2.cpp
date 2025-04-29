@@ -165,10 +165,12 @@ void BezierCurveC2::OnNotified()
 
 void BezierCurveC2::UpdateCurve()
 {
+    bernsteinPoints.clear();
+	bernsteinPolyline->ClearPoints();
+    polyline->UpdatePoints();
+    
     if (controlPoints.size() < 4)
         return;
-
-    polyline->UpdatePoints();
 
     std::vector<PositionVertexData> vertices;
 

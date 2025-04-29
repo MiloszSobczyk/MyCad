@@ -319,6 +319,13 @@ void App::DisplayAddPointsButton()
 				curve->AddPoint(point);
 			}
 		}
+		for (auto curve : selectedShapes->GetSelectedWithType<BezierCurveC2>())
+		{
+			for (auto point : points)
+			{
+				curve->AddPoint(point);
+			}
+		}
 	}
 }
 

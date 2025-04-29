@@ -27,6 +27,7 @@ public:
     void AddPoint(const std::shared_ptr<Point>& point);
     void RemovePoint(const std::shared_ptr<Point>& point);
     void SwapPoints(int index1, int index2);
+    void ClearPoints();
 
     void OnNotified() override;
 };
