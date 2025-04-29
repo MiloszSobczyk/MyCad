@@ -4,7 +4,8 @@
 BezierCurveC2::BezierCurveC2()
     : renderer(VertexDataType::PositionVertexData),
     polyline(std::make_shared<Polyline>()),
-	bernsteinPolyline(std::make_shared<Polyline>())
+	bernsteinPolyline(std::make_shared<Polyline>()),
+    axisMode(AxisMode::X)
 {
     name = "BezierCurveC2_" + std::to_string(id);
 }
@@ -232,9 +233,16 @@ void BezierCurveC2::HandleInput()
             translation[static_cast<int>(axisMode)] = axisMode == AxisMode::Y ? normDelta.y : normDelta.x;
 	        auto selectedPoint = bernsteinPoints[selectedBernsteinIndex];
             selectedPoint->GetTranslationComponent()->AddTranslation(translation);
+            RecalculateDeBoorPoints();
         }
     }
 }
+
+void BezierCurveC2::RecalculateDeBoorPoints()
+{
+
+}
+
 
 void BezierCurveC2::UpdateCurve()
 {
@@ -280,14 +288,19 @@ void BezierCurveC2::UpdateCurve()
             (D1 + 4.0f * D2 + D3) / 6.0f
         };
 
-        for (const auto& p : bezierPoints)
+        for (int j = 0; j < 4; ++j)
         {
+			auto p = bezierPoints[j];
             vertices.push_back(PositionVertexData{ .Position = p });
             
             auto pointPtr = std::make_shared<Point>();
             pointPtr->Init();
             pointPtr->GetTranslationComponent()->SetTranslation(p);
-			bernsteinPoints.push_back(pointPtr);
+            if (j != 0 || i != 0)
+            {
+			    bernsteinPoints.push_back(pointPtr);
+            }
+
 			bernsteinPolyline->AddPoint(pointPtr);
         }
     }

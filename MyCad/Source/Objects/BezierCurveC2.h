@@ -30,7 +30,7 @@ private:
     std::shared_ptr<Polyline> bernsteinPolyline;
     std::vector<std::shared_ptr<Point>> bernsteinPoints;
     int selectedBernsteinIndex = -1;
-    AxisMode axisMode = AxisMode::X;
+    AxisMode axisMode;
 
 protected:
     virtual void UpdateCurve();
@@ -47,4 +47,5 @@ public:
 
     void OnNotified() override;
     void HandleInput();
+    void RecalculateDeBoorPoints();
 };
