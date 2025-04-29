@@ -90,11 +90,21 @@ void App::HandleInput()
 		return;
 	}
 
+	if (selectedShapes->Size() == 1)
+	{
+		auto selectedShape = selectedShapes->GetAt(0);
+		if (auto curve = std::dynamic_pointer_cast<BezierCurveC2>(selectedShape))
+		{
+			curve->HandleInput();
+			return;
+		}
+	}
+
+
 	if (ImGui::IsKeyDown(ImGuiKey_E))
 	{
 		GetClickedPoint();
 	}
-
 
 	if (ImGui::IsKeyDown(ImGuiKey_Escape))
 	{

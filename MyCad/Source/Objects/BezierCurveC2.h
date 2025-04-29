@@ -10,6 +10,13 @@
 #include <memory>
 
 
+enum class AxisMode
+{
+	X,
+	Y,
+	Z
+};
+
 class BezierCurveC2 : public std::enable_shared_from_this<BezierCurveC2>, public Shape, public IObserver
 {
 private:
@@ -22,6 +29,8 @@ private:
     std::shared_ptr<Polyline> polyline;
     std::shared_ptr<Polyline> bernsteinPolyline;
     std::vector<std::shared_ptr<Point>> bernsteinPoints;
+    int selectedBernsteinIndex = -1;
+    AxisMode axisMode = AxisMode::X;
 
 protected:
     virtual void UpdateCurve();
@@ -37,4 +46,5 @@ public:
     void SwapPoints(int index1, int index2);
 
     void OnNotified() override;
+    void HandleInput();
 };

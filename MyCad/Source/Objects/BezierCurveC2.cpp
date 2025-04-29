@@ -106,6 +106,41 @@ void BezierCurveC2::RenderUI()
     {
         UpdateCurve();
     }
+
+    ImGui::SeparatorText("Bernstein Points");
+
+    if (bernsteinPoints.empty())
+    {
+        ImGui::Text("No bernstein points available.");
+    }
+    else
+    {
+        int index = 0;
+        for (const auto& point : bernsteinPoints)
+        {
+            bool isSelected = (selectedBernsteinIndex == index);
+            std::string label = "B" + std::to_string(index) + "##bernstein" + std::to_string(index);
+
+            if (ImGui::Selectable(label.c_str(), isSelected))
+            {
+                selectedBernsteinIndex = index;
+            }
+
+            ++index;
+        }
+
+        if (selectedBernsteinIndex >= 0 && selectedBernsteinIndex < static_cast<int>(bernsteinPoints.size()))
+        {
+            auto selectedPoint = bernsteinPoints[selectedBernsteinIndex];
+            if (selectedPoint)
+            {
+                auto pos = selectedPoint->GetTranslationComponent()->GetTranslation();
+                ImGui::Text("Selected: B%d", selectedBernsteinIndex);
+                ImGui::Text("Position: (%.2f, %.2f, %.2f)", pos.x, pos.y, pos.z);
+            }
+        }
+    }
+
 }
 
 void BezierCurveC2::AddPoint(const std::shared_ptr<Point>& point)
@@ -163,6 +198,44 @@ void BezierCurveC2::OnNotified()
     UpdateCurve();
 }
 
+void BezierCurveC2::HandleInput()
+{
+    if (selectedBernsteinIndex == -1 || selectedBernsteinIndex > bernsteinPoints.size())
+    {
+        selectedBernsteinIndex = -1;
+        return;
+    }
+
+
+    static const std::vector<std::pair<AxisMode, ImGuiKey>> axisModeMap = {
+        { AxisMode::X, ImGuiKey_X },
+        { AxisMode::Y, ImGuiKey_Y },
+        { AxisMode::Z, ImGuiKey_Z }
+    };
+
+    for (const auto& axis : axisModeMap)
+    {
+        if (ImGui::IsKeyPressed(axis.second))
+        {
+            axisMode = axis.first;
+        }
+    }
+
+    if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+    {
+        ImVec2 delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Left);
+
+        if (fabs(delta.x) > FLT_EPSILON || fabs(delta.y) > FLT_EPSILON)
+        {
+            auto normDelta = Algebra::Vector4(delta.x, -delta.y, 0.f, 0.f).Normalize();
+            Algebra::Vector4 translation(0, 0, 0, 0);
+            translation[static_cast<int>(axisMode)] = axisMode == AxisMode::Y ? normDelta.y : normDelta.x;
+	        auto selectedPoint = bernsteinPoints[selectedBernsteinIndex];
+            selectedPoint->GetTranslationComponent()->AddTranslation(translation);
+        }
+    }
+}
+
 void BezierCurveC2::UpdateCurve()
 {
     bernsteinPoints.clear();
@@ -203,6 +276,7 @@ void BezierCurveC2::UpdateCurve()
             (D0 + 4.0f * D1 + D2) / 6.0f,
             (2.0f * D1 + D2) / 3.0f,
             (D1 + 2.0f * D2) / 3.0f,
+
             (D1 + 4.0f * D2 + D3) / 6.0f
         };
 
