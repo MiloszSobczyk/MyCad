@@ -1,4 +1,6 @@
 #include "Torus.h"
+#include "Core/App.h"
+#include "Managers/ShaderManager.h"
 
 #include <imgui/imgui.h>
 #include <numbers>
@@ -60,7 +62,17 @@ void Torus::Render()
 		GeneratePoints();
 	}
 
+	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
+
+	shader->Bind();
+	shader->SetUniformVec4f("u_color", color);
+	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+	shader->SetUniformMat4f("u_modelMatrix", GetModelMatrix());
+
 	renderer.Render(GL_LINES);
+
+	shader->Unbind();
 }
 
 void Torus::RenderUI()
