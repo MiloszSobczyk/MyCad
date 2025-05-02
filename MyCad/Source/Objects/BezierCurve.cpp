@@ -16,7 +16,16 @@ void BezierCurve::Render()
     }
     if (controlPoints.size() > 1)
     {
+        auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
+        shader->Bind();
+        shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+        shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+        shader->SetUniformVec4f("u_cameraPos", App::camera.GetPosition());
+        shader->SetUniformVec4f("u_zoomLevel", { App::camera.GetZoom(), 0.f, 0.f, 0.f });
+
         renderer.Render(GL_PATCHES);
+
+        shader->Unbind();
     }
 }
 

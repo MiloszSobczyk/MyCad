@@ -420,48 +420,5 @@ void App::Render()
 		shape->Render();
 	}
 
-	//std::vector<std::shared_ptr<BezierCurve>> bezierCurves;
-	//std::vector<std::shared_ptr<BezierCurveC2>> bezierCurvesC2;
-
-	//for (const auto& shape : shapes)
-	//{
-	//	if (auto bezier = std::dynamic_pointer_cast<BezierCurve>(shape))
-	//	{
-	//		bezierCurves.push_back(bezier);
-	//	}
-	//	if (auto bezierC2 = std::dynamic_pointer_cast<BezierCurveC2>(shape))
-	//	{
-	//		bezierCurvesC2.push_back(bezierC2);
-	//	}
-	//}
-
-	//auto shaderBezier = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
-	//shaderBezier->Bind();
-	//shaderBezier->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
-	//shaderBezier->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-	//shaderBezier->SetUniformVec4f("u_cameraPos", camera.GetPosition());
-	//shaderBezier->SetUniformVec4f("u_zoomLevel", { camera.GetZoom(), 0.f, 0.f, 0.f });
-	//
-	//for (auto curve : bezierCurves)
-	//{
-	//	curve->Render();
-	//}
-
-	//for (auto curveC2 : bezierCurvesC2)
-	//{
-	//	curveC2->Render();
-	//}
-
-	//shaderBezier->Unbind();
-
-	//auto shaderC = ShaderManager::GetInstance().GetShader(ShaderName::DefaultColor);
-
-	//shaderC->Bind();
-	//shaderC->SetUniformMat4f("u_viewMatrix", camera.GetViewMatrix());
-	//shaderC->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-	//shaderC->SetUniformMat4f("u_modelMatrix", axisCursor->GetModelMatrix());
-
-	//axisCursor->Render();
-
-	//shaderC->Unbind();
+	axisCursor->Render();
 }
