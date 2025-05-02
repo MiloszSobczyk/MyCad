@@ -17,7 +17,6 @@ public:
     Polyline();
 
     void Render() override;
-    void RenderColor();
     void RenderUI() override;
     void UpdatePoints();
 

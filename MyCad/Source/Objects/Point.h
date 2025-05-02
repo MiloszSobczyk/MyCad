@@ -9,7 +9,6 @@ class Point : public std::enable_shared_from_this<Point>, public Shape, public I
 private:
 	std::shared_ptr<ObservableTranslationComponent> translationComponent;
 
-	// TODO: extract into Shape
 	Renderer<PositionVertexData> renderer;
 public:
     Point();
@@ -17,7 +16,6 @@ public:
 	void Init();
 
 	void Render() override;
-	void RenderColor();
 	void RenderUI() override;
 
 	std::shared_ptr<TranslationComponent> GetTranslationComponent() override;

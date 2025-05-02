@@ -28,24 +28,6 @@ void Polyline::Render()
     }
 }
 
-void Polyline::RenderColor()
-{
-    if (points.size() == 0)
-    {
-        auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
-        
-        shader->Bind();
-        shader->SetUniformVec4f("u_color", Algebra::Vector4(0.f, 0.8f, 0.f, 1.f));
-        shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
-        shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
-        shader->SetUniformMat4f("u_modelMatrix", GetModelMatrix());
-     
-        renderer.Render(GL_LINES);
-
-        shader->Unbind();
-    }
-}
-
 void Polyline::RenderUI()
 {
     Shape::RenderUI();

@@ -8,6 +8,7 @@ BezierCurveC2::BezierCurveC2()
     axisMode(AxisMode::X)
 {
     name = "BezierCurveC2_" + std::to_string(id);
+    bernsteinPolyline->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
 }
 
 void BezierCurveC2::Render()
@@ -18,13 +19,13 @@ void BezierCurveC2::Render()
     }
     if (drawBernsteinPolygon)
     {
-		bernsteinPolyline->RenderColor();
+		bernsteinPolyline->Render();
     }
     if (drawBernsteinBase)
     {
 		for (const auto point : bernsteinPoints)
 		{
-			point->RenderColor();
+			point->Render();
 		}
     }
     if (controlPoints.size() > 1)
@@ -244,6 +245,7 @@ void BezierCurveC2::HandleInput()
             lastTranslation += translation;
 	        auto selectedPoint = bernsteinPoints[selectedBernsteinIndex];
             selectedPoint->GetTranslationComponent()->AddTranslation(translation);
+            
             RecalculateDeBoorPoints();
         }
     }
@@ -343,6 +345,7 @@ void BezierCurveC2::UpdateCurve()
             auto pointPtr = std::make_shared<Point>();
             pointPtr->Init();
             pointPtr->GetTranslationComponent()->SetTranslation(p);
+            pointPtr->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
             if (!(i != 0 && j == 0))
             {
 			    bernsteinPoints.push_back(pointPtr);

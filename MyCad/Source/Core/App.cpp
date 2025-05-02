@@ -39,6 +39,11 @@ App::App()
 	pointPtr3->GetTranslationComponent()->SetTranslation(Algebra::Vector4(20.f, 20.f, 0.f, 1.f));
 	shapes.push_back(pointPtr3);
 
+	auto pointPtr4 = std::make_shared<Point>();
+	pointPtr4->Init();
+	pointPtr4->GetTranslationComponent()->SetTranslation(Algebra::Vector4(20.f, 0.f, 0.f, 1.f));
+	shapes.push_back(pointPtr4);
+
 	HandleResize();
 }
 
