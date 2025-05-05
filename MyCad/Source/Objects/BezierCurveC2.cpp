@@ -13,7 +13,7 @@ BezierCurveC2::BezierCurveC2()
 
 void BezierCurveC2::Render()
 {
-    if (drawDeBoorPoints)
+    if (drawDeBoorPolygon)
     {
         polyline->Render();
     }
@@ -47,7 +47,7 @@ void BezierCurveC2::RenderUI()
 {
     Shape::RenderUI();
 
-    ImGui::Checkbox("Draw de Boor points", &drawDeBoorPoints);
+    ImGui::Checkbox("Draw de Boor polygon", &drawDeBoorPolygon);
     ImGui::Checkbox("Draw Bernstein base", &drawBernsteinBase);
     ImGui::Checkbox("Draw Berstein polygon", &drawBernsteinPolygon);
 

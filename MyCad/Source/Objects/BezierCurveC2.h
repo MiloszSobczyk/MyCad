@@ -20,7 +20,7 @@ enum class AxisMode
 class BezierCurveC2 : public std::enable_shared_from_this<BezierCurveC2>, public Shape, public IObserver
 {
 private:
-    bool drawDeBoorPoints = false;
+    bool drawDeBoorPolygon = false;
     bool drawBernsteinBase = false;
     bool drawBernsteinPolygon = false;
 
