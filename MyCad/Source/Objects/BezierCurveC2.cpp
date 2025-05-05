@@ -8,6 +8,9 @@ BezierCurveC2::BezierCurveC2()
     axisMode(AxisMode::X)
 {
     name = "BezierCurveC2_" + std::to_string(id);
+
+    polyline->SetColor(Algebra::Vector4(0.5f, 0.1f, 0.5f, 1.0f));
+    bernsteinPolyline->SetColor(Algebra::Vector4(0.f, 0.8f, 0.f, 1.0f));
 }
 
 void BezierCurveC2::Render()
@@ -18,25 +21,28 @@ void BezierCurveC2::Render()
     }
     if (drawBernsteinPolygon)
     {
-		bernsteinPolyline->RenderColor();
+		bernsteinPolyline->Render();
     }
     if (drawBernsteinBase)
     {
 		for (const auto point : bernsteinPoints)
 		{
-			point->RenderColor();
+			point->Render();
 		}
     }
     if (controlPoints.size() > 1)
     {
-        auto shaderBezier = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
-        shaderBezier->Bind();
-        shaderBezier->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
-        shaderBezier->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
-        shaderBezier->SetUniformVec4f("u_cameraPos", App::camera.GetPosition());
-        shaderBezier->SetUniformVec4f("u_zoomLevel", { App::camera.GetZoom(), 0.f, 0.f, 0.f });
+        auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
+
+        shader->Bind();
+        shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+        shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+        shader->SetUniformVec4f("u_cameraPos", App::camera.GetPosition());
+        shader->SetUniformVec4f("u_zoomLevel", { App::camera.GetZoom(), 0.f, 0.f, 0.f });
 
         renderer.Render(GL_PATCHES);
+
+        shader->Unbind();
     }
 }
 
@@ -44,7 +50,7 @@ void BezierCurveC2::RenderUI()
 {
     Shape::RenderUI();
 
-    ImGui::Checkbox("Draw de Boor points", &drawDeBoorPoints);
+    ImGui::Checkbox("Draw de Boor polygon", &drawDeBoorPoints);
     ImGui::Checkbox("Draw Bernstein base", &drawBernsteinBase);
     ImGui::Checkbox("Draw Berstein polygon", &drawBernsteinPolygon);
 
@@ -338,15 +344,16 @@ void BezierCurveC2::UpdateCurve()
 			auto p = bezierPoints[j];
             vertices.push_back(PositionVertexData{ .Position = p });
             
-            auto pointPtr = std::make_shared<Point>();
-            pointPtr->Init();
-            pointPtr->GetTranslationComponent()->SetTranslation(p);
+            auto point = std::make_shared<Point>();
+            point->Init();
+            point->GetTranslationComponent()->SetTranslation(p);
+            point->SetColor(Algebra::Vector4(0.f, 0.8f, 0.f, 1.0f));
             if (!(i != 0 && j == 0))
             {
-			    bernsteinPoints.push_back(pointPtr);
+			    bernsteinPoints.push_back(point);
             }
 
-			bernsteinPolyline->AddPoint(pointPtr);
+			bernsteinPolyline->AddPoint(point);
         }
     }
 

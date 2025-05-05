@@ -24,18 +24,9 @@ void Polyline::Render()
 {
     if (indexCount == 0) return;
 
-    glBindVertexArray(vao);
-    glDrawElements(GL_LINES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);
-    glBindVertexArray(0);
-}
-
-void Polyline::RenderColor()
-{
-    if (indexCount == 0) return;
-
     auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
     shader->Bind();
-    shader->SetUniformVec4f("u_color", Algebra::Vector4(0.f, 0.8f, 0.f, 1.f));
+    shader->SetUniformVec4f("u_color", color);
     shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
     shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
     shader->SetUniformMat4f("u_modelMatrix", GetModelMatrix());
@@ -43,6 +34,8 @@ void Polyline::RenderColor()
     glBindVertexArray(vao);
     glDrawElements(GL_LINES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
+
+    shader->Unbind();
 }
 
 void Polyline::RenderUI()

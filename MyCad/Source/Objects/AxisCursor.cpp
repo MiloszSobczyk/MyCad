@@ -1,7 +1,8 @@
 #include "AxisCursor.h"
+#include "Core/App.h"
+#include "Managers/ShaderManager.h"
+
 #include <imgui/imgui.h>
-
-
 
 AxisCursor::AxisCursor() 
     : renderer(VertexDataType::PositionColorVertexData), translationComponent(std::make_shared<TranslationComponent>())
@@ -28,7 +29,16 @@ AxisCursor::AxisCursor()
 
 void AxisCursor::Render()
 {
-	renderer.Render(GL_LINES);
+    auto shader = ShaderManager::GetInstance().GetShader(ShaderName::DefaultColor);
+
+    shader->Bind();
+    shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+    shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+    shader->SetUniformMat4f("u_modelMatrix", GetModelMatrix());
+
+    renderer.Render(GL_LINES);
+
+    shader->Unbind();
 }
 
 void AxisCursor::RenderUI()
