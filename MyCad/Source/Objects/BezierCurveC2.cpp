@@ -296,8 +296,8 @@ void BezierCurveC2::RecalculateDeBoorPoints()
 
 void BezierCurveC2::UpdateCurve()
 {
-    bernsteinPoints.clear();
 	bernsteinPolyline->ClearPoints();
+    bernsteinPoints.clear();
     polyline->UpdatePoints();
     
     if (controlPoints.size() < 4)
@@ -305,6 +305,7 @@ void BezierCurveC2::UpdateCurve()
 
     std::vector<PositionVertexData> vertices;
 
+    bool changed = false;
     controlPoints.erase(
         std::remove_if(controlPoints.begin(), controlPoints.end(),
             [](const std::weak_ptr<Point>& p) {
@@ -342,16 +343,16 @@ void BezierCurveC2::UpdateCurve()
 			auto p = bezierPoints[j];
             vertices.push_back(PositionVertexData{ .Position = p });
             
-            auto pointPtr = std::make_shared<Point>();
-            pointPtr->Init();
-            pointPtr->GetTranslationComponent()->SetTranslation(p);
-            pointPtr->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
+            auto point = std::make_shared<Point>();
+            point->Init();
+            point->GetTranslationComponent()->SetTranslation(p);
+            point->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
             if (!(i != 0 && j == 0))
             {
-			    bernsteinPoints.push_back(pointPtr);
+			    bernsteinPoints.push_back(point);
             }
 
-			bernsteinPolyline->AddPoint(pointPtr);
+			bernsteinPolyline->AddPoint(point);
         }
     }
 
