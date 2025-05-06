@@ -161,6 +161,7 @@ void InterpolatingCurve::OnNotified()
     UpdateCurve();
 }
 
+// Move to Algebra library
 std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vector<float>& alpha, 
     std::vector<float>& beta, std::vector<Algebra::Vector4>& r)
 {
