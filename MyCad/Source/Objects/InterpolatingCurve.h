@@ -24,11 +24,11 @@ private:
     bool drawBernsteinPolygon = false;
     bool drawInterpolatingPolygon = false;
 
+    std::vector<std::shared_ptr<Point>> bernsteinPoints;
     Renderer<PositionVertexData> renderer;
     std::vector<std::weak_ptr<Point>> controlPoints;
     std::shared_ptr<Polyline> bernsteinPolyline;
     std::shared_ptr<Polyline> interpolatingPolyline;
-    std::vector<std::shared_ptr<Point>> bernsteinPoints;
 
 protected:
     virtual void UpdateCurve();

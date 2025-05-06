@@ -25,11 +25,11 @@ private:
     bool drawBernsteinBase = false;
     bool drawBernsteinPolygon = false;
 
+    std::vector<std::shared_ptr<Point>> bernsteinPoints;
     Renderer<PositionVertexData> renderer;
     std::vector<std::weak_ptr<Point>> controlPoints;
     std::shared_ptr<Polyline> polyline;
     std::shared_ptr<Polyline> bernsteinPolyline;
-    std::vector<std::shared_ptr<Point>> bernsteinPoints;
     int selectedBernsteinIndex = -1;
     AxisMode axisMode;
     Algebra::Vector4 lastTranslation;
