@@ -357,6 +357,13 @@ void App::DisplayAddPointsButton()
 				curve->AddPoint(point);
 			}
 		}
+		for (auto curve : selectedShapes->GetSelectedWithType<InterpolatingCurve>())
+		{
+			for (auto point : points)
+			{
+				curve->AddPoint(point);
+			}
+		}
 	}
 }
 
