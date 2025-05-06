@@ -199,14 +199,33 @@ void InterpolatingCurve::UpdateCurve()
     bernsteinPolyline->ClearPoints();
     bernsteinPoints.clear();
 
-    if (controlPoints.size() < 4)
+    std::vector<Algebra::Vector4> bezierPoints;
+
+    if (controlPoints.size() <= 1)
     {
         return;
     }
+    else if (controlPoints.size() == 2)
+    {
+        auto p0 = controlPoints[0].lock();
+        auto p1 = controlPoints[1].lock();
+        
+        bezierPoints.push_back(p0->GetTranslationComponent()->GetTranslation());
+        bezierPoints.push_back(p0->GetTranslationComponent()->GetTranslation());
+        bezierPoints.push_back(p1->GetTranslationComponent()->GetTranslation());
+        bezierPoints.push_back(p1->GetTranslationComponent()->GetTranslation());
+
+        bezierPoints[0].w = 1.f;
+        bezierPoints[1].w = 1.f;
+        bezierPoints[2].w = 1.f;
+        bezierPoints[3].w = 1.f;
+    }
+    else
+    {
+        bezierPoints = CalculateBezierPoints();
+    }
 
     std::vector<PositionVertexData> vertices;
-    auto bezierPoints = CalculateBezierPoints();
-
     for (int i = 0; i < bezierPoints.size(); ++i)
     {
         auto p = bezierPoints[i];
