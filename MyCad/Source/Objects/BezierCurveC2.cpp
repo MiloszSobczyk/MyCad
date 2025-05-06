@@ -304,7 +304,6 @@ void BezierCurveC2::UpdateCurve()
 
     std::vector<PositionVertexData> vertices;
 
-    bool changed = false;
     controlPoints.erase(
         std::remove_if(controlPoints.begin(), controlPoints.end(),
             [](const std::weak_ptr<Point>& p) {

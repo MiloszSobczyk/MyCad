@@ -209,6 +209,14 @@ void InterpolatingCurve::UpdateCurve()
     bernsteinPolyline->ClearPoints();
     bernsteinPoints.clear();
 
+    controlPoints.erase(
+        std::remove_if(controlPoints.begin(), controlPoints.end(),
+            [](const std::weak_ptr<Point>& p) {
+                return p.expired();
+            }),
+        controlPoints.end()
+    );
+    
     std::vector<Algebra::Vector4> bezierPoints;
 
     if (controlPoints.size() <= 1)
@@ -230,7 +238,7 @@ void InterpolatingCurve::UpdateCurve()
         bezierPoints[2].w = 1.f;
         bezierPoints[3].w = 1.f;
     }
-    else if(controlPoints.size())
+    else
     {
         bezierPoints = CalculateBezierPoints();
     }
