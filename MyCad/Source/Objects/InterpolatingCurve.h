@@ -32,6 +32,8 @@ private:
 
 protected:
     virtual void UpdateCurve();
+    std::vector<Algebra::Vector4> CalculateBezierPoints();
+
 
 public:
     InterpolatingCurve();

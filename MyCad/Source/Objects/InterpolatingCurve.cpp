@@ -255,8 +255,80 @@ void InterpolatingCurve::UpdateCurve()
         b[i] = (a[i + 1] - a[i]) / d[i] - c[i] * d[i] - D[i] * d[i] * d[i];
 
     std::vector<PositionVertexData> vertices;
+    auto check = CalculateBezierPoints();
 
-    for (int i = 0; i < d.size(); ++i) 
+    for (int i = 0; i < check.size(); ++i) 
+    {
+        auto p = check[i];
+
+        vertices.push_back(PositionVertexData{ .Position = p });
+
+        auto point = std::make_shared<Point>();
+        point->Init();
+        point->GetTranslationComponent()->SetTranslation(p);
+        point->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
+        bernsteinPolyline->AddPoint(point);
+        bernsteinPoints.push_back(point);
+    }
+
+    renderer.SetVertices(vertices);
+}
+
+std::vector<Algebra::Vector4> InterpolatingCurve::CalculateBezierPoints()
+{
+    std::vector<Algebra::Vector4> positions;
+    std::vector<float> d;
+    std::vector<float> alpha;
+    std::vector<float> beta;
+    std::vector<Algebra::Vector4> r;
+
+    for (const auto& p : controlPoints)
+    {
+        if (auto point = p.lock())
+        {
+            positions.push_back(point->GetTranslationComponent()->GetTranslation());
+        }
+    }
+
+    for (int i = 0; i < positions.size() - 1; i++)
+    {
+        d.push_back((positions[i + 1] - positions[i]).Length());
+    }
+
+    for (int i = 1; i < d.size(); i++)
+    {
+        float d0 = d[i - 1];
+        float d1 = d[i];
+        if (i != 1)
+            alpha.push_back(d0 / (d0 + d1));
+        if (i != d.size() - 1)
+            beta.push_back(d1 / (d0 + d1));
+
+        Algebra::Vector4 P0 = (positions[i] - positions[i - 1]) / d0;
+        Algebra::Vector4 P1 = (positions[i + 1] - positions[i]) / d1;
+
+        r.push_back(3.f * (P1 - P0) / (d0 + d1));
+    }
+
+    auto c = SolveTrilinearMatrix(alpha, beta, r);
+    c.insert(c.begin(), Algebra::Vector4());
+    c.push_back(Algebra::Vector4());
+    std::vector<Algebra::Vector4> a(c.size());
+    std::vector<Algebra::Vector4> b(c.size());
+    std::vector<Algebra::Vector4> D(c.size());
+
+    for (int i = 0; i < d.size() - 1; i++)
+        D[i] = (c[i + 1] - c[i]) / d[i] / 3.f;
+
+    for (int i = 0; i < a.size(); i++)
+        a[i] = positions[i];
+
+    for (int i = 0; i < b.size() - 1; i++)
+        b[i] = (a[i + 1] - a[i]) / d[i] - c[i] * d[i] - D[i] * d[i] * d[i];
+
+    std::vector<Algebra::Vector4> bezierPoints;
+
+    for (int i = 0; i < d.size(); ++i)
     {
         Algebra::Vector4 ai = a[i];
         Algebra::Vector4 bi = b[i] * d[i];
@@ -269,21 +341,11 @@ void InterpolatingCurve::UpdateCurve()
         Algebra::Vector4 P3 = ai + bi + ci + di;
         P0.w = P1.w = P2.w = P3.w = 1.0f;
 
-        Algebra::Vector4 bezierPoints[4] = { P0, P1, P2, P3 };
-        for (int j = 0; j < 4; ++j)
-        {
-            auto p = bezierPoints[j];
-
-            vertices.push_back(PositionVertexData{ .Position = p });
-
-            auto point = std::make_shared<Point>();
-            point->Init();
-            point->GetTranslationComponent()->SetTranslation(p);
-            point->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
-            bernsteinPolyline->AddPoint(point);
-            bernsteinPoints.push_back(point);
-        }
+        bezierPoints.push_back(P0);
+        bezierPoints.push_back(P1);
+        bezierPoints.push_back(P2);
+        bezierPoints.push_back(P3);
     }
 
-    renderer.SetVertices(vertices);
+    return bezierPoints;
 }
