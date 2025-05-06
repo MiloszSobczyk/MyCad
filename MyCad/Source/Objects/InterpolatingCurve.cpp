@@ -180,9 +180,11 @@ std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vect
     delta[0] = r[0] / denom;
     delta[0].w = 0.0f;
 
-    for (std::size_t i = 1; i < m; ++i) {
+    for (std::size_t i = 1; i < m; ++i) 
+    {
         denom = 2.0f - alpha[i - 1] * gamma[i - 1];
-        if (i < m - 1) {
+        if (i < m - 1) 
+        {
             gamma[i] = beta[i] / denom;
         }
         Algebra::Vector4 tmp = r[i] - alpha[i - 1] * delta[i - 1];
@@ -192,7 +194,8 @@ std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vect
 
     c[m - 1] = delta[m - 1];
     c[m - 1].w = 0.0f;
-    for (int i = static_cast<int>(m) - 2; i >= 0; --i) {
+    for (int i = static_cast<int>(m) - 2; i >= 0; --i) 
+    {
         Algebra::Vector4 tmp = delta[i] - gamma[i] * c[i + 1];
         c[i] = tmp;
         c[i].w = 0.0f;
@@ -253,7 +256,7 @@ void InterpolatingCurve::UpdateCurve()
 std::vector<Algebra::Vector4> InterpolatingCurve::CalculateBezierPoints()
 {
     std::vector<Algebra::Vector4> positions;
-    std::vector<float> d;
+    std::vector<float> dists;
     std::vector<float> alpha;
     std::vector<float> beta;
     std::vector<Algebra::Vector4> r;
@@ -268,16 +271,16 @@ std::vector<Algebra::Vector4> InterpolatingCurve::CalculateBezierPoints()
 
     for (int i = 0; i < positions.size() - 1; i++)
     {
-        d.push_back((positions[i + 1] - positions[i]).Length());
+        dists.push_back((positions[i + 1] - positions[i]).Length());
     }
 
-    for (int i = 1; i < d.size(); i++)
+    for (int i = 1; i < dists.size(); i++)
     {
-        float d0 = d[i - 1];
-        float d1 = d[i];
+        float d0 = dists[i - 1];
+        float d1 = dists[i];
         if (i != 1)
             alpha.push_back(d0 / (d0 + d1));
-        if (i != d.size() - 1)
+        if (i != dists.size() - 1)
             beta.push_back(d1 / (d0 + d1));
 
         Algebra::Vector4 P0 = (positions[i] - positions[i - 1]) / d0;
@@ -291,25 +294,25 @@ std::vector<Algebra::Vector4> InterpolatingCurve::CalculateBezierPoints()
     c.push_back(Algebra::Vector4());
     std::vector<Algebra::Vector4> a(c.size());
     std::vector<Algebra::Vector4> b(c.size());
-    std::vector<Algebra::Vector4> D(c.size());
+    std::vector<Algebra::Vector4> d(c.size());
 
-    for (int i = 0; i < d.size() - 1; i++)
-        D[i] = (c[i + 1] - c[i]) / d[i] / 3.f;
+    for (int i = 0; i < dists.size(); i++)
+        d[i] = (c[i + 1] - c[i]) / dists[i] / 3.f;
 
     for (int i = 0; i < a.size(); i++)
         a[i] = positions[i];
 
     for (int i = 0; i < b.size() - 1; i++)
-        b[i] = (a[i + 1] - a[i]) / d[i] - c[i] * d[i] - D[i] * d[i] * d[i];
+        b[i] = (a[i + 1] - a[i]) / dists[i] - c[i] * dists[i] - d[i] * dists[i] * dists[i];
 
     std::vector<Algebra::Vector4> bezierPoints;
 
-    for (int i = 0; i < d.size(); ++i)
+    for (int i = 0; i < dists.size(); ++i)
     {
         Algebra::Vector4 ai = a[i];
-        Algebra::Vector4 bi = b[i] * d[i];
-        Algebra::Vector4 ci = c[i] * d[i] * d[i];
-        Algebra::Vector4 di = D[i] * d[i] * d[i] * d[i];
+        Algebra::Vector4 bi = b[i] * dists[i];
+        Algebra::Vector4 ci = c[i] * dists[i] * dists[i];
+        Algebra::Vector4 di = d[i] * dists[i] * dists[i] * dists[i];
 
         Algebra::Vector4 P0 = ai;
         Algebra::Vector4 P1 = ai + bi / 3.f;
