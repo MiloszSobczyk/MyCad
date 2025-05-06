@@ -8,7 +8,7 @@ InterpolatingCurve::InterpolatingCurve()
     interpolatingPolyline(std::make_shared<Polyline>())
 {
     name = "InterpolatingCurve_" + std::to_string(id);
-    bernsteinPolyline->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
+    bernsteinPolyline->SetColor(Algebra::Vector4(0.f, 0.8f, 0.f, 1.f));
 }
 
 void InterpolatingCurve::Render()
