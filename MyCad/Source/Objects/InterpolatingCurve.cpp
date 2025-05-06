@@ -1,5 +1,6 @@
 #include "InterpolatingCurve.h"
 #include "Core/App.h"
+#include "Algebra.h"
 
 InterpolatingCurve::InterpolatingCurve()
     : renderer(VertexDataType::PositionVertexData),
@@ -149,15 +150,16 @@ void InterpolatingCurve::OnNotified()
     UpdateCurve();
 }
 
-std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vector<float>& alpha, std::vector<float>& beta, std::vector<Algebra::Vector4>& R)
+std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vector<float>& alpha, 
+    std::vector<float>& beta, std::vector<Algebra::Vector4>& r)
 {
-    const std::size_t m = R.size();
+    const std::size_t m = r.size();
     std::vector<float> gamma(m);
     std::vector<Algebra::Vector4> delta(m), c(m);
 
     float denom = 2.0f;
     gamma[0] = beta[0] / denom;
-    delta[0] = R[0] / denom;
+    delta[0] = r[0] / denom;
     delta[0].w = 0.0f;
 
     for (std::size_t i = 1; i < m; ++i) {
@@ -165,7 +167,7 @@ std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vect
         if (i < m - 1) {
             gamma[i] = beta[i] / denom;
         }
-        Algebra::Vector4 tmp = R[i] - alpha[i - 1] * delta[i - 1];
+        Algebra::Vector4 tmp = r[i] - alpha[i - 1] * delta[i - 1];
         delta[i] = tmp / denom;
         delta[i].w = 0.0f;
     }
@@ -181,75 +183,77 @@ std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vect
     return c;
 }
 
-
 void InterpolatingCurve::Calculate()
 {
-    // Must have at least 4 control points for C2 spline
-    if (controlPoints.size() < 3)
+    if (controlPoints.size() < 4)
+    {
         return;
+    }
 
-    // 1) Gather 3D positions
     std::vector<Algebra::Vector4> positions;
-    positions.reserve(controlPoints.size());
-    for (auto& wp : controlPoints)
-        if (auto p = wp.lock())
-            positions.push_back(p->GetTranslationComponent()->GetTranslation());
+    std::vector<float> d;
+    std::vector<float> alpha;
+    std::vector<float> beta;
+    std::vector<Algebra::Vector4> r;
 
-    size_t N = positions.size();
-    size_t m = N - 1; // number of spline segments
-
-    // 2) Compute chord-length distances h_i
-    std::vector<float> h(m);
-    for (size_t i = 0; i < m; ++i)
-        h[i] = (positions[i + 1] - positions[i]).Length();
-
-    // 3) Build tridiagonal system parameters alpha, beta and RHS r
-    std::vector<float> alpha(m - 1), beta(m - 1);
-    std::vector<Algebra::Vector4> r(m - 1);
-    for (size_t i = 1; i < m; ++i) {
-        float h0 = h[i - 1];
-        float h1 = h[i];
-        alpha[i - 1] = h0 / (h0 + h1);
-        beta[i - 1] = h1 / (h0 + h1);
-        Algebra::Vector4 d0 = (positions[i] - positions[i - 1]) / h0;
-        Algebra::Vector4 d1 = (positions[i + 1] - positions[i]) / h1;
-        r[i - 1] = 3.0f * (d1 - d0) / (h0 + h1);
-        r[i - 1].w = 0.0f;
+    for (const auto& p : controlPoints)
+    {
+        if (auto point = p.lock())
+        {
+            positions.push_back(point->GetTranslationComponent()->GetTranslation());
+        }
     }
 
-    // 4) Solve internal second derivatives
-    auto c_internal = SolveTrilinearMatrix(alpha, beta, r);
-
-    // 5) Assemble full second-derivatives with natural boundary
-    std::vector<Algebra::Vector4> c(N);
-    c[0] = Algebra::Vector4(0, 0, 0, 0);
-    for (size_t i = 1; i < N - 1; ++i)
-        c[i] = c_internal[i - 1];
-    c[N - 1] = Algebra::Vector4(0, 0, 0, 0);
-
-    // 6) Compute first-derivatives
-    std::vector<Algebra::Vector4> b(N);
-    for (size_t i = 0; i < m; ++i) {
-        // Q'(t_i)
-        b[i] = (positions[i + 1] - positions[i]) / h[i]
-            - (h[i] * (2.0f * c[i] + c[i + 1])) / 6.0f;
+    for (int i = 0; i < positions.size() - 1; i++)
+    {
+        d.push_back((positions[i + 1] - positions[i]).Length());
     }
 
-    // 7) Build Bézier control points per segment and feed renderer
+    for (int i = 1; i < d.size(); i++)
+    {
+        float d0 = d[i - 1];
+        float d1 = d[i];
+        if (i != 1)
+            alpha.push_back(d0 / (d0 + d1));
+        if (i != d.size() - 1)
+            beta.push_back(d1 / (d0 + d1));
+
+        Algebra::Vector4 P0 = (positions[i] - positions[i - 1]) / d0;
+        Algebra::Vector4 P1 = (positions[i + 1] - positions[i]) / d1;
+
+        r.push_back(3.f * (P1 - P0) / (d0 + d1));
+    }
+
+    auto c = SolveTrilinearMatrix(alpha, beta, r);
+    c.insert(c.begin(), Algebra::Vector4());
+    c.push_back(Algebra::Vector4());
+    std::vector<Algebra::Vector4> a(c.size());
+    std::vector<Algebra::Vector4> b(c.size());
+    std::vector<Algebra::Vector4> D(c.size());
+
+    for (int i = 0; i < d.size() - 1; i++)
+        D[i] = (c[i + 1] - c[i]) / d[i] / 3.f;
+
+    for (int i = 0; i < a.size(); i++)
+        a[i] = positions[i];
+
+    for (int i = 0; i < b.size() - 1; i++)
+        b[i] = (a[i + 1] - a[i]) / d[i] - c[i] * d[i] - D[i] * d[i] * d[i];
+
     std::vector<PositionVertexData> vertices;
-    vertices.reserve(m * 4);
 
-    for (size_t i = 0; i < m; ++i) {
-        float hi = h[i];
-        // Convert to Bernstein control points
-        Algebra::Vector4 P0 = positions[i];
-        Algebra::Vector4 P1 = P0 + b[i] * (hi / 3.0f);
-        Algebra::Vector4 P2 = P0 + b[i] * (2.0f * hi / 3.0f)
-            + c[i] * (hi * hi / 6.0f);
-        Algebra::Vector4 P3 = positions[i + 1];
+    for (size_t i = 0; i < d.size(); ++i) {
+        Algebra::Vector4 ai = a[i];
+        Algebra::Vector4 bi = b[i] * d[i];
+        Algebra::Vector4 ci = c[i] * d[i] * d[i];
+        Algebra::Vector4 di = D[i] * d[i] * d[i] * d[i];
+
+        Algebra::Vector4 P0 = ai;
+        Algebra::Vector4 P1 = ai + bi / 3.f;
+        Algebra::Vector4 P2 = ai + bi * 2.f / 3.f + ci / 3.f;
+        Algebra::Vector4 P3 = ai + bi + ci + di;
         P0.w = P1.w = P2.w = P3.w = 1.0f;
 
-        // Push control points for GPU tessellation
         vertices.push_back(PositionVertexData{ .Position = P0 });
         vertices.push_back(PositionVertexData{ .Position = P1 });
         vertices.push_back(PositionVertexData{ .Position = P2 });
@@ -259,9 +263,9 @@ void InterpolatingCurve::Calculate()
     renderer.SetVertices(vertices);
 }
 
-
 void InterpolatingCurve::UpdateCurve()
 {
+    Calculate();
     //bernsteinPolyline->ClearPoints();
 
     //if (controlPoints.size() < 4)

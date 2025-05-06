@@ -44,7 +44,7 @@ public:
     void OnNotified() override;
 
     std::vector<Algebra::Vector4> SolveTrilinearMatrix(std::vector<float>& alpha, 
-        std::vector<float>& beta, std::vector<Algebra::Vector4>& R);
+        std::vector<float>& beta, std::vector<Algebra::Vector4>& r);
 
     void Calculate();
 };

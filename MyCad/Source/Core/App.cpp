@@ -328,8 +328,6 @@ void App::DisplayAddShapeButtons()
 		}
 
 		shapes.push_back(bezierCurve);
-
-		bezierCurve->Calculate();
 	}
 }
 
