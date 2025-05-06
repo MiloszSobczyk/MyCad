@@ -168,6 +168,13 @@ std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vect
     std::vector<float> gamma(m);
     std::vector<Algebra::Vector4> delta(m), c(m);
 
+    if (r.size() == 1) 
+    {
+        c[0] = r[0] / 2.f;
+        c[0].w = 0.0f;
+        return c;
+    }
+
     float denom = 2.0f;
     gamma[0] = beta[0] / denom;
     delta[0] = r[0] / denom;
@@ -220,7 +227,7 @@ void InterpolatingCurve::UpdateCurve()
         bezierPoints[2].w = 1.f;
         bezierPoints[3].w = 1.f;
     }
-    else
+    else if(controlPoints.size())
     {
         bezierPoints = CalculateBezierPoints();
     }

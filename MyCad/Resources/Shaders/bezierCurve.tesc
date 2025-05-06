@@ -51,7 +51,7 @@ void main()
     
     float distanceFactor = clamp(100.0 / distToCamera, 0.5, 2.0);
 
-    float scale = baseScale * distanceFactor * u_zoomLevel.x;
+    float scale = baseScale * distanceFactor * 4;
     float part = d1 * scale;
 
     gl_TessLevelOuter[0] = ceil(sqrt(part));
