@@ -10,6 +10,7 @@
 #include <iostream>
 #include <numbers>
 #include <algorithm>
+#include <Objects/InterpolatingCurve.h>
 
 Camera App::camera = Camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f);
 Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280 / 720, 0.1f, 10000.0f, std::numbers::pi_v<float> / 2.f);
@@ -314,6 +315,21 @@ void App::DisplayAddShapeButtons()
 		}
 
 		shapes.push_back(bezierCurve);
+	}
+
+	if (ImGui::Button("Add Interpolating Curve"))
+	{
+		auto bezierCurve = std::make_shared<InterpolatingCurve>();
+
+		auto selectedPoints = selectedShapes->GetSelectedWithType<Point>();
+		for (const auto& point : selectedPoints)
+		{
+			bezierCurve->AddPoint(point);
+		}
+
+		shapes.push_back(bezierCurve);
+
+		bezierCurve->Calculate();
 	}
 }
 

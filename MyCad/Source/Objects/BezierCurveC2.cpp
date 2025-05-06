@@ -218,7 +218,6 @@ void BezierCurveC2::HandleInput()
         return;
     }
 
-
     static const std::vector<std::pair<AxisMode, ImGuiKey>> axisModeMap = {
         { AxisMode::X, ImGuiKey_X },
         { AxisMode::Y, ImGuiKey_Y },

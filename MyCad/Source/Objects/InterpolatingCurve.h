@@ -42,4 +42,9 @@ public:
     void SwapPoints(int index1, int index2);
 
     void OnNotified() override;
+
+    std::vector<Algebra::Vector4> SolveTrilinearMatrix(std::vector<float>& alpha, 
+        std::vector<float>& beta, std::vector<Algebra::Vector4>& R);
+
+    void Calculate();
 };
