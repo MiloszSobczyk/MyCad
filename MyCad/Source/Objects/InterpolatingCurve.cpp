@@ -196,6 +196,9 @@ std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vect
 
 void InterpolatingCurve::UpdateCurve()
 {
+    bernsteinPolyline->ClearPoints();
+    bernsteinPoints.clear();
+
     if (controlPoints.size() < 4)
     {
         return;
@@ -272,6 +275,13 @@ void InterpolatingCurve::UpdateCurve()
             auto p = bezierPoints[j];
 
             vertices.push_back(PositionVertexData{ .Position = p });
+
+            auto point = std::make_shared<Point>();
+            point->Init();
+            point->GetTranslationComponent()->SetTranslation(p);
+            point->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
+            bernsteinPolyline->AddPoint(point);
+            bernsteinPoints.push_back(point);
         }
     }
 
