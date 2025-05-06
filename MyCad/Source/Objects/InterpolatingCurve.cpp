@@ -4,7 +4,8 @@
 
 InterpolatingCurve::InterpolatingCurve()
     : renderer(VertexDataType::PositionVertexData),
-    bernsteinPolyline(std::make_shared<Polyline>())
+    bernsteinPolyline(std::make_shared<Polyline>()),
+    interpolatingPolyline(std::make_shared<Polyline>())
 {
     name = "InterpolatingCurve_" + std::to_string(id);
     bernsteinPolyline->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
@@ -15,6 +16,11 @@ void InterpolatingCurve::Render()
     if (drawBernsteinPolygon)
     {
         bernsteinPolyline->Render();
+    }
+
+    if (drawInterpolatingPolygon)
+    {
+        interpolatingPolyline->Render();
     }
 
     if (controlPoints.size() > 1)
@@ -116,6 +122,8 @@ void InterpolatingCurve::AddPoint(const std::shared_ptr<Point>& point)
     controlPoints.push_back(point);
     point->AddObserver(shared_from_this());
 
+    interpolatingPolyline->AddPoint(point);
+
     UpdateCurve();
 }
 
@@ -135,12 +143,15 @@ void InterpolatingCurve::RemovePoint(const std::shared_ptr<Point>& point)
         point->RemoveObserver(shared_from_this());
     }
 
+    interpolatingPolyline->RemovePoint(point);
+
     UpdateCurve();
 }
 
 void InterpolatingCurve::SwapPoints(int index1, int index2)
 {
     std::swap(controlPoints[index1], controlPoints[index2]);
+    interpolatingPolyline->SwapPoints(index1, index2);
 
     UpdateCurve();
 }
@@ -183,7 +194,7 @@ std::vector<Algebra::Vector4> InterpolatingCurve::SolveTrilinearMatrix(std::vect
     return c;
 }
 
-void InterpolatingCurve::Calculate()
+void InterpolatingCurve::UpdateCurve()
 {
     if (controlPoints.size() < 4)
     {
@@ -261,21 +272,4 @@ void InterpolatingCurve::Calculate()
     }
 
     renderer.SetVertices(vertices);
-}
-
-void InterpolatingCurve::UpdateCurve()
-{
-    Calculate();
-    //bernsteinPolyline->ClearPoints();
-
-    //if (controlPoints.size() < 4)
-    //    return;
-
-    //controlPoints.erase(
-    //    std::remove_if(controlPoints.begin(), controlPoints.end(),
-    //        [](const std::weak_ptr<Point>& p) {
-    //            return p.expired();
-    //        }),
-    //    controlPoints.end()
-    //);
 }

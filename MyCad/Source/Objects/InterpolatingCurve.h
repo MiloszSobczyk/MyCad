@@ -27,6 +27,7 @@ private:
     Renderer<PositionVertexData> renderer;
     std::vector<std::weak_ptr<Point>> controlPoints;
     std::shared_ptr<Polyline> bernsteinPolyline;
+    std::shared_ptr<Polyline> interpolatingPolyline;
 
 protected:
     virtual void UpdateCurve();
@@ -45,6 +46,4 @@ public:
 
     std::vector<Algebra::Vector4> SolveTrilinearMatrix(std::vector<float>& alpha, 
         std::vector<float>& beta, std::vector<Algebra::Vector4>& r);
-
-    void Calculate();
 };
