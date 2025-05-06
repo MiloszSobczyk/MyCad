@@ -253,7 +253,8 @@ void InterpolatingCurve::UpdateCurve()
 
     std::vector<PositionVertexData> vertices;
 
-    for (size_t i = 0; i < d.size(); ++i) {
+    for (int i = 0; i < d.size(); ++i) 
+    {
         Algebra::Vector4 ai = a[i];
         Algebra::Vector4 bi = b[i] * d[i];
         Algebra::Vector4 ci = c[i] * d[i] * d[i];
@@ -265,10 +266,13 @@ void InterpolatingCurve::UpdateCurve()
         Algebra::Vector4 P3 = ai + bi + ci + di;
         P0.w = P1.w = P2.w = P3.w = 1.0f;
 
-        vertices.push_back(PositionVertexData{ .Position = P0 });
-        vertices.push_back(PositionVertexData{ .Position = P1 });
-        vertices.push_back(PositionVertexData{ .Position = P2 });
-        vertices.push_back(PositionVertexData{ .Position = P3 });
+        Algebra::Vector4 bezierPoints[4] = { P0, P1, P2, P3 };
+        for (int j = 0; j < 4; ++j)
+        {
+            auto p = bezierPoints[j];
+
+            vertices.push_back(PositionVertexData{ .Position = p });
+        }
     }
 
     renderer.SetVertices(vertices);
