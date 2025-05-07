@@ -32,7 +32,7 @@ private:
 
 protected:
     virtual void UpdateCurve();
-    std::vector<Algebra::Vector4> CalculateBezierPoints();
+    std::vector<Algebra::Vector4> CalculateBezierPoints(std::vector<Algebra::Vector4>& positions);
 
 
 public:

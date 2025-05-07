@@ -2,6 +2,10 @@
 #include "Core/App.h"
 #include "Algebra.h"
 
+#include <algorithm>
+
+const float eps = 1e-5f;
+
 InterpolatingCurve::InterpolatingCurve()
     : renderer(VertexDataType::PositionVertexData),
     bernsteinPolyline(std::make_shared<Polyline>()),
@@ -217,22 +221,34 @@ void InterpolatingCurve::UpdateCurve()
             }),
         controlPoints.end()
     );
-    
+
+    std::vector<Algebra::Vector4> positions;
+    for (const auto& p : controlPoints)
+    {
+        if (auto point = p.lock())
+        {
+            positions.push_back(point->GetTranslationComponent()->GetTranslation());
+        }
+    }
+
+    positions.erase(
+        std::unique(positions.begin(), positions.end(), 
+            [&](auto const& a, auto const& b) { return (a - b).Length() <= eps; }),
+        positions.end()
+    );
+
     std::vector<Algebra::Vector4> bezierPoints;
 
-    if (controlPoints.size() <= 1)
+    if (positions.size() <= 1)
     {
         return;
     }
-    else if (controlPoints.size() == 2)
+    else if (positions.size() == 2)
     {
-        auto p0 = controlPoints[0].lock();
-        auto p1 = controlPoints[1].lock();
-        
-        bezierPoints.push_back(p0->GetTranslationComponent()->GetTranslation());
-        bezierPoints.push_back(p0->GetTranslationComponent()->GetTranslation());
-        bezierPoints.push_back(p1->GetTranslationComponent()->GetTranslation());
-        bezierPoints.push_back(p1->GetTranslationComponent()->GetTranslation());
+        bezierPoints.push_back(positions[0]);
+        bezierPoints.push_back(positions[0]);
+        bezierPoints.push_back(positions[1]);
+        bezierPoints.push_back(positions[1]);
 
         bezierPoints[0].w = 1.f;
         bezierPoints[1].w = 1.f;
@@ -241,7 +257,7 @@ void InterpolatingCurve::UpdateCurve()
     }
     else
     {
-        bezierPoints = CalculateBezierPoints();
+        bezierPoints = CalculateBezierPoints(positions);
     }
 
     std::vector<PositionVertexData> vertices;
@@ -262,21 +278,12 @@ void InterpolatingCurve::UpdateCurve()
     renderer.SetVertices(vertices);
 }
 
-std::vector<Algebra::Vector4> InterpolatingCurve::CalculateBezierPoints()
+std::vector<Algebra::Vector4> InterpolatingCurve::CalculateBezierPoints(std::vector<Algebra::Vector4>& positions)
 {
-    std::vector<Algebra::Vector4> positions;
     std::vector<float> dists;
     std::vector<float> alpha;
     std::vector<float> beta;
     std::vector<Algebra::Vector4> r;
-
-    for (const auto& p : controlPoints)
-    {
-        if (auto point = p.lock())
-        {
-            positions.push_back(point->GetTranslationComponent()->GetTranslation());
-        }
-    }
 
     for (int i = 0; i < positions.size() - 1; i++)
     {
