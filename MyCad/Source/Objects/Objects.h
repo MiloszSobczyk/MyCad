@@ -6,6 +6,9 @@
 #include "Point.h"
 #include "Polyline.h"
 #include "BezierCurve.h"
+#include "BezierCurveC2.h"
+#include "InterpolatingCurve.h"
+#include "BezierSurfaceC0.h"
 
 // AxisCursor
 #include "AxisCursor.h"

@@ -10,7 +10,6 @@
 #include <iostream>
 #include <numbers>
 #include <algorithm>
-#include <Objects/InterpolatingCurve.h>
 
 Camera App::camera = Camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f);
 Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280 / 720, 0.1f, 10000.0f, std::numbers::pi_v<float> / 2.f);
@@ -26,24 +25,24 @@ App::App()
 
 	middlePoint.SetColor(Algebra::Vector4(1.0f, 0.f, 0.f, 1.f));
 
-	auto pointPtr = std::make_shared<Point>();
-	pointPtr->Init();
-	shapes.push_back(pointPtr);
+	//auto pointPtr = std::make_shared<Point>();
+	//pointPtr->Init();
+	//shapes.push_back(pointPtr);
 
-	auto pointPtr2 = std::make_shared<Point>();
-	pointPtr2->Init();
-	pointPtr2->GetTranslationComponent()->SetTranslation(Algebra::Vector4(0.f, 20.f, 0.f, 1.f));
-	shapes.push_back(pointPtr2);
+	//auto pointPtr2 = std::make_shared<Point>();
+	//pointPtr2->Init();
+	//pointPtr2->GetTranslationComponent()->SetTranslation(Algebra::Vector4(0.f, 20.f, 0.f, 1.f));
+	//shapes.push_back(pointPtr2);
 
-	auto pointPtr3 = std::make_shared<Point>();
-	pointPtr3->Init();
-	pointPtr3->GetTranslationComponent()->SetTranslation(Algebra::Vector4(20.f, 20.f, 0.f, 1.f));
-	shapes.push_back(pointPtr3);
+	//auto pointPtr3 = std::make_shared<Point>();
+	//pointPtr3->Init();
+	//pointPtr3->GetTranslationComponent()->SetTranslation(Algebra::Vector4(20.f, 20.f, 0.f, 1.f));
+	//shapes.push_back(pointPtr3);
 
-	auto pointPtr4 = std::make_shared<Point>();
-	pointPtr4->Init();
-	pointPtr4->GetTranslationComponent()->SetTranslation(Algebra::Vector4(20.f, 0.f, 0.f, 1.f));
-	shapes.push_back(pointPtr4);
+	//auto pointPtr4 = std::make_shared<Point>();
+	//pointPtr4->Init();
+	//pointPtr4->GetTranslationComponent()->SetTranslation(Algebra::Vector4(20.f, 0.f, 0.f, 1.f));
+	//shapes.push_back(pointPtr4);
 
 	HandleResize();
 }
@@ -328,6 +327,13 @@ void App::DisplayAddShapeButtons()
 		}
 
 		shapes.push_back(bezierCurve);
+	}
+
+	if (ImGui::Button("Add Bezier Surface C0"))
+	{
+		auto bezierSurface = std::make_shared<BezierSurfaceC0>(Algebra::Vector4(), false, 20.f, 20.f, 1, 1);
+
+		shapes.push_back(bezierSurface);
 	}
 }
 
