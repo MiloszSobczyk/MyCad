@@ -13,6 +13,7 @@
 
 Camera App::camera = Camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f);
 Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280 / 720, 0.1f, 10000.0f, std::numbers::pi_v<float> / 2.f);
+static bool CannotDeletePoint = false;
 
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
@@ -224,11 +225,17 @@ void App::DisplayShapeSelection()
 
 	if (ImGui::Button("Delete Selected"))
 	{
-		auto shapesCopy = shapes;
-		for (const auto& shape : shapesCopy)
+		CannotDeletePoint = false;
+		for (const auto& shape : shapes)
 		{
 			if (selectedShapes->IsSelected(shape))
 			{
+				if (auto selectedPoint = std::dynamic_pointer_cast<Point>(shape))
+				{
+					CannotDeletePoint = true;
+					continue;
+				}
+
 				auto it = std::find(shapes.begin(), shapes.end(), shape);
 				if (it != shapes.end())
 				{
@@ -236,7 +243,13 @@ void App::DisplayShapeSelection()
 				}
 			}
 		}
+
 		selectedShapes->Clear();
+	}
+
+	if (CannotDeletePoint)
+	{
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Cannot delete point (text to be replaced)");
 	}
 }
 

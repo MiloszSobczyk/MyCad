@@ -13,7 +13,7 @@ private:
 
 	std::weak_ptr<Shape> lockShape;
 public:
-	Point(std::string name = "Point");
+	Point(std::string name = "Point_");
 	~Point();
 	void Init();
 
@@ -25,6 +25,6 @@ public:
 
 	void OnNotified() override;
 
-	inline bool IsLocked() { return lockShape.expired(); }
+	inline bool IsLocked() { return !lockShape.expired(); }
 	inline void Lock(const std::shared_ptr<Shape>& shape) { lockShape = shape; }
 };

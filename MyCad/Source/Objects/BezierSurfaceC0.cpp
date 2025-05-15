@@ -1,5 +1,7 @@
 #include "BezierSurfaceC0.h"
 
+// ADD REMOVING SINGULAR PATCHES
+
 BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, float width, float height, 
 	int widthPatches, int heightPatches)
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), 
@@ -17,25 +19,89 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 
 	controlPoints.reserve(rows * columns);
 
+
 	// Width is along X axis and height is along Y axis, Z axis is flat
 	// storing points by columns then rows, like in matrix
 	// 0 1 2 3
 	// 4 5 6 7
 
-	for (int i = 0; i < columns; ++i)
+	for (int i = 0; i < rows; ++i)
 	{
-		for (int j = 0; j < rows; ++j)
+		for (int j = 0; j < columns; ++j)
 		{
-			auto widthOffset = Algebra::Vector4(i * dx, 0.f, 0.f);
-			auto heightOffset = Algebra::Vector4(0.f, j * dy, 0.f);
+			auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
+			auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
 
 			auto pos = startingPosition + widthOffset + heightOffset;
 
-			auto point = std::make_shared<Point>("SurfacePoint");
+			auto point = std::make_shared<Point>("SurfacePoint_");
 			point->GetTranslationComponent()->SetTranslation(startingPosition + widthOffset + heightOffset);
 
 			controlPoints.push_back(point);
 		}
+	}
+
+	for (int patchIndex = 0; patchIndex < patches.size(); ++patchIndex)
+	{
+		std::vector<std::weak_ptr<Point>> points;
+		std::vector<std::size_t> indices;
+
+		int startingI = patchIndex / widthPatches;
+		int startingJ = patchIndex / heightPatches;
+
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				points.push_back(controlPoints[startingI + i * columns + startingJ + j]);
+			}
+		}
+
+		indices.push_back(6);
+		indices.push_back(7);
+		indices.push_back(10);
+		indices.push_back(11);
+
+		if (startingI == 0)
+		{
+			if (startingJ == 0)
+			{
+				indices.push_back(0);
+			}
+			else if (startingJ == heightPatches - 1)
+			{
+				indices.push_back(12);
+			}
+			indices.push_back(4);
+			indices.push_back(8);
+		}
+		else if (startingI == widthPatches - 1)
+		{
+			if (startingJ == 0)
+			{
+				indices.push_back(3);
+			}
+			else if (startingJ == heightPatches - 1)
+			{
+				indices.push_back(15);
+			}
+			indices.push_back(7);
+			indices.push_back(11);
+		}
+
+		if (startingJ == 0)
+		{
+			indices.push_back(1);
+			indices.push_back(2);
+		}
+		else if (startingJ == heightPatches - 1)
+		{
+			indices.push_back(13);
+			indices.push_back(14);
+		}
+
+		std::sort(indices.begin(), indices.end());
+		patches.push_back(Patch(points, indices));
 	}
 
 	UpdateSurface();

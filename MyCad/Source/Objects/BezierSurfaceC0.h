@@ -6,6 +6,7 @@
 #include "Engine/Renderer.h"
 #include "Point.h"
 #include "Shape.h"
+#include "Patch.h"
 
 
 class BezierSurfaceC0 : public std::enable_shared_from_this<BezierSurfaceC0>, public Shape, public IObserver
@@ -13,6 +14,7 @@ class BezierSurfaceC0 : public std::enable_shared_from_this<BezierSurfaceC0>, pu
 private:
 	Renderer<PositionVertexData> renderer;
 	std::vector<std::shared_ptr<Point>> controlPoints;
+	std::vector<Patch> patches;
 
 	int widthPatches;
 	int heightPatches;
