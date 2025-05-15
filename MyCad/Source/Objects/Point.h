@@ -10,8 +10,10 @@ private:
 	std::shared_ptr<ObservableTranslationComponent> translationComponent;
 
 	Renderer<PositionVertexData> renderer;
+
+	std::weak_ptr<Shape> lockShape;
 public:
-    Point();
+	Point(std::string name = "Point");
 	~Point();
 	void Init();
 
@@ -22,4 +24,7 @@ public:
 	Algebra::Matrix4 GetModelMatrix() const override;
 
 	void OnNotified() override;
+
+	inline bool IsLocked() { return lockShape.expired(); }
+	inline void Lock(const std::shared_ptr<Shape>& shape) { lockShape = shape; }
 };

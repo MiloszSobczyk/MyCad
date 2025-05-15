@@ -332,8 +332,14 @@ void App::DisplayAddShapeButtons()
 	if (ImGui::Button("Add Bezier Surface C0"))
 	{
 		auto bezierSurface = std::make_shared<BezierSurfaceC0>(Algebra::Vector4(), false, 20.f, 20.f, 1, 1);
-
+		bezierSurface->Init();
 		shapes.push_back(bezierSurface);
+
+		auto points = bezierSurface->GetControlPoints();
+		for (auto point : points)
+		{
+			shapes.push_back(point);
+		}
 	}
 }
 

@@ -5,6 +5,8 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), 
 	heightPatches(heightPatches), isCylinder(isCylinder)
 {
+	name = "BezierSurfaceC0_" + std::to_string(id);
+	
 	const int columns = widthPatches * 3 + 1;
 	const int rows = heightPatches * 3 + 1;
 
@@ -17,8 +19,8 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 
 	// Width is along X axis and height is along Y axis, Z axis is flat
 	// storing points by columns then rows, like in matrix
-	// 0 1 2 3 4
-	// 5 6 7 8 9
+	// 0 1 2 3
+	// 4 5 6 7
 
 	for (int i = 0; i < columns; ++i)
 	{
@@ -29,7 +31,7 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 
 			auto pos = startingPosition + widthOffset + heightOffset;
 
-			auto point = std::make_shared<Point>();
+			auto point = std::make_shared<Point>("SurfacePoint");
 			point->GetTranslationComponent()->SetTranslation(startingPosition + widthOffset + heightOffset);
 
 			controlPoints.push_back(point);
@@ -41,6 +43,14 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 
 void BezierSurfaceC0::OnNotified()
 {
+}
+
+void BezierSurfaceC0::Init()
+{
+	for (auto point : controlPoints)
+	{
+		point->Lock(shared_from_this());
+	}
 }
 
 void BezierSurfaceC0::Render()

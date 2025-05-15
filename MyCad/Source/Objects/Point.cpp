@@ -2,7 +2,7 @@
 #include "Core/App.h"
 
 
-Point::Point()
+Point::Point(std::string name)
     : renderer(VertexDataType::PositionVertexData), 
 	  translationComponent(std::make_shared<ObservableTranslationComponent>())
 {
@@ -25,7 +25,7 @@ Point::Point()
         0, 1, 5,  5, 4, 0,
         3, 2, 6,  6, 7, 3
     };
-    name = "Point" + std::to_string(id);
+    this->name = name + std::to_string(id);
 	renderer.SetVertices(vertices);
 	renderer.SetIndices(indices);
 }
