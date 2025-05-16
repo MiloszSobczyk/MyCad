@@ -53,7 +53,7 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 		{
 			for (int j = 0; j < 4; ++j)
 			{
-				points.push_back(controlPoints[startingI + i * columns + startingJ + j]);
+				points.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
 			}
 		}
 
