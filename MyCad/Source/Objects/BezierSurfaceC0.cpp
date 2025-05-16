@@ -41,13 +41,13 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 		}
 	}
 
-	for (int patchIndex = 0; patchIndex < patches.size(); ++patchIndex)
+	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
 	{
 		std::vector<std::weak_ptr<Point>> points;
 		std::vector<std::size_t> indices;
 
 		int startingI = patchIndex / widthPatches;
-		int startingJ = patchIndex / heightPatches;
+		int startingJ = patchIndex % widthPatches;
 
 		for (int i = 0; i < 4; ++i)
 		{
@@ -57,10 +57,10 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 			}
 		}
 
+		indices.push_back(5);
 		indices.push_back(6);
-		indices.push_back(7);
+		indices.push_back(9);
 		indices.push_back(10);
-		indices.push_back(11);
 
 		if (startingI == 0)
 		{
@@ -68,36 +68,36 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 			{
 				indices.push_back(0);
 			}
-			else if (startingJ == heightPatches - 1)
-			{
-				indices.push_back(12);
-			}
-			indices.push_back(4);
-			indices.push_back(8);
-		}
-		else if (startingI == widthPatches - 1)
-		{
-			if (startingJ == 0)
+			else if (startingJ == widthPatches - 1)
 			{
 				indices.push_back(3);
 			}
-			else if (startingJ == heightPatches - 1)
+			indices.push_back(1);
+			indices.push_back(2);
+		}
+		else if (startingI == heightPatches - 1)
+		{
+			if (startingJ == 0)
+			{
+				indices.push_back(12);
+			}
+			else if (startingJ == widthPatches - 1)
 			{
 				indices.push_back(15);
 			}
-			indices.push_back(7);
-			indices.push_back(11);
+			indices.push_back(13);
+			indices.push_back(14);
 		}
 
 		if (startingJ == 0)
 		{
-			indices.push_back(1);
-			indices.push_back(2);
+			indices.push_back(4);
+			indices.push_back(8);
 		}
-		else if (startingJ == heightPatches - 1)
+		else if (startingJ == widthPatches - 1)
 		{
-			indices.push_back(13);
-			indices.push_back(14);
+			indices.push_back(7);
+			indices.push_back(11);
 		}
 
 		std::sort(indices.begin(), indices.end());

@@ -344,7 +344,7 @@ void App::DisplayAddShapeButtons()
 
 	if (ImGui::Button("Add Bezier Surface C0"))
 	{
-		auto bezierSurface = std::make_shared<BezierSurfaceC0>(Algebra::Vector4(), false, 20.f, 20.f, 1, 1);
+		auto bezierSurface = std::make_shared<BezierSurfaceC0>(Algebra::Vector4(), false, 20.f, 20.f, 3, 4);
 		bezierSurface->Init();
 		shapes.push_back(bezierSurface);
 
