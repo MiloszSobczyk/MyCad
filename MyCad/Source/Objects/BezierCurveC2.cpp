@@ -152,7 +152,6 @@ void BezierCurveC2::RenderUI()
             }
         }
     }
-
 }
 
 void BezierCurveC2::AddPoint(const std::shared_ptr<Point>& point)

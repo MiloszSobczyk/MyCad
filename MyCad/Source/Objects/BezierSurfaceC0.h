@@ -15,6 +15,7 @@ private:
 	Renderer<PositionVertexData> renderer;
 	std::vector<std::shared_ptr<Point>> controlPoints;
 	std::vector<Patch> patches;
+	std::vector<int> selectedPatches;
 
 	int widthPatches;
 	int heightPatches;
@@ -31,4 +32,5 @@ public:
 
 	void OnNotified() override;
 	void Init();
+	void RenderUI() override;
 };

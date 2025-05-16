@@ -14,5 +14,7 @@ private:
 public:
 	Patch(std::vector<std::weak_ptr<Point>>& points, std::vector<std::size_t>& uniqueIndices);
 
+	void SetColor(Algebra::Vector4 color);
+
 	inline std::vector<std::weak_ptr<Point>> GetPoints() { return points; }
 };

@@ -57,7 +57,7 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 			}
 		}
 
-		indices.push_back(5);
+		indices.push_back(5);	
 		indices.push_back(6);
 		indices.push_back(9);
 		indices.push_back(10);
@@ -118,6 +118,77 @@ void BezierSurfaceC0::Init()
 		point->Lock(shared_from_this());
 	}
 }
+
+void BezierSurfaceC0::RenderUI()
+{
+	ImGui::SeparatorText("Patches");
+
+	if (patches.empty())
+	{
+		ImGui::Text("No patches available.");
+	}
+	else
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		bool ctrlHeld = io.KeyCtrl;
+		bool changed = false;
+
+		for (int i = 0; i < patches.size(); ++i)
+		{
+			bool isSelected = (std::find(selectedPatches.begin(), selectedPatches.end(), i) != selectedPatches.end());
+			std::string label = "Patch " + std::to_string(i) + "##patch" + std::to_string(i);
+
+			if (ImGui::Selectable(label.c_str(), isSelected))
+			{
+				changed = true;
+				if (ctrlHeld)
+				{
+					if (isSelected)
+					{
+						selectedPatches.erase(
+							std::remove(selectedPatches.begin(), selectedPatches.end(), i),
+							selectedPatches.end()
+						);
+					}
+					else
+					{
+						selectedPatches.push_back(i);
+					}
+				}
+				else
+				{
+					selectedPatches.clear();
+					selectedPatches.push_back(i);
+				}
+			}
+		}
+
+		if (changed)
+		{
+			std::vector<int> nonSelectedPatches;
+			nonSelectedPatches.reserve(patches.size() - selectedPatches.size());
+
+			for (int i = 0; i < static_cast<int>(patches.size()); ++i)
+			{
+				if (std::find(selectedPatches.begin(), selectedPatches.end(), i) == selectedPatches.end())
+				{
+					nonSelectedPatches.push_back(i);
+				}
+			}
+
+			for (int index : nonSelectedPatches)
+			{
+				patches[index].SetColor(Algebra::Vector4(0.5f, 0.1f, 0.5f, 1.0f));
+			}
+
+			for (int index : selectedPatches)
+			{
+				patches[index].SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.0f));
+			}
+		}
+	}
+}
+
 
 void BezierSurfaceC0::Render()
 {
