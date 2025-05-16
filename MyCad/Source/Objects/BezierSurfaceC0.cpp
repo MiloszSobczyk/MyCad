@@ -19,7 +19,6 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 
 	controlPoints.reserve(rows * columns);
 
-
 	// Width is along X axis and height is along Y axis, Z axis is flat
 	// storing points by columns then rows, like in matrix
 	// 0 1 2 3
@@ -200,4 +199,26 @@ void BezierSurfaceC0::Render()
 
 void BezierSurfaceC0::UpdateSurface()
 {
+}
+
+void BezierSurfaceC0::RemovePatch(int index)
+{
+	if (index < 0 || index >= static_cast<int>(patches.size()))
+		return;
+
+	patches.erase(patches.begin() + index);
+
+	for (auto it = selectedPatches.begin(); it != selectedPatches.end(); )
+	{
+		if (*it == index)
+		{
+			it = selectedPatches.erase(it);
+		}
+		else
+		{
+			if (*it > index)
+				--(*it);
+			++it;
+		}
+	}
 }

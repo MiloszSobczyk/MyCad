@@ -24,6 +24,8 @@ private:
 	void Render() override;
 	void UpdateSurface();
 
+	void RemovePatch(int index);
+
 public:
 	BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder = false, float width = 1.f, float height = 1.f, 
 		int widthPatches = 1, int heightPatches = 1);

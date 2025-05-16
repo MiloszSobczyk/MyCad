@@ -11,6 +11,7 @@ enum class ShaderName
 	DefaultColor = 1,
 	InfiniteGrid = 2,
 	BezierCurve = 3,
+	BezierSurface = 4,
 };
 
 class ShaderManager

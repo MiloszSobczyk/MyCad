@@ -40,6 +40,17 @@ ShaderManager::ShaderManager()
 		.AddShader(ShaderType::Fragment, "bezierCurve")
 		.Compile()
 	);
+
+	AddShader(
+		ShaderName::BezierSurface,
+		ShaderBuilder()
+		.SetShaderDirectory("Resources/Shaders/")
+		.AddShader(ShaderType::Vertex, "bezierSurface")
+		.AddShader(ShaderType::TessControl, "bezierSurface")
+		.AddShader(ShaderType::TessEvaluation, "bezierSurface")
+		.AddShader(ShaderType::Fragment, "bezierSurface")
+		.Compile()
+	);
 }
 
 ShaderManager& ShaderManager::GetInstance()
