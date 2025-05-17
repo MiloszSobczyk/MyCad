@@ -27,8 +27,9 @@ private:
 	void RemovePatch(int index);
 
 public:
-	BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder = false, float width = 1.f, float height = 1.f, 
-		int widthPatches = 1, int heightPatches = 1);
+	BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
+	// Axes: 0 - X, 1 - Y, 2 - Z
+	BezierSurfaceC0(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches);
 
 	inline std::vector<std::shared_ptr<Point>> GetControlPoints() { return controlPoints; };
 

@@ -409,13 +409,26 @@ void App::DisplayAddSurfacePopup()
 	{
 		ImGui::Checkbox("Is Cylinder", &bezierParams.isCylinder);
 
-		ImGui::InputFloat("Width", &bezierParams.width);
-		if (bezierParams.width < 1.0f) bezierParams.width = 1.0f;
-		if (bezierParams.width > 100.0f) bezierParams.width = 1000.0f;
+		if (!bezierParams.isCylinder)
+		{
+			ImGui::InputFloat("Width", &bezierParams.width);
+			if (bezierParams.width < 1.0f) bezierParams.width = 1.0f;
+			if (bezierParams.width > 1000.0f) bezierParams.width = 1000.0f;
+		}
+
+		if (bezierParams.isCylinder)
+		{
+			const char* axes[] = { "X", "Y", "Z" };
+			ImGui::Combo("Axis", &bezierParams.axis, axes, IM_ARRAYSIZE(axes));
+
+			ImGui::InputFloat("Radius", &bezierParams.radius);
+			if (bezierParams.width < 1.0f) bezierParams.radius = 1.0f;
+			if (bezierParams.width > 1000.0f) bezierParams.radius = 1000.0f;
+		}
 
 		ImGui::InputFloat("Height", &bezierParams.height);
 		if (bezierParams.height < 1.0f) bezierParams.height = 1.0f;
-		if (bezierParams.height > 100.0f) bezierParams.height = 1000.0f;
+		if (bezierParams.height > 1000.0f) bezierParams.height = 1000.0f;
 
 		ImGui::InputInt("Width Patches", &bezierParams.widthPatches);
 		if (bezierParams.widthPatches < 1) bezierParams.widthPatches = 1;
@@ -429,8 +442,18 @@ void App::DisplayAddSurfacePopup()
 		{
 			ImGui::CloseCurrentPopup();
 
-			auto bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(), 
-				bezierParams.isCylinder, bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+			std::shared_ptr<BezierSurfaceC0> bezierSurface;
+			if (!bezierParams.isCylinder)
+			{
+				bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(), 
+					bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+			}
+			else
+			{
+				bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(),
+					bezierParams.axis, bezierParams.radius, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+			}
+
 			bezierSurface->Init();
 			shapes.push_back(bezierSurface);
 
