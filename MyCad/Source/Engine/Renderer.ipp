@@ -33,6 +33,12 @@ void Renderer<T>::SetIndices(std::vector<unsigned int> indices)
 }
 
 template<class T>
+inline void Renderer<T>::SetPatchParameters(int count)
+{
+	GLCall(glPatchParameteri(GL_PATCH_VERTICES, count));
+}
+
+template<class T>
 void Renderer<T>::SetVertices(std::vector<T> vertices)
 {
 	vbo.SetVertices(vertices);

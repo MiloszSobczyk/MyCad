@@ -194,8 +194,6 @@ void BezierSurfaceC0::RenderUI()
 
 void BezierSurfaceC0::Render()
 {
-	UpdateSurface();
-
 	for (auto point : controlPoints)
 	{
 		point->Render();
@@ -207,11 +205,11 @@ void BezierSurfaceC0::Render()
 	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
 	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
 
-	GLCall(glPatchParameteri(GL_PATCH_VERTICES, 16));
-
+	renderer.SetPatchParameters(16);
+	
 	renderer.Render(GL_PATCHES);
-
-	GLCall(glPatchParameteri(GL_PATCH_VERTICES, 4));
+	
+	renderer.SetPatchParameters(4);
 
 	shader->Unbind();
 }
