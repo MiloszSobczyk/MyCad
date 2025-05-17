@@ -48,6 +48,7 @@ template<class T>
 void Renderer<T>::Render(GLenum mode)
 {
 	vao.Bind();
+
 	if (ibo.GetCount() > 0)
 	{
 		GLCall(glDrawElements(mode, static_cast<unsigned int>(ibo.GetCount()), GL_UNSIGNED_INT, nullptr));

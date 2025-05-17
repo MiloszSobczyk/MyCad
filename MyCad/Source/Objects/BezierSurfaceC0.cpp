@@ -117,6 +117,7 @@ void BezierSurfaceC0::Init()
 {
 	for (auto point : controlPoints)
 	{
+		point->Init();
 		point->AddObserver(shared_from_this());
 		point->Lock(shared_from_this());
 	}
