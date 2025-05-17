@@ -189,6 +189,7 @@
     <ClCompile Include="Source\Operations\Scalings\ScalingAroundPoint.cpp" />
     <ClCompile Include="Source\Operations\Scalings\ScalingUniformly.cpp" />
     <ClCompile Include="Source\Operations\Translations\TranslationAlongAxesOperation.cpp" />
+    <ClCompile Include="Source\Utils\ColorPalette.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
     <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Engine\Shader.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="Source\Operations\Scalings\ScalingUniformly.h" />
     <ClInclude Include="Source\Operations\Translations\TranslationAlongAxesOperation.h" />
     <ClInclude Include="Source\Operations\Translations\Translations.h" />
+    <ClInclude Include="Source\Utils\ColorPalette.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
     <ClInclude Include="Source\Utils\Init.h" />
     <ClInclude Include="Source\Engine\Shader.h" />

@@ -5,6 +5,7 @@
 
 #include "Algebra.h"
 #include "Components/Transformations.h"
+#include "Utils/ColorPalette.h"
 
 class Shape
 {

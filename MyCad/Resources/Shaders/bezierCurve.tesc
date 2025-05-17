@@ -6,7 +6,6 @@ out patch float maxU;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_projectionMatrix;
 uniform vec4 u_cameraPos;
-uniform vec4 u_zoomLevel;
 
 float screenDistance(vec4 a, vec4 b)
 {

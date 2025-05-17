@@ -12,7 +12,7 @@ InterpolatingCurve::InterpolatingCurve()
     interpolatingPolyline(std::make_shared<Polyline>())
 {
     name = "InterpolatingCurve_" + std::to_string(id);
-    bernsteinPolyline->SetColor(Algebra::Vector4(0.f, 0.8f, 0.f, 1.f));
+    bernsteinPolyline->SetColor(ColorPalette::Get(Color::Emerald));
 }
 
 void InterpolatingCurve::Render()
@@ -34,7 +34,6 @@ void InterpolatingCurve::Render()
         shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
         shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
         shader->SetUniformVec4f("u_cameraPos", App::camera.GetPosition());
-        shader->SetUniformVec4f("u_zoomLevel", { App::camera.GetZoom(), 0.f, 0.f, 0.f });
 
         renderer.Render(GL_PATCHES);
 
@@ -270,7 +269,7 @@ void InterpolatingCurve::UpdateCurve()
         auto point = std::make_shared<Point>();
         point->Init();
         point->GetTranslationComponent()->SetTranslation(p);
-        point->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
+        point->SetColor(ColorPalette::Get(Color::Teal));
         bernsteinPolyline->AddPoint(point);
         bernsteinPoints.push_back(point);
     }

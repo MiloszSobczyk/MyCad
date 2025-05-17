@@ -24,7 +24,7 @@ App::App()
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
 
-	middlePoint.SetColor(Algebra::Vector4(1.0f, 0.f, 0.f, 1.f));
+	middlePoint.SetColor(ColorPalette::Get(Color::Red));
 
 	//auto pointPtr = std::make_shared<Point>();
 	//pointPtr->Init();

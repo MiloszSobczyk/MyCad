@@ -8,7 +8,7 @@ BezierCurveC2::BezierCurveC2()
     axisMode(AxisMode::X)
 {
     name = "BezierCurveC2_" + std::to_string(id);
-    bernsteinPolyline->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
+    bernsteinPolyline->SetColor(ColorPalette::Get(Color::Teal));
 }
 
 void BezierCurveC2::Render()
@@ -342,7 +342,7 @@ void BezierCurveC2::UpdateCurve()
             auto point = std::make_shared<Point>();
             point->Init();
             point->GetTranslationComponent()->SetTranslation(p);
-            point->SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.f));
+            point->SetColor(ColorPalette::Get(Color::Teal));
             if (!(i != 0 && j == 0))
             {
 			    bernsteinPoints.push_back(point);

@@ -7,12 +7,12 @@ AxisCursor::AxisCursor()
     : renderer(VertexDataType::PositionColorVertexData), translationComponent(std::make_shared<TranslationComponent>())
 {
     static std::vector<PositionColorVertexData> vertices = {
-        {{ -2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
-        {{ +2.f, +0.f, +0.f, 1.f }, { 1.f, 0.f, 0.f, 1.f }},
-        {{ +0.f, -2.f, +0.f, 1.f }, { 0.f, 1.f, 0.f, 1.f }},
-        {{ +0.f, +2.f, +0.f, 1.f }, { 0.f, 1.f, 0.f, 1.f }},
-        {{ +0.f, +0.f, -2.f, 1.f }, { 0.f, 0.f, 1.f, 1.f }},
-        {{ +0.f, +0.f, +2.f, 1.f }, { 0.f, 0.f, 1.f, 1.f }},
+        {{ -2.f, +0.f, +0.f, 1.f }, ColorPalette::Get(Color::Red)},
+        {{ +2.f, +0.f, +0.f, 1.f }, ColorPalette::Get(Color::Red)},
+        {{ +0.f, -2.f, +0.f, 1.f }, ColorPalette::Get(Color::Green)},
+        {{ +0.f, +2.f, +0.f, 1.f }, ColorPalette::Get(Color::Green)},
+        {{ +0.f, +0.f, -2.f, 1.f }, ColorPalette::Get(Color::Blue)},
+        {{ +0.f, +0.f, +2.f, 1.f }, ColorPalette::Get(Color::Blue)},
     };
 
     static std::vector<unsigned int> indices = {

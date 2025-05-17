@@ -7,7 +7,7 @@ void main()
     if (gl_InvocationID == 0) 
     {
         // use uniforms for subdivisions
-        float t = 18;
+        float t = 9;
         
         gl_TessLevelOuter[0] = t;
         gl_TessLevelOuter[1] = t;

@@ -139,7 +139,7 @@ void BezierSurfaceC0::RenderUI()
 
 		for (int i = 0; i < patches.size(); ++i)
 		{
-			bool isSelected = (std::find(selectedPatches.begin(), selectedPatches.end(), i) != selectedPatches.end());
+			bool isSelected = std::find(selectedPatches.begin(), selectedPatches.end(), i) != selectedPatches.end();
 			std::string label = "Patch " + std::to_string(i) + "##patch" + std::to_string(i);
 
 			if (ImGui::Selectable(label.c_str(), isSelected))
@@ -161,33 +161,29 @@ void BezierSurfaceC0::RenderUI()
 				}
 				else
 				{
-					selectedPatches.clear();
-					selectedPatches.push_back(i);
+					if (isSelected)
+					{
+						selectedPatches.clear();
+					}
+					else
+					{
+						selectedPatches.clear();
+						selectedPatches.push_back(i);
+					}
 				}
 			}
 		}
 
 		if (changed)
 		{
-			std::vector<int> nonSelectedPatches;
-			nonSelectedPatches.reserve(patches.size() - selectedPatches.size());
-
-			for (int i = 0; i < static_cast<int>(patches.size()); ++i)
+			for (int idx = 0; idx < patches.size(); ++idx)
 			{
-				if (std::find(selectedPatches.begin(), selectedPatches.end(), i) == selectedPatches.end())
-				{
-					nonSelectedPatches.push_back(i);
-				}
-			}
-
-			for (int index : nonSelectedPatches)
-			{
-				patches[index].SetColor(Algebra::Vector4(0.5f, 0.1f, 0.5f, 1.0f));
-			}
-
-			for (int index : selectedPatches)
-			{
-				patches[index].SetColor(Algebra::Vector4(0.f, 0.8f, 0.8f, 1.0f));
+				bool selected = std::find(selectedPatches.begin(), selectedPatches.end(), idx) != selectedPatches.end();
+				patches[idx].SetColor(
+					selected
+					? ColorPalette::Get(Color::Teal)
+					: ColorPalette::Get(Color::Purple)
+				);
 			}
 		}
 	}
