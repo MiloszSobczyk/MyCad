@@ -24,6 +24,17 @@ enum class AppMode
 	Scaling
 };
 
+struct BezierSurfaceParams
+{
+	bool showPopup = false;
+	bool isCylinder = false;
+	float width = 10.f;
+	float height = 10.f;
+	int widthPatches = 1;
+	int heightPatches = 1;
+};
+
+
 class App 
 {
 private:
@@ -47,6 +58,7 @@ private:
 
 	AppMode appMode;
 	OperationMode operationMode;
+	BezierSurfaceParams bezierParams;
 
 public:
 	static Camera camera;
@@ -66,6 +78,7 @@ public:
 	void DisplayShapeProperties();
 	void DisplayAddShapeButtons();
 	void DisplayAddPointsButton();
+	void DisplayAddSurfacePopup();
 
 	Algebra::Vector4 ScreenToNDC(float x, float y);
 	void GetClickedPoint();

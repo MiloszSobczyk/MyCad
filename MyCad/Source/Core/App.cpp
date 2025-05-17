@@ -19,7 +19,7 @@ App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
 	active(true), showGrid(true), shapes(),
 	axisCursor(std::make_shared<AxisCursor>()), appMode(AppMode::Camera), selectedShapes(std::make_shared<SelectedShapes>()), 
-	middlePoint()
+	middlePoint(), bezierParams()
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -345,16 +345,21 @@ void App::DisplayAddShapeButtons()
 
 	if (ImGui::Button("Add Bezier Surface C0"))
 	{
-		auto bezierSurface = std::make_shared<BezierSurfaceC0>(Algebra::Vector4(), false, 20.f, 20.f, 1, 1);
-		bezierSurface->Init();
-		shapes.push_back(bezierSurface);
-
-		auto points = bezierSurface->GetControlPoints();
-		for (auto point : points)
-		{
-			shapes.push_back(point);
-		}
+		bezierParams.showPopup = true;
 	}
+	if (bezierParams.showPopup)
+	{
+		DisplayAddSurfacePopup();
+	}
+	//auto bezierSurface = std::make_shared<BezierSurfaceC0>(Algebra::Vector4(), false, 20.f, 20.f, 1, 1);
+	//bezierSurface->Init();
+	//shapes.push_back(bezierSurface);
+
+	//auto points = bezierSurface->GetControlPoints();
+	//for (auto point : points)
+	//{
+	//	shapes.push_back(point);
+	//}
 }
 
 void App::DisplayAddPointsButton()
@@ -390,6 +395,60 @@ void App::DisplayAddPointsButton()
 				curve->AddPoint(point);
 			}
 		}
+	}
+}
+
+void App::DisplayAddSurfacePopup()
+{
+	ImGui::OpenPopup("Edit Bezier Surface");
+
+	ImGui::SetNextWindowPos(ImVec2(window.GetWidth() / 2.f - 50.f, window.GetHeight() / 2.f - 50.f), 
+		ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("Edit Bezier Surface", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::Checkbox("Is Cylinder", &bezierParams.isCylinder);
+
+		ImGui::InputFloat("Width", &bezierParams.width);
+		if (bezierParams.width < 1.0f) bezierParams.width = 1.0f;
+		if (bezierParams.width > 100.0f) bezierParams.width = 1000.0f;
+
+		ImGui::InputFloat("Height", &bezierParams.height);
+		if (bezierParams.height < 1.0f) bezierParams.height = 1.0f;
+		if (bezierParams.height > 100.0f) bezierParams.height = 1000.0f;
+
+		ImGui::InputInt("Width Patches", &bezierParams.widthPatches);
+		if (bezierParams.widthPatches < 1) bezierParams.widthPatches = 1;
+		if (bezierParams.widthPatches > 100) bezierParams.widthPatches = 10;
+
+		ImGui::InputInt("Height Patches", &bezierParams.heightPatches);
+		if (bezierParams.heightPatches < 1) bezierParams.heightPatches = 1;
+		if (bezierParams.heightPatches > 100) bezierParams.heightPatches = 10;
+
+		if (ImGui::Button("OK")) 
+		{
+			ImGui::CloseCurrentPopup();
+
+			auto bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(), 
+				bezierParams.isCylinder, bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+			bezierSurface->Init();
+			shapes.push_back(bezierSurface);
+
+			auto points = bezierSurface->GetControlPoints();
+			for (auto point : points)
+			{
+				shapes.push_back(point);
+			}
+
+			bezierParams = BezierSurfaceParams();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel")) 
+		{
+			ImGui::CloseCurrentPopup();
+			bezierParams = BezierSurfaceParams();
+		}
+		ImGui::EndPopup();
 	}
 }
 
