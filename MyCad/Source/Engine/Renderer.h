@@ -19,6 +19,8 @@ public:
 	void SetVertices(std::vector<T> vertices);
 	void SetIndices(std::vector<unsigned int> indices);
 
+	void SetPatchParameters(int count);
+
 	void Render(GLenum mode);
 };
 
