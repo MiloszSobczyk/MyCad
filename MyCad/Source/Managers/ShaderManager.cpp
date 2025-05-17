@@ -48,6 +48,7 @@ ShaderManager::ShaderManager()
 		.AddShader(ShaderType::Vertex, "bezierSurface")
 		.AddShader(ShaderType::TessControl, "bezierSurface")
 		.AddShader(ShaderType::TessEvaluation, "bezierSurface")
+		.AddShader(ShaderType::Geometry, "bezierSurface")
 		.AddShader(ShaderType::Fragment, "bezierSurface")
 		.Compile()
 	);

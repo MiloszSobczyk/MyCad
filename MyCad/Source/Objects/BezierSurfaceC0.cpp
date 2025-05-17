@@ -207,11 +207,11 @@ void BezierSurfaceC0::Render()
 	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
 	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	GLCall(glPatchParameteri(GL_PATCH_VERTICES, 16));
 
 	renderer.Render(GL_PATCHES);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	GLCall(glPatchParameteri(GL_PATCH_VERTICES, 4));
 
 	shader->Unbind();
 }

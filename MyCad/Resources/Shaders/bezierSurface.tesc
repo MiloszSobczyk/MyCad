@@ -5,7 +5,7 @@ layout(vertices = 16) out;
 void main() 
 {
     if (gl_InvocationID == 0) {
-        float t = 9;
+        float t = 18;
         gl_TessLevelOuter[0] = t;
         gl_TessLevelOuter[1] = t;
         gl_TessLevelOuter[2] = t;

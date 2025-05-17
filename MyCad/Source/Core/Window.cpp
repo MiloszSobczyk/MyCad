@@ -81,7 +81,6 @@ void Window::SetupGLFWFunctions()
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCall(glPatchParameteri(GL_PATCH_VERTICES, 16));
 
-
     //GLCall(glEnable(GL_DEPTH_TEST));
     //GLCall(glDepthFunc(GL_LESS));
 }
