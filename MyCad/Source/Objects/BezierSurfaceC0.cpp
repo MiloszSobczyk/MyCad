@@ -1,4 +1,6 @@
 #include "BezierSurfaceC0.h"
+#include "Managers/ShaderManager.h"
+#include "Core/App.h"
 
 // ADD REMOVING SINGULAR PATCHES
 
@@ -108,12 +110,14 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, bool isCylinder, flo
 
 void BezierSurfaceC0::OnNotified()
 {
+	UpdateSurface();
 }
 
 void BezierSurfaceC0::Init()
 {
 	for (auto point : controlPoints)
 	{
+		point->AddObserver(shared_from_this());
 		point->Lock(shared_from_this());
 	}
 }
@@ -188,17 +192,48 @@ void BezierSurfaceC0::RenderUI()
 	}
 }
 
-
 void BezierSurfaceC0::Render()
 {
+	UpdateSurface();
+
 	for (auto point : controlPoints)
 	{
 		point->Render();
 	}
+
+	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
+
+	shader->Bind();
+	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	renderer.Render(GL_PATCHES);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	shader->Unbind();
 }
 
 void BezierSurfaceC0::UpdateSurface()
 {
+	std::vector<PositionVertexData> vertices;
+
+	for (auto& patch : patches)
+	{
+		for (auto wp : patch.GetPoints())
+		{
+			if (auto sp = wp.lock())
+			{
+				auto p = sp->GetTranslationComponent()->GetTranslation();
+				p.w = 1.f;
+				vertices.push_back(PositionVertexData{ .Position = p });
+			}
+		}
+	}
+
+	renderer.SetVertices(vertices);
 }
 
 void BezierSurfaceC0::RemovePatch(int index)
