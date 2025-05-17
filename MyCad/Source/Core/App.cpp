@@ -261,6 +261,7 @@ void App::DisplayShapeProperties()
 	}
 }
 
+// TODO: one day I will replace this shit
 void App::DisplayAddShapeButtons()
 {
 	ImGui::Text("Add Shape:");
