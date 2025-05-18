@@ -170,6 +170,7 @@
     <ClCompile Include="Source\Objects\BezierCurve.cpp" />
     <ClCompile Include="Source\Objects\BezierCurveC2.cpp" />
     <ClCompile Include="Source\Objects\BezierSurfaceC0.cpp" />
+    <ClCompile Include="Source\Objects\BezierSurfaceC2.cpp" />
     <ClCompile Include="Source\Objects\Components\ObservableTranslationComponent.cpp" />
     <ClCompile Include="Source\Objects\InterpolatingCurve.cpp" />
     <ClCompile Include="Source\Objects\Patch.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="Source\Core\Collection.h" />
     <ClInclude Include="Source\Objects\BezierCurveC2.h" />
     <ClInclude Include="Source\Objects\BezierSurfaceC0.h" />
+    <ClInclude Include="Source\Objects\BezierSurfaceC2.h" />
     <ClInclude Include="Source\Objects\Components\ObservableTranslationComponent.h" />
     <ClInclude Include="Source\Objects\Components\Transformations.h" />
     <ClInclude Include="Source\Objects\InterpolatingCurve.h" />
