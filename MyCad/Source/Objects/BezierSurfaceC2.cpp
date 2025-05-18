@@ -13,11 +13,11 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float h
 {
 	name = "BezierSurfaceC2_" + std::to_string(id);
 
-	const int columns = widthPatches * 3 + 1;
-	const int rows = heightPatches * 3 + 1;
+	const int columns = widthPatches + 3;
+	const int rows = heightPatches + 3;
 
-	float dx = width / static_cast<float>(widthPatches * 3);
-	float dy = height / static_cast<float>(heightPatches * 3);
+	float dx = width / static_cast<float>(columns - 1);
+	float dy = height / static_cast<float>(rows - 1);
 
 	Algebra::Vector4 startingPosition = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
 
@@ -115,10 +115,10 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radi
 {
 	name = "BezierSurfaceC2_" + std::to_string(id);
 
-	const int columns = widthPatches * 3;
-	const int rows = heightPatches * 3 + 1;
+	const int columns = widthPatches + 2;
+	const int rows = heightPatches + 3;
 
-	float dHeight = height / static_cast<float>(heightPatches * 3);
+	float dHeight = height / static_cast<float>(rows - 1);
 	float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(columns);
 
 	Algebra::Vector4 startingPosition = position - Algebra::Vector4(0.f, 0.f, height / 2.f);

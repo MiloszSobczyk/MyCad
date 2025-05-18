@@ -9,6 +9,7 @@
 #include "BezierCurveC2.h"
 #include "InterpolatingCurve.h"
 #include "BezierSurfaceC0.h"
+#include "BezierSurfaceC2.h"
 
 // AxisCursor
 #include "AxisCursor.h"
