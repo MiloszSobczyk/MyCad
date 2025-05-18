@@ -1,8 +1,12 @@
 #include "BezierSurfaceC0.h"
 #include "Managers/ShaderManager.h"
 #include "Core/App.h"
+#include <numbers>
 
 // ADD REMOVING SINGULAR PATCHES
+// ADD CHOOSING AXIS FOR CYLINDER
+// ADD PATCH HIGHLIGHTING
+// ADD DELETION LOCK FOR POINTS
 
 BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches)
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
@@ -111,13 +115,13 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radi
 {
 	name = "BezierSurfaceC0_" + std::to_string(id);
 
-	const int columns = widthPatches * 3 + 1;
+	const int columns = widthPatches * 3;
 	const int rows = heightPatches * 3 + 1;
 
-	float dx = radius / static_cast<float>(widthPatches * 3);
-	float dy = height / static_cast<float>(heightPatches * 3);
+	float dHeight = height / static_cast<float>(heightPatches * 3);
+	float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(columns);
 
-	Algebra::Vector4 startingPosition = position - Algebra::Vector4(radius / 2.f, height / 2.f, 0.f);
+	Algebra::Vector4 startingPosition = position - Algebra::Vector4(0.f, 0.f, height / 2.f);
 
 	controlPoints.reserve(rows * columns);
 
@@ -130,17 +134,22 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radi
 	{
 		for (int j = 0; j < columns; ++j)
 		{
-			auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
-			auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
-
-			auto pos = startingPosition + widthOffset + heightOffset;
-
+			Algebra::Vector4 heightOffset = Algebra::Vector4(0.f, 0.f, i * dHeight);
+			Algebra::Vector4 radiusOffset = Algebra::Matrix4::RotationZ(dAngle * j) * Algebra::Vector4(radius, 0.f, 0.f);
+			
 			auto point = std::make_shared<Point>("SurfacePoint_");
-			point->GetTranslationComponent()->SetTranslation(startingPosition + widthOffset + heightOffset);
+			point->GetTranslationComponent()->SetTranslation(startingPosition + heightOffset + radiusOffset);
 
 			controlPoints.push_back(point);
 		}
 	}
+
+	//for (auto point : controlPoints)
+	//{
+	//	auto axisVector = Algebra::Vector4();
+	//	axisVector[axis] = 1.f;
+	//	auto rotation = Algebra::Quaternion::CreateFromAxisAngle(axisVector, std::numbers::pi_v<float> / 2.f);
+	//}
 
 	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
 	{
@@ -154,7 +163,8 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radi
 		{
 			for (int j = 0; j < 4; ++j)
 			{
-				points.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
+				int index = (startingI * 3 + i) * columns + (startingJ * 3 + j) % columns;
+				points.push_back(controlPoints[index]);
 			}
 		}
 
@@ -165,27 +175,11 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radi
 
 		if (startingI == 0)
 		{
-			if (startingJ == 0)
-			{
-				indices.push_back(0);
-			}
-			else if (startingJ == widthPatches - 1)
-			{
-				indices.push_back(3);
-			}
 			indices.push_back(1);
 			indices.push_back(2);
 		}
 		else if (startingI == heightPatches - 1)
 		{
-			if (startingJ == 0)
-			{
-				indices.push_back(12);
-			}
-			else if (startingJ == widthPatches - 1)
-			{
-				indices.push_back(15);
-			}
 			indices.push_back(13);
 			indices.push_back(14);
 		}

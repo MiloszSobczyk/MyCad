@@ -418,8 +418,8 @@ void App::DisplayAddSurfacePopup()
 
 		if (bezierParams.isCylinder)
 		{
-			const char* axes[] = { "X", "Y", "Z" };
-			ImGui::Combo("Axis", &bezierParams.axis, axes, IM_ARRAYSIZE(axes));
+			//const char* axes[] = { "Y", "X", "Z" };
+			//ImGui::Combo("Axis", &bezierParams.axis, axes, IM_ARRAYSIZE(axes));
 
 			ImGui::InputFloat("Radius", &bezierParams.radius);
 			if (bezierParams.width < 1.0f) bezierParams.radius = 1.0f;
