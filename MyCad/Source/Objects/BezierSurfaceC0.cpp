@@ -341,25 +341,37 @@ void BezierSurfaceC0::UpdateSurface()
 // Shittiest shit I've ever written. Let me out of this shithole...
 void BezierSurfaceC0::SetupPolygon()
 {
-	const int columns = widthPatches * 3 + 1;
-	const int rows = heightPatches * 3 + 1;
+	const int C = widthPatches * 3 + 1;
+	const int R = heightPatches * 3 + 1;
 
 	std::vector<std::weak_ptr<Point>> points;
+	points.reserve(R * C + R * C);
 
-	for (int i = 0; i < rows; ++i)
+	for (int i = 0; i < R; ++i)
 	{
-		for (int j = 0; j < columns; ++j)
+		if (i % 2 == 0)
 		{
-			if (i % 2 == 0)
-			{
-				int index = i * columns + j;
-				points.push_back(controlPoints[index]);
-			}
-			else
-			{
-				int index = i * columns + columns - 1 - j;
-				points.push_back(controlPoints[index]);
-			}
+			for (int j = 0; j < C; ++j)
+				points.push_back(controlPoints[i * C + j]);
+		}
+		else
+		{
+			for (int j = C - 1; j >= 0; --j)
+				points.push_back(controlPoints[i * C + j]);
+		}
+	}
+
+	for (int j = 0; j < C; ++j)
+	{
+		if (j % 2 == 0)
+		{
+			for (int i = 0; i < R; ++i)
+				points.push_back(controlPoints[i * C + j]);
+		}
+		else
+		{
+			for (int i = R - 1; i >= 0; --i)
+				points.push_back(controlPoints[i * C + j]);
 		}
 	}
 
