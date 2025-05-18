@@ -27,8 +27,6 @@ private:
 	void Render() override;
 	void UpdateSurface();
 
-	void RemovePatch(int index);
-
 public:
 	BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	// Axes: 0 - X, 1 - Y, 2 - Z
@@ -39,4 +37,7 @@ public:
 	void OnNotified() override;
 	void Init();
 	void RenderUI() override;
+
+	void UpdateColors();
+	inline void ClearSelection() { selectedPatches.clear(); UpdateColors(); }
 };

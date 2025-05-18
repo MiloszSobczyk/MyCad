@@ -3,10 +3,8 @@
 #include "Core/App.h"
 #include <numbers>
 
-// ADD REMOVING SINGULAR PATCHES
 // ADD CHOOSING AXIS FOR CYLINDER
-// ADD PATCH HIGHLIGHTING
-// ADD DELETION LOCK FOR POINTS
+// ADD MESH DRAWING
 
 BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches)
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
@@ -274,16 +272,22 @@ void BezierSurfaceC0::RenderUI()
 
 		if (changed)
 		{
-			for (int idx = 0; idx < patches.size(); ++idx)
-			{
-				bool selected = std::find(selectedPatches.begin(), selectedPatches.end(), idx) != selectedPatches.end();
-				patches[idx].SetColor(
-					selected
-					? ColorPalette::Get(Color::Teal)
-					: ColorPalette::Get(Color::Purple)
-				);
-			}
+			UpdateColors();
 		}
+	}
+}
+
+void BezierSurfaceC0::UpdateColors()
+{
+	for (auto& patch : patches)
+	{
+		patch.SetColor(ColorPalette::Get(Color::Purple));
+	}
+
+	for (int idx : selectedPatches)
+	{
+		if (idx >= 0 && idx < patches.size())
+			patches[idx].SetColor(ColorPalette::Get(Color::Teal));
 	}
 }
 
@@ -324,26 +328,4 @@ void BezierSurfaceC0::UpdateSurface()
 	}
 
 	renderer.SetVertices(vertices);
-}
-
-void BezierSurfaceC0::RemovePatch(int index)
-{
-	if (index < 0 || index >= static_cast<int>(patches.size()))
-		return;
-
-	patches.erase(patches.begin() + index);
-
-	for (auto it = selectedPatches.begin(); it != selectedPatches.end(); )
-	{
-		if (*it == index)
-		{
-			it = selectedPatches.erase(it);
-		}
-		else
-		{
-			if (*it > index)
-				--(*it);
-			++it;
-		}
-	}
 }
