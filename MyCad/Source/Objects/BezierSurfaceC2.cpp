@@ -7,6 +7,7 @@
 // ADD CHOOSING AXIS FOR CYLINDER
 // ADD PATCH HIGHLIGHTING
 // ADD DELETION LOCK FOR POINTS
+// ADD MESH DRAWING
 
 BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches)
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
@@ -237,11 +238,6 @@ void BezierSurfaceC2::RenderUI()
 
 void BezierSurfaceC2::Render()
 {
-	for (auto point : controlPoints)
-	{
-		point->Render();
-	}
-
 	//auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
 	//shader->Bind();

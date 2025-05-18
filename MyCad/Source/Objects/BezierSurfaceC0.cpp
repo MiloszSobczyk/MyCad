@@ -289,11 +289,6 @@ void BezierSurfaceC0::RenderUI()
 
 void BezierSurfaceC0::Render()
 {
-	for (auto point : controlPoints)
-	{
-		point->Render();
-	}
-
 	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
 	shader->Bind();

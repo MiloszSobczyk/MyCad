@@ -26,25 +26,6 @@ App::App()
 
 	middlePoint.SetColor(ColorPalette::Get(Color::Red));
 
-	//auto pointPtr = std::make_shared<Point>();
-	//pointPtr->Init();
-	//shapes.push_back(pointPtr);
-
-	//auto pointPtr2 = std::make_shared<Point>();
-	//pointPtr2->Init();
-	//pointPtr2->GetTranslationComponent()->SetTranslation(Algebra::Vector4(0.f, 20.f, 0.f, 1.f));
-	//shapes.push_back(pointPtr2);
-
-	//auto pointPtr3 = std::make_shared<Point>();
-	//pointPtr3->Init();
-	//pointPtr3->GetTranslationComponent()->SetTranslation(Algebra::Vector4(20.f, 20.f, 0.f, 1.f));
-	//shapes.push_back(pointPtr3);
-
-	//auto pointPtr4 = std::make_shared<Point>();
-	//pointPtr4->Init();
-	//pointPtr4->GetTranslationComponent()->SetTranslation(Algebra::Vector4(20.f, 0.f, 0.f, 1.f));
-	//shapes.push_back(pointPtr4);
-
 	HandleResize();
 }
 
@@ -232,8 +213,11 @@ void App::DisplayShapeSelection()
 			{
 				if (auto selectedPoint = std::dynamic_pointer_cast<Point>(shape))
 				{
-					CannotDeletePoint = true;
-					continue;
+					if (selectedPoint->IsLocked())
+					{
+						CannotDeletePoint = true;
+						continue;
+					}
 				}
 
 				auto it = std::find(shapes.begin(), shapes.end(), shape);
@@ -351,15 +335,6 @@ void App::DisplayAddShapeButtons()
 	{
 		DisplayAddSurfacePopup();
 	}
-	//auto bezierSurface = std::make_shared<BezierSurfaceC0>(Algebra::Vector4(), false, 20.f, 20.f, 1, 1);
-	//bezierSurface->Init();
-	//shapes.push_back(bezierSurface);
-
-	//auto points = bezierSurface->GetControlPoints();
-	//for (auto point : points)
-	//{
-	//	shapes.push_back(point);
-	//}
 }
 
 void App::DisplayAddPointsButton()
@@ -442,15 +417,15 @@ void App::DisplayAddSurfacePopup()
 		{
 			ImGui::CloseCurrentPopup();
 
-			std::shared_ptr<BezierSurfaceC2> bezierSurface;
+			std::shared_ptr<BezierSurfaceC0> bezierSurface;
 			if (!bezierParams.isCylinder)
 			{
-				bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(), 
+				bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(), 
 					bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
 			}
 			else
 			{
-				bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(),
+				bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(),
 					bezierParams.axis, bezierParams.radius, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
 			}
 
