@@ -56,14 +56,10 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float h
 		{
 			for (int j = 0; j < 4; ++j)
 			{
-				points.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
+				points.push_back(controlPoints[(startingI + i) * columns + startingJ + j]);
 			}
 		}
 
-		indices.push_back(5);
-		indices.push_back(6);
-		indices.push_back(9);
-		indices.push_back(10);
 
 		if (startingI == 0)
 		{
@@ -75,8 +71,6 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float h
 			{
 				indices.push_back(3);
 			}
-			indices.push_back(1);
-			indices.push_back(2);
 		}
 		else if (startingI == heightPatches - 1)
 		{
@@ -88,19 +82,6 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float h
 			{
 				indices.push_back(15);
 			}
-			indices.push_back(13);
-			indices.push_back(14);
-		}
-
-		if (startingJ == 0)
-		{
-			indices.push_back(4);
-			indices.push_back(8);
-		}
-		else if (startingJ == widthPatches - 1)
-		{
-			indices.push_back(7);
-			indices.push_back(11);
 		}
 
 		std::sort(indices.begin(), indices.end());
@@ -144,12 +125,6 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radi
 		}
 	}
 
-	//for (auto point : controlPoints)
-	//{
-	//	auto axisVector = Algebra::Vector4();
-	//	axisVector[axis] = 1.f;
-	//	auto rotation = Algebra::Quaternion::CreateFromAxisAngle(axisVector, std::numbers::pi_v<float> / 2.f);
-	//}
 
 	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
 	{
@@ -163,36 +138,9 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radi
 		{
 			for (int j = 0; j < 4; ++j)
 			{
-				int index = (startingI * 3 + i) * columns + (startingJ * 3 + j) % columns;
+				int index = (startingI + i) * columns + (startingJ + j) % columns;
 				points.push_back(controlPoints[index]);
 			}
-		}
-
-		indices.push_back(5);
-		indices.push_back(6);
-		indices.push_back(9);
-		indices.push_back(10);
-
-		if (startingI == 0)
-		{
-			indices.push_back(1);
-			indices.push_back(2);
-		}
-		else if (startingI == heightPatches - 1)
-		{
-			indices.push_back(13);
-			indices.push_back(14);
-		}
-
-		if (startingJ == 0)
-		{
-			indices.push_back(4);
-			indices.push_back(8);
-		}
-		else if (startingJ == widthPatches - 1)
-		{
-			indices.push_back(7);
-			indices.push_back(11);
 		}
 
 		std::sort(indices.begin(), indices.end());
@@ -294,41 +242,41 @@ void BezierSurfaceC2::Render()
 		point->Render();
 	}
 
-	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
+	//auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
-	shader->Bind();
-	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
-	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
-	shader->SetUniformInt("u_tessLevelU", tessLevelU);
-	shader->SetUniformInt("u_tessLevelV", tessLevelV);
+	//shader->Bind();
+	//shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+	//shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+	//shader->SetUniformInt("u_tessLevelU", tessLevelU);
+	//shader->SetUniformInt("u_tessLevelV", tessLevelV);
 
-	renderer.SetPatchParameters(16);
+	//renderer.SetPatchParameters(16);
 
-	renderer.Render(GL_PATCHES);
+	//renderer.Render(GL_PATCHES);
 
-	renderer.SetPatchParameters(4);
+	//renderer.SetPatchParameters(4);
 
-	shader->Unbind();
+	//shader->Unbind();
 }
 
 void BezierSurfaceC2::UpdateSurface()
 {
-	std::vector<PositionVertexData> vertices;
+	//std::vector<PositionVertexData> vertices;
 
-	for (auto& patch : patches)
-	{
-		for (auto wp : patch.GetPoints())
-		{
-			if (auto sp = wp.lock())
-			{
-				auto p = sp->GetTranslationComponent()->GetTranslation();
-				p.w = 1.f;
-				vertices.push_back(PositionVertexData{ .Position = p });
-			}
-		}
-	}
+	//for (auto& patch : patches)
+	//{
+	//	for (auto wp : patch.GetPoints())
+	//	{
+	//		if (auto sp = wp.lock())
+	//		{
+	//			auto p = sp->GetTranslationComponent()->GetTranslation();
+	//			p.w = 1.f;
+	//			vertices.push_back(PositionVertexData{ .Position = p });
+	//		}
+	//	}
+	//}
 
-	renderer.SetVertices(vertices);
+	//renderer.SetVertices(vertices);
 }
 
 void BezierSurfaceC2::RemovePatch(int index)
