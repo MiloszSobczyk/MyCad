@@ -6,6 +6,7 @@
 
 // ADD CHOOSING AXIS FOR CYLINDER
 // ADD MESH DRAWING
+// ADD COLORS
 
 BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches)
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
@@ -219,6 +220,8 @@ void BezierSurfaceC0::Init()
 
 void BezierSurfaceC0::RenderUI()
 {
+	ImGui::Checkbox("Draw Bernstein polygon", &drawBernsteinPolygon);
+
 	ImGui::SeparatorText("Tessellation");
 	ImGui::SliderInt("Tess Level U", &tessLevelU, 1, 64);
 	ImGui::SliderInt("Tess Level V", &tessLevelV, 1, 64);
