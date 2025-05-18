@@ -21,6 +21,9 @@ private:
 	int heightPatches;
 	bool isCylinder;
 
+	int tessLevelU = 4;
+	int tessLevelV = 4;
+
 	void Render() override;
 	void UpdateSurface();
 

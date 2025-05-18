@@ -17,6 +17,7 @@ public:
 
     void SetUniformMat4f(const std::string& name, const Algebra::Matrix4& matrix);
     void SetUniformVec4f(const std::string& name, const Algebra::Vector4& vector);
+	void SetUniformInt(const std::string& name, int value);
 
 private:
     unsigned int m_RendererID;

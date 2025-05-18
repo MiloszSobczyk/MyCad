@@ -219,6 +219,10 @@ void BezierSurfaceC0::Init()
 
 void BezierSurfaceC0::RenderUI()
 {
+	ImGui::SeparatorText("Tessellation");
+	ImGui::SliderInt("Tess Level U", &tessLevelU, 1, 64);
+	ImGui::SliderInt("Tess Level V", &tessLevelV, 1, 64);
+
 	ImGui::SeparatorText("Patches");
 
 	if (patches.empty())
@@ -295,6 +299,8 @@ void BezierSurfaceC0::Render()
 	shader->Bind();
 	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
 	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+	shader->SetUniformInt("u_tessLevelU", tessLevelU);
+	shader->SetUniformInt("u_tessLevelV", tessLevelV);
 
 	renderer.SetPatchParameters(16);
 	

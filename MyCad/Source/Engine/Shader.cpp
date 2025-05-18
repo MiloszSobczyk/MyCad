@@ -32,6 +32,11 @@ void Shader::SetUniformVec4f(const std::string& name, const Algebra::Vector4& ve
     GLCall(glUniform4f(GetUniformLocation(name), vector.x, vector.y, vector.z, vector.w));
 }
 
+void Shader::SetUniformInt(const std::string& name, int value)
+{
+    GLCall(glUniform1i(GetUniformLocation(name), value));
+}
+
 int Shader::GetUniformLocation(const std::string& name) 
 {
     if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
