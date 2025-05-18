@@ -1,6 +1,7 @@
 #include "BezierSurfaceC0.h"
 #include "Managers/ShaderManager.h"
 #include "Core/App.h"
+
 #include <numbers>
 
 // ADD CHOOSING AXIS FOR CYLINDER
@@ -10,7 +11,7 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float h
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
 {
 	name = "BezierSurfaceC0_" + std::to_string(id);
-	
+
 	const int columns = widthPatches * 3 + 1;
 	const int rows = heightPatches * 3 + 1;
 
@@ -106,6 +107,7 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float h
 	}
 
 	UpdateSurface();
+	SetupPolygon();
 }
 
 BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches)
@@ -293,6 +295,11 @@ void BezierSurfaceC0::UpdateColors()
 
 void BezierSurfaceC0::Render()
 {
+	if (drawBernsteinPolygon)
+	{
+		bernsteinPolygon->Render();
+	}
+
 	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
 	shader->Bind();
@@ -328,4 +335,35 @@ void BezierSurfaceC0::UpdateSurface()
 	}
 
 	renderer.SetVertices(vertices);
+}
+
+
+// Shittiest shit I've ever written. Let me out of this shithole...
+void BezierSurfaceC0::SetupPolygon()
+{
+	const int columns = widthPatches * 3 + 1;
+	const int rows = heightPatches * 3 + 1;
+
+	std::vector<std::weak_ptr<Point>> points;
+
+	for (int i = 0; i < rows; ++i)
+	{
+		for (int j = 0; j < columns; ++j)
+		{
+			if (i % 2 == 0)
+			{
+				int index = i * columns + j;
+				points.push_back(controlPoints[index]);
+			}
+			else
+			{
+				int index = i * columns + columns - 1 - j;
+				points.push_back(controlPoints[index]);
+			}
+		}
+	}
+
+	bernsteinPolygon = std::make_shared<Polyline>(points);
+	bernsteinPolygon->SetColor(ColorPalette::Get(Color::Teal));
+	bernsteinPolygon->InitFromPoints();
 }

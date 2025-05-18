@@ -7,7 +7,7 @@
 #include "Point.h"
 #include "Shape.h"
 #include "Patch.h"
-
+#include "Polyline.h"
 
 class BezierSurfaceC0 : public std::enable_shared_from_this<BezierSurfaceC0>, public Shape, public IObserver
 {
@@ -16,6 +16,7 @@ private:
 	std::vector<std::shared_ptr<Point>> controlPoints;
 	std::vector<Patch> patches;
 	std::vector<int> selectedPatches;
+	std::shared_ptr<Polyline> bernsteinPolygon;
 
 	int widthPatches;
 	int heightPatches;
@@ -23,6 +24,7 @@ private:
 
 	int tessLevelU = 4;
 	int tessLevelV = 4;
+	bool drawBernsteinPolygon = true;
 
 	void Render() override;
 	void UpdateSurface();
@@ -31,13 +33,14 @@ public:
 	BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	// Axes: 0 - X, 1 - Y, 2 - Z
 	BezierSurfaceC0(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches);
-
-	inline std::vector<std::shared_ptr<Point>> GetControlPoints() { return controlPoints; };
+	void SetupPolygon();
 
 	void OnNotified() override;
 	void Init();
-	void RenderUI() override;
-
 	void UpdateColors();
+	
+	void RenderUI() override;
+	
+	inline std::vector<std::shared_ptr<Point>> GetControlPoints() { return controlPoints; };
 	inline void ClearSelection() { selectedPatches.clear(); UpdateColors(); }
 };

@@ -15,6 +15,7 @@ private:
 
 public:
     Polyline();
+    Polyline(std::vector<std::weak_ptr<Point>> points);
 
     void Render() override;
     void RenderUI() override;
@@ -26,4 +27,6 @@ public:
     void ClearPoints();
 
     void OnNotified() override;
+
+    void InitFromPoints();
 };

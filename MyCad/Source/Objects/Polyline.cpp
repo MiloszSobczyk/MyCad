@@ -7,7 +7,14 @@
 Polyline::Polyline()
     : renderer(VertexDataType::PositionVertexData)
 {
-    name = "Polyline" + std::to_string(id);
+    name = "Polyline_" + std::to_string(id);
+}
+
+Polyline::Polyline(std::vector<std::weak_ptr<Point>> points)
+    : renderer(VertexDataType::PositionVertexData), points(points)
+{
+    name = "Polyline_" + std::to_string(id);
+    UpdatePoints();
 }
 
 void Polyline::Render()
@@ -180,4 +187,15 @@ void Polyline::ClearPoints()
 void Polyline::OnNotified()
 {
     UpdatePoints();
+}
+
+void Polyline::InitFromPoints()
+{
+    for (const auto& p : points)
+    {
+        if (auto sp = p.lock())
+        {
+            sp->AddObserver(shared_from_this());
+        }
+    }
 }

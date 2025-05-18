@@ -9,8 +9,6 @@
 #include <vector>
 #include <memory>
 
-
-
 class BezierCurveC2 : public std::enable_shared_from_this<BezierCurveC2>, public Shape, public IObserver
 {
 enum class AxisMode
