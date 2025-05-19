@@ -28,6 +28,7 @@ private:
 
 	void Render() override;
 	void UpdateSurface();
+	std::shared_ptr<Point> GetPointAt(int row, int col);
 
 public:
 	BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);

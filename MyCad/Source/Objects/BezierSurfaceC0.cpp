@@ -201,6 +201,7 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radi
 	}
 
 	UpdateSurface();
+	SetupPolygon();
 }
 
 void BezierSurfaceC0::OnNotified()
@@ -340,42 +341,52 @@ void BezierSurfaceC0::UpdateSurface()
 	renderer.SetVertices(vertices);
 }
 
+std::shared_ptr<Point> BezierSurfaceC0::GetPointAt(int row, int col)
+{
+	int columns = widthPatches * 3 + (isCylinder ? 0 : 1);
+	return controlPoints[row * columns + col];
+}
 
 // Shittiest shit I've ever written. Let me out of this shithole...
 void BezierSurfaceC0::SetupPolygon()
 {
-	const int C = widthPatches * 3 + 1;
-	const int R = heightPatches * 3 + 1;
-
 	std::vector<std::weak_ptr<Point>> points;
-	points.reserve(R * C + R * C);
-
-	for (int i = 0; i < R; ++i)
+	if (!isCylinder)
 	{
-		if (i % 2 == 0)
+		const int C = widthPatches * 3 + 1;
+		const int R = heightPatches * 3 + 1;
+		points.reserve(R * C + R * C);
+
+		for (int i = 0; i < R; ++i)
 		{
-			for (int j = 0; j < C; ++j)
-				points.push_back(controlPoints[i * C + j]);
+			if (i % 2 == 0)
+			{
+				for (int j = 0; j < C; ++j)
+					points.push_back(GetPointAt(i, j));
+			}
+			else
+			{
+				for (int j = C - 1; j >= 0; --j)
+					points.push_back(GetPointAt(i, j));
+			}
 		}
-		else
+
+		for (int j = 0; j < C; ++j)
 		{
-			for (int j = C - 1; j >= 0; --j)
-				points.push_back(controlPoints[i * C + j]);
+			if (j % 2 == 0)
+			{
+				for (int i = 0; i < R; ++i)
+					points.push_back(GetPointAt(i, j));
+			}
+			else
+			{
+				for (int i = R - 1; i >= 0; --i)
+					points.push_back(GetPointAt(i, j));
+			}
 		}
 	}
-
-	for (int j = 0; j < C; ++j)
+	else 
 	{
-		if (j % 2 == 0)
-		{
-			for (int i = 0; i < R; ++i)
-				points.push_back(controlPoints[i * C + j]);
-		}
-		else
-		{
-			for (int i = R - 1; i >= 0; --i)
-				points.push_back(controlPoints[i * C + j]);
-		}
 	}
 
 	bernsteinPolygon = std::make_shared<Polyline>(points);
