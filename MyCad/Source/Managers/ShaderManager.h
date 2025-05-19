@@ -12,6 +12,7 @@ enum class ShaderName
 	InfiniteGrid = 2,
 	BezierCurve = 3,
 	BezierSurface = 4,
+	BezierSurface2 = 5,
 };
 
 class ShaderManager

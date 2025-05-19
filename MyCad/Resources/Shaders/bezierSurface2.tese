@@ -4,7 +4,7 @@ layout(isolines, equal_spacing, ccw) in;
 
 uniform mat4 u_viewMatrix;
 uniform mat4 u_projectionMatrix;
-uniform int u_tessLevelU;
+uniform int u_tessLevelV;
 
 vec3 Bernstein(vec3 p0, vec3 p1, vec3 p2, vec3 p3, float u) 
 {
@@ -17,11 +17,11 @@ vec3 Bernstein(vec3 p0, vec3 p1, vec3 p2, vec3 p3, float u)
 
 void main() 
 {
-    float u = gl_TessCoord.x;
-    float v = gl_TessCoord.y;
+    float u = gl_TessCoord.y;
+    float v = gl_TessCoord.x;
 
-    float uSub = u_tessLevelU;
-    v = (uSub + 1) * v / uSub;
+    float uSub = u_tessLevelV;
+    u = (uSub + 1) * u / uSub;
 
     vec3 row0 = Bernstein(gl_in[0].gl_Position.xyz,  gl_in[1].gl_Position.xyz,
                                gl_in[2].gl_Position.xyz,  gl_in[3].gl_Position.xyz,  u);
@@ -32,7 +32,7 @@ void main()
     vec3 row3 = Bernstein(gl_in[12].gl_Position.xyz, gl_in[13].gl_Position.xyz,
                                gl_in[14].gl_Position.xyz, gl_in[15].gl_Position.xyz, u);
 
-    vec3 finalPos = Bernstein(row0, row1, row2, row3, v);
+    vec3 finalBoss = Bernstein(row0, row1, row2, row3, v);
 
-    gl_Position = u_projectionMatrix * u_viewMatrix * vec4(finalPos, 1.0);
+    gl_Position = u_projectionMatrix * u_viewMatrix * vec4(finalBoss, 1.0);
 }

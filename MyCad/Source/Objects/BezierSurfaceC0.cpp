@@ -101,13 +101,6 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radi
 		}
 	}
 
-	//for (auto point : controlPoints)
-	//{
-	//	auto axisVector = Algebra::Vector4();
-	//	axisVector[axis] = 1.f;
-	//	auto rotation = Algebra::Quaternion::CreateFromAxisAngle(axisVector, std::numbers::pi_v<float> / 2.f);
-	//}
-
 	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
 	{
 		std::vector<std::weak_ptr<Point>> points;
@@ -243,10 +236,25 @@ void BezierSurfaceC0::Render()
 	renderer.SetPatchParameters(16);
 	
 	renderer.Render(GL_PATCHES);
-	
-	renderer.SetPatchParameters(4);
 
 	shader->Unbind();
+	
+
+	shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface2);
+	
+	shader->Bind();
+	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+	shader->SetUniformInt("u_tessLevelU", tessLevelU);
+	shader->SetUniformInt("u_tessLevelV", tessLevelV);
+	
+	renderer.SetPatchParameters(16);
+
+	renderer.Render(GL_PATCHES);
+	
+	shader->Unbind();
+
+	renderer.SetPatchParameters(4);
 }
 
 void BezierSurfaceC0::UpdateSurface()

@@ -24,7 +24,7 @@ private:
 
 	int tessLevelU = 4;
 	int tessLevelV = 4;
-	bool drawBernsteinPolygon = true;
+	bool drawBernsteinPolygon = false;
 
 	void Render() override;
 	void UpdateSurface();
