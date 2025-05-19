@@ -112,7 +112,7 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float h
 }
 
 BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches)
-	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
+	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(true)
 {
 	name = "BezierSurfaceC0_" + std::to_string(id);
 
@@ -344,13 +344,14 @@ void BezierSurfaceC0::UpdateSurface()
 std::shared_ptr<Point> BezierSurfaceC0::GetPointAt(int row, int col)
 {
 	int columns = widthPatches * 3 + (isCylinder ? 0 : 1);
-	return controlPoints[row * columns + col];
+	return controlPoints[(row * columns + col) % controlPoints.size()];
 }
 
 // Shittiest shit I've ever written. Let me out of this shithole...
 void BezierSurfaceC0::SetupPolygon()
 {
 	std::vector<std::weak_ptr<Point>> points;
+
 	if (!isCylinder)
 	{
 		const int C = widthPatches * 3 + 1;
@@ -387,6 +388,38 @@ void BezierSurfaceC0::SetupPolygon()
 	}
 	else 
 	{
+		const int C = widthPatches * 3;
+		const int R = heightPatches * 3 + 1;
+		points.reserve(R * C + R * C);
+		std::vector<int> indices;
+
+		int columns = widthPatches * 3 + (isCylinder ? 0 : 1);
+
+		for (int i = 0; i < R; ++i)
+		{
+			for (int j = 0; j < C + 1; ++j)
+			{
+				points.push_back(GetPointAt(i, j));
+			}
+		}
+
+		for (int j = 1; j < C; ++j)
+		{
+			if (j % 2 == 0)
+			{
+				for (int i = 0; i < R; ++i)
+				{
+					points.push_back(GetPointAt(i, j));
+				}
+			}
+			else
+			{
+				for (int i = R - 1; i >= 0; --i)
+				{
+					points.push_back(GetPointAt(i, j));
+				}
+			}
+		}
 	}
 
 	bernsteinPolygon = std::make_shared<Polyline>(points);
