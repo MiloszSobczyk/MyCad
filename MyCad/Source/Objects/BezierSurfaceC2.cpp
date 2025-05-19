@@ -99,13 +99,13 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radi
 	}
 
 
-	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
+	for (int patchIndex = 0; patchIndex < (widthPatches + 3) * heightPatches; ++patchIndex)
 	{
 		std::vector<std::weak_ptr<Point>> points;
 		std::vector<std::size_t> indices;
 
-		int startingI = patchIndex / widthPatches;
-		int startingJ = patchIndex % widthPatches;
+		int startingI = patchIndex / (widthPatches + 3);
+		int startingJ = patchIndex % (widthPatches + 3);
 
 		for (int i = 0; i < 4; ++i)
 		{
@@ -254,7 +254,7 @@ void BezierSurfaceC2::UpdateSurface()
 		{0.f,   1.f / 6, 4.f / 6, 1.f / 6}
 	};
 
-	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
+	for (int patchIndex = 0; patchIndex < patches.size(); ++patchIndex)
 	{
 		auto patch = patches[patchIndex];
 
