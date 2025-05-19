@@ -27,6 +27,7 @@ enum class AppMode
 struct BezierSurfaceParams
 {
 	bool showPopup = false;
+	bool C2 = false;
 	bool isCylinder = false;
 	float width = 20.f;
 	float height = 20.f;

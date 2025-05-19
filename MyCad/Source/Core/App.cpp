@@ -327,7 +327,7 @@ void App::DisplayAddShapeButtons()
 		shapes.push_back(bezierCurve);
 	}
 
-	if (ImGui::Button("Add Bezier Surface C0"))
+	if (ImGui::Button("Add Bezier Surface"))
 	{
 		bezierParams.showPopup = true;
 	}
@@ -382,6 +382,7 @@ void App::DisplayAddSurfacePopup()
 
 	if (ImGui::BeginPopupModal("Edit Bezier Surface", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
+		ImGui::Checkbox("Ensure C2 continuity", &bezierParams.C2);
 		ImGui::Checkbox("Is Cylinder", &bezierParams.isCylinder);
 
 		if (!bezierParams.isCylinder)
@@ -417,25 +418,51 @@ void App::DisplayAddSurfacePopup()
 		{
 			ImGui::CloseCurrentPopup();
 
-			std::shared_ptr<BezierSurfaceC2> bezierSurface;
-			if (!bezierParams.isCylinder)
+			if (bezierParams.C2)
 			{
-				bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(), 
-					bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+				std::shared_ptr<BezierSurfaceC2> bezierSurface;
+				if (!bezierParams.isCylinder)
+				{
+					bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(), 
+						bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+				}
+				else
+				{
+					bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(),
+						bezierParams.axis, bezierParams.radius, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+				}
+
+				bezierSurface->Init();
+				shapes.push_back(bezierSurface);
+
+				auto points = bezierSurface->GetControlPoints();
+				for (auto point : points)
+				{
+					shapes.push_back(point);
+				}
 			}
 			else
 			{
-				bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(),
-					bezierParams.axis, bezierParams.radius, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
-			}
+				std::shared_ptr<BezierSurfaceC0> bezierSurface;
+				if (!bezierParams.isCylinder)
+				{
+					bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(),
+						bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+				}
+				else
+				{
+					bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(),
+						bezierParams.axis, bezierParams.radius, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+				}
 
-			bezierSurface->Init();
-			shapes.push_back(bezierSurface);
+				bezierSurface->Init();
+				shapes.push_back(bezierSurface);
 
-			auto points = bezierSurface->GetControlPoints();
-			for (auto point : points)
-			{
-				shapes.push_back(point);
+				auto points = bezierSurface->GetControlPoints();
+				for (auto point : points)
+				{
+					shapes.push_back(point);
+				}
 			}
 
 			bezierParams = BezierSurfaceParams();
