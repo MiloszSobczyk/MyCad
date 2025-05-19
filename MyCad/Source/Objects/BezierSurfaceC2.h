@@ -16,6 +16,7 @@ private:
 	std::vector<std::shared_ptr<Point>> controlPoints;
 	std::vector<Patch> patches;
 	std::vector<int> selectedPatches;
+	std::vector<std::shared_ptr<Point>> bernsteinPoints;
 
 	int widthPatches;
 	int heightPatches;

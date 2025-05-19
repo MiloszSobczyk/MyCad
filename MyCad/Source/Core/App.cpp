@@ -417,15 +417,15 @@ void App::DisplayAddSurfacePopup()
 		{
 			ImGui::CloseCurrentPopup();
 
-			std::shared_ptr<BezierSurfaceC0> bezierSurface;
+			std::shared_ptr<BezierSurfaceC2> bezierSurface;
 			if (!bezierParams.isCylinder)
 			{
-				bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(), 
+				bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(), 
 					bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
 			}
 			else
 			{
-				bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(),
+				bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(),
 					bezierParams.axis, bezierParams.radius, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
 			}
 

@@ -58,31 +58,6 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float h
 			}
 		}
 
-
-		if (startingI == 0)
-		{
-			if (startingJ == 0)
-			{
-				indices.push_back(0);
-			}
-			else if (startingJ == widthPatches - 1)
-			{
-				indices.push_back(3);
-			}
-		}
-		else if (startingI == heightPatches - 1)
-		{
-			if (startingJ == 0)
-			{
-				indices.push_back(12);
-			}
-			else if (startingJ == widthPatches - 1)
-			{
-				indices.push_back(15);
-			}
-		}
-
-		std::sort(indices.begin(), indices.end());
 		patches.push_back(Patch(points, indices));
 	}
 
@@ -90,7 +65,7 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float h
 }
 
 BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches)
-	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
+	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(true)
 {
 	name = "BezierSurfaceC2_" + std::to_string(id);
 
@@ -241,39 +216,84 @@ void BezierSurfaceC2::UpdateColors()
 
 void BezierSurfaceC2::Render()
 {
-	//auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
+	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
-	//shader->Bind();
-	//shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
-	//shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
-	//shader->SetUniformInt("u_tessLevelU", tessLevelU);
-	//shader->SetUniformInt("u_tessLevelV", tessLevelV);
+	shader->Bind();
+	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+	shader->SetUniformInt("u_tessLevelU", tessLevelU);
+	shader->SetUniformInt("u_tessLevelV", tessLevelV);
 
-	//renderer.SetPatchParameters(16);
+	renderer.SetPatchParameters(16);
 
-	//renderer.Render(GL_PATCHES);
+	renderer.Render(GL_PATCHES);
 
-	//renderer.SetPatchParameters(4);
+	renderer.SetPatchParameters(4);
 
-	//shader->Unbind();
+	shader->Unbind();
 }
 
 void BezierSurfaceC2::UpdateSurface()
 {
-	//std::vector<PositionVertexData> vertices;
+	if (bernsteinPoints.empty())
+	{
+		for (int i = 0; i < patches.size() * 16; ++i)
+		{
+			auto point = std::make_shared<Point>();
+			point->GetTranslationComponent()->SetTranslation(Algebra::Vector4());
+			bernsteinPoints.push_back(point);
+		}
+	}
 
-	//for (auto& patch : patches)
-	//{
-	//	for (auto wp : patch.GetPoints())
-	//	{
-	//		if (auto sp = wp.lock())
-	//		{
-	//			auto p = sp->GetTranslationComponent()->GetTranslation();
-	//			p.w = 1.f;
-	//			vertices.push_back(PositionVertexData{ .Position = p });
-	//		}
-	//	}
-	//}
+	std::vector<PositionVertexData> vertices;
 
-	//renderer.SetVertices(vertices);
+	static const float A[4][4] = {
+		{1.f / 6, 4.f / 6, 1.f / 6, 0.f},
+		{0.f,   4.f / 6, 2.f / 6, 0.f},
+		{0.f,   2.f / 6, 4.f / 6, 0.f},
+		{0.f,   1.f / 6, 4.f / 6, 1.f / 6}
+	};
+
+	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
+	{
+		auto patch = patches[patchIndex];
+
+		std::array<std::array<Algebra::Vector4, 4>, 4> P;
+		const auto& wps = patch.GetPoints();
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+			{
+				auto sp = wps[i * 4 + j].lock();
+				P[i][j] = sp->GetTranslationComponent()->GetTranslation();
+			}
+
+		std::array<std::array<Algebra::Vector4, 4>, 4> Q;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+			{
+				Q[i][j] = Algebra::Vector4();
+				for (int k = 0; k < 4; ++k)
+					Q[i][j] += A[i][k] * P[k][j];
+			}
+
+		std::vector<Algebra::Vector4> B;
+		B.reserve(16);
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+			{
+				Algebra::Vector4 b = Algebra::Vector4();
+				for (int k = 0; k < 4; ++k)
+					b += Q[i][k] * A[j][k];
+				bernsteinPoints[patchIndex * 16 + i * 4 + j]->GetTranslationComponent()->SetTranslation(b);
+			}
+	}
+
+	for (auto& point : bernsteinPoints)
+	{
+		auto p = point->GetTranslationComponent()->GetTranslation();
+		p.w = 1.f;
+		vertices.push_back(PositionVertexData{ .Position = p });
+	}
+
+	renderer.SetVertices(vertices);
 }
