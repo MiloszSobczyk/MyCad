@@ -142,8 +142,8 @@ void BezierSurfaceC2::Init()
 
 void BezierSurfaceC2::RenderUI()
 {
-	ImGui::Checkbox("Draw Bernstein polygon", &drawBernsteinPolygon);
-	ImGui::Checkbox("Draw De Boor polygon", &drawDeBoorPolygon);
+	ImGui::Checkbox("Draw De Boor polygon", &drawBernsteinPolygon);
+	ImGui::Checkbox("Draw Bernstein polygon", &drawDeBoorPolygon);
 
 	ImGui::SeparatorText("Tessellation");
 	ImGui::SliderInt("Tess Level U", &tessLevelU, 1, 64);
