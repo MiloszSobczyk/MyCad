@@ -48,6 +48,7 @@ public:
 	std::shared_ptr<Point> GetPointAt(int row, int col);
 	std::shared_ptr<Point> GetBernsteinPointAt(int row, int col);
 	void SetupPolygon();
+	void SetupDeBoorPolygon();
 
 	void UpdateColors();
 	inline void ClearSelection() { selectedPatches.clear(); UpdateColors(); }

@@ -325,6 +325,8 @@ void BezierSurfaceC2::UpdateSurface()
 	}
 
 	renderer.SetVertices(vertices);
+
+	SetupDeBoorPolygon();
 }
 
 std::shared_ptr<Point> BezierSurfaceC2::GetPointAt(int row, int col)
@@ -335,7 +337,7 @@ std::shared_ptr<Point> BezierSurfaceC2::GetPointAt(int row, int col)
 
 std::shared_ptr<Point> BezierSurfaceC2::GetBernsteinPointAt(int row, int col)
 {
-	int columns = widthPatches * 3 + 1;
+	int columns = widthPatches * 3 + (isCylinder ? 0 : 1);
 
 	int patchRow = row / 4;
 	int patchCol = col / 4;
@@ -447,7 +449,12 @@ void BezierSurfaceC2::SetupPolygon()
 	bernsteinPolygon = std::make_shared<Polyline>(points);
 	bernsteinPolygon->SetColor(ColorPalette::Get(Color::Teal));
 	bernsteinPolygon->InitFromPoints();
-	
+
+	SetupDeBoorPolygon();
+}
+
+void BezierSurfaceC2::SetupDeBoorPolygon()
+{
 	std::vector<std::weak_ptr<Point>> points2;
 
 	if (!isCylinder)
@@ -458,11 +465,67 @@ void BezierSurfaceC2::SetupPolygon()
 
 		for (int i = 0; i < R; ++i)
 		{
-			for (int j = 0; j < C; ++j)
+			if (i % 2 == 0)
 			{
-				points2.push_back(GetBernsteinPointAt(i, j));
+				for (int j = 0; j < C; ++j)
+					points2.push_back(GetBernsteinPointAt(i, j));
+			}
+			else
+			{
+				for (int j = C - 1; j >= 0; --j)
+					points2.push_back(GetBernsteinPointAt(i, j));
 			}
 		}
+
+		int startJ = widthPatches % 2 == 0 ? C - 1 : 0;
+		int changeJ = widthPatches % 2 == 0 ? -1 : 1;
+
+		for (int j = startJ; j < C && j >= 0; j += changeJ)
+		{
+			if (j % 2 == 0)
+			{
+				for (int i = 0; i < R; ++i)
+					points2.push_back(GetBernsteinPointAt(i, j));
+			}
+			else
+			{
+				for (int i = R - 1; i >= 0; --i)
+					points2.push_back(GetBernsteinPointAt(i, j));
+			}
+		}
+	}
+	else
+	{
+		const int C = widthPatches * 3;
+		const int R = heightPatches * 3 + 1;
+		points2.reserve(R * C + R * C);
+		std::vector<int> indices;
+
+		for (int i = 0; i < R; ++i)
+		{
+			for (int j = 0; j < C + 1; ++j)
+			{
+				points2.push_back(GetBernsteinPointAt(i, j % C));
+			}
+		}
+
+		//for (int j = 1; j < C; ++j)
+		//{
+		//	if (j % 2 == 0)
+		//	{
+		//		for (int i = 0; i < R; ++i)
+		//		{
+		//			points2.push_back(GetBernsteinPointAt(i, j));
+		//		}
+		//	}
+		//	else
+		//	{
+		//		for (int i = R - 1; i >= 0; --i)
+		//		{
+		//			points2.push_back(GetBernsteinPointAt(i, j));
+		//		}
+		//	}
+		//}
 	}
 
 	deBoorPolygon = std::make_shared<Polyline>(points2);
