@@ -142,8 +142,8 @@ void BezierSurfaceC2::Init()
 
 void BezierSurfaceC2::RenderUI()
 {
-	ImGui::Checkbox("Draw De Boor polygon", &drawBernsteinPolygon);
-	ImGui::Checkbox("Draw Bernstein polygon", &drawDeBoorPolygon);
+	ImGui::Checkbox("Draw Bernstein polygon", &drawBernsteinPolygon);
+	ImGui::Checkbox("Draw De Boor polygon", &drawDeBoorPolygon);
 
 	ImGui::SeparatorText("Tessellation");
 	ImGui::SliderInt("Tess Level U", &tessLevelU, 1, 64);
@@ -482,7 +482,7 @@ void BezierSurfaceC2::SetupDeBoorPolygon()
 
 		for (int j = startJ; j < C && j >= 0; j += changeJ)
 		{
-			if (j % 2 == 0)
+			if (j % 2 == 1)
 			{
 				for (int i = 0; i < R; ++i)
 					points2.push_back(GetBernsteinPointAt(i, j));
