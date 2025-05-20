@@ -7,6 +7,7 @@
 // ADD CHOOSING AXIS FOR CYLINDER
 // ADD MESH DRAWING
 // ADD COLORS
+// FIX POLYGON
 
 BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches)
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
@@ -238,7 +239,7 @@ void BezierSurfaceC0::Render()
 	renderer.Render(GL_PATCHES);
 
 	shader->Unbind();
-	
+
 
 	shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface2);
 	

@@ -216,6 +216,7 @@ void BezierSurfaceC2::UpdateColors()
 
 void BezierSurfaceC2::Render()
 {
+
 	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
 	shader->Bind();
@@ -228,9 +229,24 @@ void BezierSurfaceC2::Render()
 
 	renderer.Render(GL_PATCHES);
 
-	renderer.SetPatchParameters(4);
+	shader->Unbind();
+
+
+	shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface2);
+
+	shader->Bind();
+	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+	shader->SetUniformInt("u_tessLevelU", tessLevelU);
+	shader->SetUniformInt("u_tessLevelV", tessLevelV);
+
+	renderer.SetPatchParameters(16);
+
+	renderer.Render(GL_PATCHES);
 
 	shader->Unbind();
+
+	renderer.SetPatchParameters(4);
 }
 
 void BezierSurfaceC2::UpdateSurface()
