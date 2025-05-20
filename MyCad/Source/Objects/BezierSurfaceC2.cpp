@@ -256,6 +256,10 @@ void BezierSurfaceC2::Render()
 	{
 		bernsteinPolygon->Render();
 	}
+	if (drawDeBoorPolygon)
+	{
+		deBoorPolygon->Render();
+	}
 }
 
 void BezierSurfaceC2::UpdateSurface()
@@ -327,6 +331,42 @@ std::shared_ptr<Point> BezierSurfaceC2::GetPointAt(int row, int col)
 {
 	int columns = widthPatches + 2 + (isCylinder ? 0 : 1);
 	return controlPoints[(row * columns + col) % controlPoints.size()];
+}
+
+std::shared_ptr<Point> BezierSurfaceC2::GetBernsteinPointAt(int row, int col)
+{
+	int columns = widthPatches * 3 + 1;
+
+	int patchRow = row / 4;
+	int patchCol = col / 4;
+
+	if (col >= 4)
+	{
+		patchCol = (col + 1) / 4;
+	}
+	if (row >= 4)
+	{
+		patchRow = (row + 1) / 4;
+	}
+
+
+	int patchIndex = patchRow * widthPatches + patchCol;
+
+	int inPatchRow = row;
+	int inPatchColumn = col;
+
+	if (patchCol != 0)
+	{
+		inPatchColumn = (col - 1) % 3 + 1;
+	}
+	if (patchRow != 0)
+	{
+		inPatchRow = (row - 1) % 3 + 1;
+	}
+
+	int index = patchIndex * 16 + inPatchRow * 4 + inPatchColumn;
+
+	return bernsteinPoints[patchIndex * 16 + inPatchRow * 4 + inPatchColumn];
 }
 
 void BezierSurfaceC2::SetupPolygon()
@@ -407,4 +447,25 @@ void BezierSurfaceC2::SetupPolygon()
 	bernsteinPolygon = std::make_shared<Polyline>(points);
 	bernsteinPolygon->SetColor(ColorPalette::Get(Color::Teal));
 	bernsteinPolygon->InitFromPoints();
+	
+	std::vector<std::weak_ptr<Point>> points2;
+
+	if (!isCylinder)
+	{
+		const int C = widthPatches * 3 + 1;
+		const int R = heightPatches * 3 + 1;
+		points2.reserve(R * C + R * C);
+
+		for (int i = 0; i < R; ++i)
+		{
+			for (int j = 0; j < C; ++j)
+			{
+				points2.push_back(GetBernsteinPointAt(i, j));
+			}
+		}
+	}
+
+	deBoorPolygon = std::make_shared<Polyline>(points2);
+	deBoorPolygon->SetColor(ColorPalette::Get(Color::Red));
+	deBoorPolygon->InitFromPoints();
 }
