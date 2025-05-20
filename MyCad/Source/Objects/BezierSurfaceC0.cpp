@@ -13,6 +13,8 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float h
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
 {
 	name = "BezierSurfaceC0_" + std::to_string(id);
+	color = ColorPalette::Get(Color::Purple);
+
 
 	const int columns = widthPatches * 3 + 1;
 	const int rows = heightPatches * 3 + 1;
@@ -221,7 +223,6 @@ void BezierSurfaceC0::UpdateColors()
 
 void BezierSurfaceC0::Render()
 {
-
 	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
 	shader->Bind();
@@ -230,7 +231,7 @@ void BezierSurfaceC0::Render()
 	shader->SetUniformInt("u_tessLevelU", tessLevelU);
 	shader->SetUniformInt("u_tessLevelV", tessLevelV);
 
-	//renderer.SetPatchParameters(16);
+	renderer.SetPatchParameters(16);
 	
 	renderer.Render(GL_PATCHES);
 
@@ -247,7 +248,7 @@ void BezierSurfaceC0::Render()
 	
 	renderer.SetPatchParameters(16);
 
-	//renderer.Render(GL_PATCHES);
+	renderer.Render(GL_PATCHES);
 	
 	shader->Unbind();
 
@@ -312,7 +313,7 @@ void BezierSurfaceC0::SetupPolygon()
 		int startJ = widthPatches % 2 == 0 ? C - 1 : 0;
 		int changeJ = widthPatches % 2 == 0 ? -1 : 1;
 
-		for (int j = startJ; j < C && j > 0; j += changeJ)
+		for (int j = startJ; j < C && j >= 0; j += changeJ)
 		{
 			if (j % 2 == 0)
 			{
@@ -333,13 +334,11 @@ void BezierSurfaceC0::SetupPolygon()
 		points.reserve(R * C + R * C);
 		std::vector<int> indices;
 
-		int columns = widthPatches * 3 + (isCylinder ? 0 : 1);
-
 		for (int i = 0; i < R; ++i)
 		{
 			for (int j = 0; j < C + 1; ++j)
 			{
-				points.push_back(GetPointAt(i, j));
+				points.push_back(GetPointAt(i, j % C));
 			}
 		}
 

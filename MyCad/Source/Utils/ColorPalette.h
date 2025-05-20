@@ -9,9 +9,9 @@ enum class Color
     Red,
     Green,
     Blue,
-    Teal,
     Purple,
-    Emerald
+    Teal,
+    Emerald,
 };
 
 class ColorPalette
