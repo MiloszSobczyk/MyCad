@@ -7,7 +7,8 @@
 #include "Point.h"
 #include "Shape.h"
 #include "Patch.h"
-
+#include "Polyline.h"
+#include "Point.h"
 
 class BezierSurfaceC2 : public std::enable_shared_from_this<BezierSurfaceC2>, public Shape, public IObserver
 {
@@ -17,6 +18,8 @@ private:
 	std::vector<Patch> patches;
 	std::vector<int> selectedPatches;
 	std::vector<std::shared_ptr<Point>> bernsteinPoints;
+	std::shared_ptr<Polyline> bernsteinPolygon;
+	std::shared_ptr<Polyline> deBoorPolygon;
 
 	int widthPatches;
 	int heightPatches;
@@ -24,6 +27,9 @@ private:
 
 	int tessLevelU = 4;
 	int tessLevelV = 4;
+	bool drawBernsteinPolygon = false;
+	bool drawDeBoorPolygon = false;
+
 
 	void Render() override;
 	void UpdateSurface();
@@ -38,6 +44,9 @@ public:
 	void OnNotified() override;
 	void Init();
 	void RenderUI() override;
+
+	std::shared_ptr<Point> GetPointAt(int row, int col);
+	void SetupPolygon();
 
 	void UpdateColors();
 	inline void ClearSelection() { selectedPatches.clear(); UpdateColors(); }

@@ -62,6 +62,7 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float h
 	}
 
 	UpdateSurface();
+	SetupPolygon();
 }
 
 BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches)
@@ -121,6 +122,7 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radi
 	}
 
 	UpdateSurface();
+	SetupPolygon();
 }
 
 void BezierSurfaceC2::OnNotified()
@@ -140,6 +142,9 @@ void BezierSurfaceC2::Init()
 
 void BezierSurfaceC2::RenderUI()
 {
+	ImGui::Checkbox("Draw Bernstein polygon", &drawBernsteinPolygon);
+	ImGui::Checkbox("Draw De Boor polygon", &drawDeBoorPolygon);
+
 	ImGui::SeparatorText("Tessellation");
 	ImGui::SliderInt("Tess Level U", &tessLevelU, 1, 64);
 	ImGui::SliderInt("Tess Level V", &tessLevelV, 1, 64);
@@ -216,7 +221,6 @@ void BezierSurfaceC2::UpdateColors()
 
 void BezierSurfaceC2::Render()
 {
-
 	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
 	shader->Bind();
@@ -247,6 +251,11 @@ void BezierSurfaceC2::Render()
 	shader->Unbind();
 
 	renderer.SetPatchParameters(4);
+
+	if (drawBernsteinPolygon)
+	{
+		bernsteinPolygon->Render();
+	}
 }
 
 void BezierSurfaceC2::UpdateSurface()
@@ -312,4 +321,90 @@ void BezierSurfaceC2::UpdateSurface()
 	}
 
 	renderer.SetVertices(vertices);
+}
+
+std::shared_ptr<Point> BezierSurfaceC2::GetPointAt(int row, int col)
+{
+	int columns = widthPatches + 2 + (isCylinder ? 0 : 1);
+	return controlPoints[(row * columns + col) % controlPoints.size()];
+}
+
+void BezierSurfaceC2::SetupPolygon()
+{
+	std::vector<std::weak_ptr<Point>> points;
+
+	if (!isCylinder)
+	{
+		const int C = widthPatches + 3;
+		const int R = heightPatches + 3;
+		points.reserve(R * C + R * C);
+
+		for (int i = 0; i < R; ++i)
+		{
+			if (i % 2 == 0)
+			{
+				for (int j = 0; j < C; ++j)
+					points.push_back(GetPointAt(i, j));
+			}
+			else
+			{
+				for (int j = C - 1; j >= 0; --j)
+					points.push_back(GetPointAt(i, j));
+			}
+		}
+
+		int startJ = widthPatches % 2 == 0 ? C - 1 : 0;
+		int changeJ = widthPatches % 2 == 0 ? -1 : 1;
+
+		for (int j = startJ; j < C && j >= 0; j += changeJ)
+		{
+			if (j % 2 == 0)
+			{
+				for (int i = 0; i < R; ++i)
+					points.push_back(GetPointAt(i, j));
+			}
+			else
+			{
+				for (int i = R - 1; i >= 0; --i)
+					points.push_back(GetPointAt(i, j));
+			}
+		}
+	}
+	else
+	{
+		const int C = widthPatches + 2;
+		const int R = heightPatches + 3;
+		points.reserve(R * C + R * C);
+		std::vector<int> indices;
+
+		for (int i = 0; i < R; ++i)
+		{
+			for (int j = 0; j < C + 1; ++j)
+			{
+				points.push_back(GetPointAt(i, j % C));
+			}
+		}
+
+		for (int j = 1; j < C; ++j)
+		{
+			if (j % 2 == 0)
+			{
+				for (int i = 0; i < R; ++i)
+				{
+					points.push_back(GetPointAt(i, j));
+				}
+			}
+			else
+			{
+				for (int i = R - 1; i >= 0; --i)
+				{
+					points.push_back(GetPointAt(i, j));
+				}
+			}
+		}
+	}
+
+	bernsteinPolygon = std::make_shared<Polyline>(points);
+	bernsteinPolygon->SetColor(ColorPalette::Get(Color::Teal));
+	bernsteinPolygon->InitFromPoints();
 }

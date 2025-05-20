@@ -15,7 +15,6 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float h
 	name = "BezierSurfaceC0_" + std::to_string(id);
 	color = ColorPalette::Get(Color::Purple);
 
-
 	const int columns = widthPatches * 3 + 1;
 	const int rows = heightPatches * 3 + 1;
 
