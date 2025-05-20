@@ -221,10 +221,6 @@ void BezierSurfaceC0::UpdateColors()
 
 void BezierSurfaceC0::Render()
 {
-	if (drawBernsteinPolygon)
-	{
-		bernsteinPolygon->Render();
-	}
 
 	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
@@ -234,7 +230,7 @@ void BezierSurfaceC0::Render()
 	shader->SetUniformInt("u_tessLevelU", tessLevelU);
 	shader->SetUniformInt("u_tessLevelV", tessLevelV);
 
-	renderer.SetPatchParameters(16);
+	//renderer.SetPatchParameters(16);
 	
 	renderer.Render(GL_PATCHES);
 
@@ -251,11 +247,16 @@ void BezierSurfaceC0::Render()
 	
 	renderer.SetPatchParameters(16);
 
-	renderer.Render(GL_PATCHES);
+	//renderer.Render(GL_PATCHES);
 	
 	shader->Unbind();
 
 	renderer.SetPatchParameters(4);
+
+	if (drawBernsteinPolygon)
+	{
+		bernsteinPolygon->Render();
+	}
 }
 
 void BezierSurfaceC0::UpdateSurface()
@@ -284,7 +285,6 @@ std::shared_ptr<Point> BezierSurfaceC0::GetPointAt(int row, int col)
 	return controlPoints[(row * columns + col) % controlPoints.size()];
 }
 
-// Shittiest shit I've ever written. Let me out of this shithole...
 void BezierSurfaceC0::SetupPolygon()
 {
 	std::vector<std::weak_ptr<Point>> points;
@@ -309,7 +309,10 @@ void BezierSurfaceC0::SetupPolygon()
 			}
 		}
 
-		for (int j = 0; j < C; ++j)
+		int startJ = widthPatches % 2 == 0 ? C - 1 : 0;
+		int changeJ = widthPatches % 2 == 0 ? -1 : 1;
+
+		for (int j = startJ; j < C && j > 0; j += changeJ)
 		{
 			if (j % 2 == 0)
 			{
