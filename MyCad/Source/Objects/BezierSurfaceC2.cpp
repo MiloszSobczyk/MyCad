@@ -258,7 +258,10 @@ void BezierSurfaceC2::Render()
 	}
 	if (drawDeBoorPolygon)
 	{
-		deBoorPolygon->Render();
+		for (auto& patch : patches)
+		{
+			patch.Render();
+		}
 	}
 }
 
@@ -285,7 +288,7 @@ void BezierSurfaceC2::UpdateSurface()
 
 	for (int patchIndex = 0; patchIndex < patches.size(); ++patchIndex)
 	{
-		auto patch = patches[patchIndex];
+		auto& patch = patches[patchIndex];
 
 		std::array<std::array<Algebra::Vector4, 4>, 4> P;
 		const auto& wps = patch.GetPoints();
@@ -306,6 +309,7 @@ void BezierSurfaceC2::UpdateSurface()
 			}
 
 		std::vector<Algebra::Vector4> B;
+		std::vector<std::weak_ptr<Point>> bPoints;
 		B.reserve(16);
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j)
@@ -314,7 +318,10 @@ void BezierSurfaceC2::UpdateSurface()
 				for (int k = 0; k < 4; ++k)
 					b += Q[i][k] * A[j][k];
 				bernsteinPoints[patchIndex * 16 + i * 4 + j]->GetTranslationComponent()->SetTranslation(b);
+				bPoints.push_back(bernsteinPoints[patchIndex * 16 + i * 4 + j]);
 			}
+
+		patch.AddBernstein(bPoints);
 	}
 
 	for (auto& point : bernsteinPoints)
