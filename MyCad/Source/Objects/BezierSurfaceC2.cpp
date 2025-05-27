@@ -1,6 +1,7 @@
 #include "BezierSurfaceC2.h"
 #include "Managers/ShaderManager.h"
 #include "Core/App.h"
+
 #include <numbers>
 
 // ADD CHOOSING AXIS FOR CYLINDER
@@ -560,7 +561,7 @@ json BezierSurfaceC2::Serialize() const
 		{
 			int jCole = isCylinder ? j % (widthPatches + 3) : j;
 			auto point = GetPointAt(i, jCole);
-			cp.push_back(static_cast<unsigned int>(point->GetId()));
+			cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
 		}
 	}
 	j["controlPoints"] = cp;

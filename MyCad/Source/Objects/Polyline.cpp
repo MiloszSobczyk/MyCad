@@ -216,7 +216,7 @@ json Polyline::Serialize() const
 	{
 		if (auto point = p.lock())
 		{
-			cp.push_back(static_cast<unsigned int>(point->GetId()));
+            cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
 		}
 	}
 	j["controlPoints"] = cp;

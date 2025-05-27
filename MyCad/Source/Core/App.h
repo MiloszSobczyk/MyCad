@@ -9,11 +9,14 @@
 #include "Objects/SelectedShapes.h"
 #include "Operations/OperationFactory.h"
 #include "Utils/Init.h"
+#include <nlohmann/json.hpp>
 
 #include <array>
 #include <string>
 #include <unordered_set>
 #include <vector>
+
+using json = nlohmann::json;
 
 enum class AppMode
 {
@@ -82,6 +85,8 @@ public:
 	void DisplayAddShapeButtons();
 	void DisplayAddPointsButton();
 	void DisplayAddSurfacePopup();
+
+	void DisplaySaveToFile();
 
 	Algebra::Vector4 ScreenToNDC(float x, float y);
 	void GetClickedPoint();

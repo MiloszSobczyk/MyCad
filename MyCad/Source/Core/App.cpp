@@ -1,15 +1,16 @@
 #include "App.h"
 
-#include "Engine/Shader.h"
 #include "Core/Globals.h"
-#include <Engine/Renderer.h>
+#include "Engine/Shader.h"
 #include <Core/InfiniteGrid.h>
+#include <Engine/Renderer.h>
 
-#include <string>
-#include <stdexcept>
+#include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <numbers>
-#include <algorithm>
+#include <stdexcept>
+#include <string>
 
 Camera App::camera = Camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f);
 Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280 / 720, 0.1f, 10000.0f, std::numbers::pi_v<float> / 2.f);
@@ -151,6 +152,8 @@ void App::DisplayMainMenu()
 {
 	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 	ImGui::Checkbox("Show grid", &showGrid);
+	DisplaySaveToFile();
+
 	if (currentOperation)
 	{
 		currentOperation->RenderUI();
@@ -474,6 +477,37 @@ void App::DisplayAddSurfacePopup()
 			bezierParams = BezierSurfaceParams();
 		}
 		ImGui::EndPopup();
+	}
+}
+
+void App::DisplaySaveToFile()
+{
+	if (ImGui::Button("Save"))
+	{
+		json j;
+
+		json points = json::array();
+		json geometry = json::array();
+		for (auto& shape : shapes)
+		{
+			if (auto point = std::dynamic_pointer_cast<Point>(shape))
+			{
+				points.push_back(point->Serialize());
+			}
+			else
+			{
+				geometry.push_back(shape->Serialize());
+			}
+		}
+
+		j["points"] = points;
+		j["geometry"] = geometry;
+
+		std::ofstream ofs("scene.json");
+
+		ofs << j.dump(4);
+
+		ofs.close();
 	}
 }
 

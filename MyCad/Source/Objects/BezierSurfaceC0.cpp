@@ -387,7 +387,7 @@ json BezierSurfaceC0::Serialize() const
 		{
 			int jCole = isCylinder ? j % (widthPatches * 3 + 1) : j;
 			auto point = GetPointAt(i, jCole);
-			cp.push_back(static_cast<unsigned int>(point->GetId()));
+			cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
 		}
 	}
 	j["controlPoints"] = cp;
