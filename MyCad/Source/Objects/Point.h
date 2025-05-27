@@ -26,6 +26,7 @@ public:
 	void OnNotified() override;
 
 	json Serialize() const override;
+	static std::shared_ptr<Point> Deserialize(const json& j);
 
 	inline bool IsLocked() { return !lockShape.expired(); }
 	inline void Lock(const std::shared_ptr<Shape>& shape) { lockShape = shape; }

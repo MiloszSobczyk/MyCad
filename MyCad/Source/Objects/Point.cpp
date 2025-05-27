@@ -101,3 +101,24 @@ json Point::Serialize() const
 
     return j;
 }
+
+
+std::shared_ptr<Point> Point::Deserialize(const json& j)
+{
+    auto p = std::make_shared<Point>();
+
+    p->id = j.at("id").get<unsigned int>();
+    if (j.contains("name"))
+    {
+        p->name = j.at("name").get<std::string>();
+    }
+
+    const auto& pos = j.at("position");
+    float x = pos.at("x").get<float>();
+    float y = pos.at("y").get<float>();
+    float z = pos.at("z").get<float>();
+
+    p->GetTranslationComponent()->SetTranslation(Algebra::Vector4(x, y, z, 1.f));
+
+    return p;
+}

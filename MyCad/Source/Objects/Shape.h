@@ -39,4 +39,6 @@ public:
     virtual void RenderUI();
 
 	virtual json Serialize() const = 0;
+
+    inline static void ResetIdCounter() { idCounter = 0; }
 };

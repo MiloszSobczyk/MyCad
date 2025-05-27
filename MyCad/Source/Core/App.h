@@ -87,6 +87,7 @@ public:
 	void DisplayAddSurfacePopup();
 
 	void DisplaySaveToFile();
+	void DisplayLoadFromFile();
 
 	Algebra::Vector4 ScreenToNDC(float x, float y);
 	void GetClickedPoint();

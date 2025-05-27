@@ -153,6 +153,7 @@ void App::DisplayMainMenu()
 	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 	ImGui::Checkbox("Show grid", &showGrid);
 	DisplaySaveToFile();
+	DisplayLoadFromFile();
 
 	if (currentOperation)
 	{
@@ -503,11 +504,39 @@ void App::DisplaySaveToFile()
 		j["points"] = points;
 		j["geometry"] = geometry;
 
-		std::ofstream ofs("scene.json");
+		std::ofstream ofs("scene1.json");
 
 		ofs << j.dump(4);
 
 		ofs.close();
+	}
+}
+
+void App::DisplayLoadFromFile()
+{
+	if (ImGui::Button("Load from file"))
+	{
+		std::ifstream ifs("scene1.json");
+		if (!ifs.is_open()) 
+		{
+			return;
+		}
+
+		json j;
+		try 
+		{
+			ifs >> j;
+		}
+		catch (const json::parse_error& e) 
+		{
+			return;
+		}
+
+		for (const auto& pj : j.at("points"))
+		{
+			auto p = Point::Deserialize(pj);
+			shapes.push_back(p);
+		}
 	}
 }
 
