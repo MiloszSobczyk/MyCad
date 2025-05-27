@@ -7,6 +7,7 @@
 #include "Algebra.h"
 #include "Components/Transformations.h"
 #include "Utils/ColorPalette.h"
+#include "Utils/Serializer.h"
 
 using json = nlohmann::json;
 
@@ -31,6 +32,8 @@ public:
 
     inline std::string GetName() const { return name; }
     inline void SetName(std::string name) { this->name = std::move(name); }
+
+	inline int GetId() const { return id; }
 
     virtual Algebra::Matrix4 GetModelMatrix() const;
     virtual void RenderUI();

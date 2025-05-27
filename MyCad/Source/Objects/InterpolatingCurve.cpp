@@ -343,3 +343,27 @@ std::vector<Algebra::Vector4> InterpolatingCurve::CalculateBezierPoints(std::vec
 
     return bezierPoints;
 }
+
+json InterpolatingCurve::Serialize() const
+{
+    json j;
+
+    j["objectType"] = "interpolatedC2";
+    j["id"] = static_cast<unsigned int>(id);
+    if (!name.empty())
+    {
+        j["name"] = name;
+    }
+
+    json cp = json::array();
+    for (const auto& p : controlPoints)
+    {
+        if (auto point = p.lock())
+        {
+            cp.push_back(static_cast<unsigned int>(point->GetId()));
+        }
+    }
+    j["controlPoints"] = cp;
+
+    return j;
+}

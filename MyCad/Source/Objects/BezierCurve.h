@@ -32,4 +32,6 @@ public:
     void SwapPoints(int index1, int index2);
 
     void OnNotified() override;
+
+	json Serialize() const override;
 };

@@ -10,7 +10,6 @@
 #include <memory>
 
 
-
 class InterpolatingCurve : public std::enable_shared_from_this<InterpolatingCurve>, public Shape, public IObserver
 {
 enum class AxisMode
@@ -49,4 +48,6 @@ public:
 
     std::vector<Algebra::Vector4> SolveTrilinearMatrix(std::vector<float>& alpha, 
         std::vector<float>& beta, std::vector<Algebra::Vector4>& r);
+
+	json Serialize() const override;
 };

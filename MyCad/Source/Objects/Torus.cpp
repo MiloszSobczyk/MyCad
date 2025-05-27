@@ -1,7 +1,6 @@
 #include "Torus.h"
 #include "Core/App.h"
 #include "Managers/ShaderManager.h"
-#include "Utils/Serializer.h"
 
 #include <imgui/imgui.h>
 #include <numbers>

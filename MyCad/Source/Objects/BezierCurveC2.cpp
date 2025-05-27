@@ -354,3 +354,27 @@ void BezierCurveC2::UpdateCurve()
 
     renderer.SetVertices(vertices);
 }
+
+json BezierCurveC2::Serialize() const
+{
+    json j;
+
+    j["objectType"] = "bezierC2";
+    j["id"] = static_cast<unsigned int>(id);
+    if (!name.empty())
+    {
+        j["name"] = name;
+    }
+
+    json cp = json::array();
+    for (const auto& p : controlPoints)
+    {
+        if (auto point = p.lock())
+        {
+            cp.push_back(static_cast<unsigned int>(point->GetId()));
+        }
+    }
+    j["controlPoints"] = cp;
+
+    return j;
+}

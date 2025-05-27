@@ -48,4 +48,6 @@ public:
     void OnNotified() override;
     void HandleInput();
     void RecalculateDeBoorPoints();
+
+	json Serialize() const override;
 };

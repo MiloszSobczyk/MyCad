@@ -199,3 +199,27 @@ void Polyline::InitFromPoints()
         }
     }
 }
+
+json Polyline::Serialize() const
+{
+    json j;
+
+    j["objectType"] = "chain";
+    j["id"] = static_cast<unsigned int>(id);
+    if (!name.empty())
+    {
+        j["name"] = name;
+    }
+    
+    json cp = json::array();
+	for (const auto& p : points)
+	{
+		if (auto point = p.lock())
+		{
+			cp.push_back(static_cast<unsigned int>(point->GetId()));
+		}
+	}
+	j["controlPoints"] = cp;
+
+    return j;
+}

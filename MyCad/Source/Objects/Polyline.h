@@ -29,4 +29,6 @@ public:
     void OnNotified() override;
 
     void InitFromPoints();
+
+    json Serialize() const override;
 };
