@@ -112,6 +112,10 @@ std::shared_ptr<Point> Point::Deserialize(const json& j)
     {
         p->name = j.at("name").get<std::string>();
     }
+    else
+    {
+		p->name = "Point_" + std::to_string(p->id);
+    }
 
     const auto& pos = j.at("position");
     float x = pos.at("x").get<float>();

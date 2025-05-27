@@ -537,6 +537,15 @@ void App::DisplayLoadFromFile()
 			auto p = Point::Deserialize(pj);
 			shapes.push_back(p);
 		}
+
+		for (const auto& gj : j.at("geometry"))
+		{
+			if (gj.at("objectType").get<std::string>() == "torus")
+			{
+				auto t = Torus::Deserialize(gj);
+				shapes.push_back(t);
+			}
+		}
 	}
 }
 

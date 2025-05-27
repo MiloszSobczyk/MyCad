@@ -132,3 +132,39 @@ json Torus::Serialize() const
 
 	return j;
 }
+
+std::shared_ptr<Torus> Torus::Deserialize(const json& j)
+{
+	auto t = std::make_shared<Torus>();
+
+	t->id = j.at("id").get<unsigned int>();
+	if (j.contains("name"))
+	{
+		t->name = j.at("name").get<std::string>();
+	}
+	else
+	{
+		t->name = "Torus" + std::to_string(t->id);
+	}
+
+	t->translationComponent->SetTranslation(
+		Serializer::DeserializeVector4(j.at("position"))
+	);
+	t->rotationComponent->SetRotation(
+		Serializer::DeserializeQuaternion(j.at("rotation"))
+	);
+	t->scalingComponent->SetScaling(
+		Serializer::DeserializeVector4(j.at("scale"))
+	);
+
+	const auto& samples = j.at("samples");
+	t->minorSegments = samples.at("u").get<int>();
+	t->majorSegments = samples.at("v").get<int>();
+
+	t->minorRadius = j.at("smallRadius").get<float>();
+	t->majorRadius = j.at("largeRadius").get<float>();
+
+	t->GeneratePoints();
+
+	return t;
+}

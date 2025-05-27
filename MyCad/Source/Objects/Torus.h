@@ -35,4 +35,5 @@ public:
 	Algebra::Matrix4 GetModelMatrix() const override;
 
 	json Serialize() const override;
+	static std::shared_ptr<Torus> Deserialize(const json& j);
 };
