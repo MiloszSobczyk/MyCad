@@ -28,7 +28,7 @@ private:
 
 	void Render() override;
 	void UpdateSurface();
-	std::shared_ptr<Point> GetPointAt(int row, int col);
+	std::shared_ptr<Point> GetPointAt(int row, int col) const;
 
 public:
 	BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
@@ -44,4 +44,6 @@ public:
 	
 	inline std::vector<std::shared_ptr<Point>> GetControlPoints() { return controlPoints; };
 	inline void ClearSelection() { selectedPatches.clear(); UpdateColors(); }
+
+	json Serialize() const override;
 };

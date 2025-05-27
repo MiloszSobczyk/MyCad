@@ -206,6 +206,7 @@ void BezierSurfaceC0::RenderUI()
 	}
 }
 
+
 void BezierSurfaceC0::UpdateColors()
 {
 	for (auto& patch : patches)
@@ -279,7 +280,7 @@ void BezierSurfaceC0::UpdateSurface()
 	renderer.SetVertices(vertices);
 }
 
-std::shared_ptr<Point> BezierSurfaceC0::GetPointAt(int row, int col)
+std::shared_ptr<Point> BezierSurfaceC0::GetPointAt(int row, int col) const
 {
 	int columns = widthPatches * 3 + (isCylinder ? 0 : 1);
 	return controlPoints[(row * columns + col) % controlPoints.size()];
@@ -363,4 +364,41 @@ void BezierSurfaceC0::SetupPolygon()
 	bernsteinPolygon = std::make_shared<Polyline>(points);
 	bernsteinPolygon->SetColor(ColorPalette::Get(Color::Teal));
 	bernsteinPolygon->InitFromPoints();
+}
+
+json BezierSurfaceC0::Serialize() const
+{
+	json j;
+
+	j["objectType"] = "bezierSurfaceC0";
+	j["id"] = static_cast<unsigned int>(id);
+	if (!name.empty())
+	{
+		j["name"] = name;
+	}
+
+	json cp = json::array();
+	int rows = heightPatches * 3 + 1;
+	int cols = widthPatches * 3 + 1;
+
+	for (int i = 0; i < rows; ++i)
+	{
+		for (int j = 0; j < cols; ++j)
+		{
+			int jCole = isCylinder ? j % (widthPatches * 3 + 1) : j;
+			auto point = GetPointAt(i, jCole);
+			cp.push_back(static_cast<unsigned int>(point->GetId()));
+		}
+	}
+	j["controlPoints"] = cp;
+	j["size"] = {
+		{ "u", widthPatches },
+		{ "v", heightPatches },
+	};
+	j["samples"] = {
+		{ "u", tessLevelU },
+		{ "v", tessLevelV },
+	};
+
+	return j;
 }

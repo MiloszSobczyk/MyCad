@@ -39,5 +39,4 @@ public:
     virtual void RenderUI();
 
 	virtual json Serialize() const = 0;
-    virtual void Deserialize(const json& j) = 0;
 };

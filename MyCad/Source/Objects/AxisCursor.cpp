@@ -98,3 +98,8 @@ Algebra::Matrix4 AxisCursor::GetModelMatrix() const
 {
     return translationComponent->GetMatrix();
 }
+
+json AxisCursor::Serialize() const
+{
+    return json();
+}

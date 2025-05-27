@@ -336,7 +336,7 @@ void BezierSurfaceC2::UpdateSurface()
 	SetupDeBoorPolygon();
 }
 
-std::shared_ptr<Point> BezierSurfaceC2::GetPointAt(int row, int col)
+std::shared_ptr<Point> BezierSurfaceC2::GetPointAt(int row, int col) const
 {
 	int columns = widthPatches + 2 + (isCylinder ? 0 : 1);
 	return controlPoints[(row * columns + col) % controlPoints.size()];
@@ -538,4 +538,40 @@ void BezierSurfaceC2::SetupDeBoorPolygon()
 	deBoorPolygon = std::make_shared<Polyline>(points2);
 	deBoorPolygon->SetColor(ColorPalette::Get(Color::Red));
 	deBoorPolygon->InitFromPoints();
+}
+
+json BezierSurfaceC2::Serialize() const
+{
+	json j;
+
+	j["objectType"] = "bezierSurfaceC0";
+	j["id"] = static_cast<unsigned int>(id);
+	if (!name.empty())
+	{
+		j["name"] = name;
+	}
+
+	json cp = json::array();
+	int rows = heightPatches + 3;
+	int cols = widthPatches + 3;
+	for (int i = 0; i < rows; ++i)
+	{
+		for (int j = 0; j < cols; ++j)
+		{
+			int jCole = isCylinder ? j % (widthPatches + 3) : j;
+			auto point = GetPointAt(i, jCole);
+			cp.push_back(static_cast<unsigned int>(point->GetId()));
+		}
+	}
+	j["controlPoints"] = cp;
+	j["size"] = {
+		{ "u", widthPatches },
+		{ "v", heightPatches },
+	};
+	j["samples"] = {
+		{ "u", tessLevelU },
+		{ "v", tessLevelV },
+	};
+
+	return j;
 }

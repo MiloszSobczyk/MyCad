@@ -129,4 +129,6 @@ json Torus::Serialize() const
 	};
 	j["smallRadius"] = minorRadius;
 	j["largeRadius"] = majorRadius;
+
+	return j;
 }
