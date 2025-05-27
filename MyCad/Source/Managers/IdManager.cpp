@@ -57,3 +57,24 @@ std::vector<std::shared_ptr<Shape>> IdManager::GetShapes()
 
     return result;
 }
+
+std::shared_ptr<Shape> IdManager::GetById(unsigned int id)
+{
+    for (auto it = shapes.begin(); it != shapes.end(); )
+    {
+        if (auto sp = it->lock()) 
+        {
+            if (sp->GetId() == id)
+            {
+                return sp;
+            }
+            ++it;
+        }
+        else 
+        {
+            it = shapes.erase(it);
+        }
+    }
+
+    return nullptr;
+}

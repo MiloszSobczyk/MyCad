@@ -31,4 +31,5 @@ public:
     void InitFromPoints();
 
     json Serialize() const override;
+	static std::shared_ptr<Polyline> Deserialize(const json& j);
 };

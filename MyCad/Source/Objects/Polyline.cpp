@@ -1,8 +1,9 @@
 #include "Polyline.h"
+#include "Core/App.h"
+#include "Managers/ShaderManager.h"
+#include "Managers/IdManager.h"
 
 #include <GLFW/glfw3.h>
-#include <Managers/ShaderManager.h>
-#include <Core/App.h>
 
 Polyline::Polyline()
     : renderer(VertexDataType::PositionVertexData)
@@ -222,4 +223,31 @@ json Polyline::Serialize() const
 	j["controlPoints"] = cp;
 
     return j;
+}
+
+std::shared_ptr<Polyline> Polyline::Deserialize(const json& j)
+{
+    auto pl = std::make_shared<Polyline>();
+
+    pl->id = j.at("id").get<unsigned int>();
+    if (j.contains("name"))
+    {
+        pl->name = j.at("name").get<std::string>();
+    }
+    else
+    {
+		pl->name = "Polyline_" + std::to_string(pl->id);
+    }
+
+    for (const auto& cp : j.at("controlPoints"))
+    {
+        unsigned int pid = cp.at("id").get<unsigned int>();
+        auto shape = IdManager::GetById(pid);
+        if (auto pt = std::dynamic_pointer_cast<Point>(shape))
+        {
+            pl->AddPoint(pt);
+        }
+    }
+
+    return pl;
 }

@@ -2,8 +2,9 @@
 
 #include "Core/Globals.h"
 #include "Engine/Shader.h"
-#include <Core/InfiniteGrid.h>
-#include <Engine/Renderer.h>
+#include "Core/InfiniteGrid.h"
+#include "Engine/Renderer.h"
+#include "Managers/IdManager.h"
 
 #include <algorithm>
 #include <fstream>
@@ -536,6 +537,7 @@ void App::DisplayLoadFromFile()
 		{
 			auto p = Point::Deserialize(pj);
 			shapes.push_back(p);
+			IdManager::RegisterShape(p);
 		}
 
 		for (const auto& gj : j.at("geometry"))
@@ -544,6 +546,13 @@ void App::DisplayLoadFromFile()
 			{
 				auto t = Torus::Deserialize(gj);
 				shapes.push_back(t);
+				IdManager::RegisterShape(t);
+			}
+			else if (gj.at("objectType").get<std::string>() == "chain")
+			{
+				auto pl = Polyline::Deserialize(gj);
+				shapes.push_back(pl);
+				IdManager::RegisterShape(pl);
 			}
 		}
 	}

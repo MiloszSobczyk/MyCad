@@ -1,34 +1,49 @@
 {
     "geometry": [
         {
-            "id": 2,
-            "largeRadius": 14.607000350952148,
-            "name": "Torus2",
-            "objectType": "torus",
-            "position": {
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "rotation": {
-                "w": 1.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "samples": {
-                "u": 100,
-                "v": 100
-            },
-            "scale": {
-                "w": 0.0,
-                "x": 2.126120090484619,
-                "y": 2.126120090484619,
-                "z": 2.126120090484619
-            },
-            "smallRadius": 1.0
+            "controlPoints": [
+                {
+                    "id": 2
+                },
+                {
+                    "id": 3
+                },
+                {
+                    "id": 4
+                }
+            ],
+            "id": 5,
+            "name": "Polyline_5",
+            "objectType": "chain"
         }
     ],
-    "points": []
+    "points": [
+        {
+            "id": 2,
+            "name": "Point_2",
+            "position": {
+                "x": 36.14182662963867,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "id": 3,
+            "name": "Point_3",
+            "position": {
+                "x": 17.83237075805664,
+                "y": 22.737518310546875,
+                "z": 0.0
+            }
+        },
+        {
+            "id": 4,
+            "name": "Point_4",
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        }
+    ]
 }

@@ -106,6 +106,7 @@ json Point::Serialize() const
 std::shared_ptr<Point> Point::Deserialize(const json& j)
 {
     auto p = std::make_shared<Point>();
+    p->Init();
 
     p->id = j.at("id").get<unsigned int>();
     if (j.contains("name"))
