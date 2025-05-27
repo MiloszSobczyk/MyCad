@@ -82,3 +82,22 @@ void Point::OnNotified()
 {
     NotifyObservers();
 }
+
+json Point::Serialize() const
+{
+    auto t = translationComponent->GetTranslation();
+
+    json j;
+    j["id"] = static_cast<unsigned int>(id);
+    if(!name.empty())
+    {
+        j["name"] = name;
+    }
+    j["position"] = {
+        { "x", t.x },
+        { "y", t.y },
+        { "z", t.z },
+    };
+
+    return j;
+}

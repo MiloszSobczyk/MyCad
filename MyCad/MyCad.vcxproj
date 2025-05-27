@@ -195,6 +195,7 @@
     <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Engine\Shader.cpp" />
     <ClCompile Include="Source\Core\Window.cpp" />
+    <ClCompile Include="Source\Utils\Serializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\IObserver.h" />
@@ -253,6 +254,7 @@
     <ClInclude Include="Libs\imgui\imstb_textedit.h" />
     <ClInclude Include="Libs\imgui\imstb_truetype.h" />
     <ClInclude Include="Libs\stb_image\stb_image.h" />
+    <ClInclude Include="Source\Utils\Serializer.h" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Libs\imgui\imgui.natvis" />
@@ -261,6 +263,9 @@
     <ProjectReference Include="..\Algebra\Algebra.vcxproj">
       <Project>{013672f5-cd01-4156-87f7-bc91fc4e0e39}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Schemas\schema.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

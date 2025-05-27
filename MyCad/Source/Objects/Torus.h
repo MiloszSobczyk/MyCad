@@ -33,4 +33,6 @@ public:
 	std::shared_ptr<TranslationComponent> GetTranslationComponent() override;
 
 	Algebra::Matrix4 GetModelMatrix() const override;
+
+	json Serialize() const override;
 };

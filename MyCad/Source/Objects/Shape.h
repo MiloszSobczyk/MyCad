@@ -2,10 +2,13 @@
 
 #include <string>
 #include <imgui/imgui.h>
+#include <nlohmann/json.hpp>
 
 #include "Algebra.h"
 #include "Components/Transformations.h"
 #include "Utils/ColorPalette.h"
+
+using json = nlohmann::json;
 
 class Shape
 {
@@ -31,4 +34,7 @@ public:
 
     virtual Algebra::Matrix4 GetModelMatrix() const;
     virtual void RenderUI();
+
+	virtual json Serialize() const = 0;
+    virtual void Deserialize(const json& j) = 0;
 };

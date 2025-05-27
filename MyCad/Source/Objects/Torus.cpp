@@ -1,9 +1,11 @@
 #include "Torus.h"
 #include "Core/App.h"
 #include "Managers/ShaderManager.h"
+#include "Utils/Serializer.h"
 
 #include <imgui/imgui.h>
 #include <numbers>
+
 
 Algebra::Vector4 Torus::GetPoint(float angleTube, float angleRadius)
 {
@@ -107,4 +109,25 @@ Algebra::Matrix4 Torus::GetModelMatrix() const
 {
 	return translationComponent->GetMatrix() * 
 		rotationComponent->GetMatrix() * scalingComponent->GetMatrix();
+}
+
+json Torus::Serialize() const
+{
+	json j;
+
+	j["objectType"] = "torus";
+	j["id"] = static_cast<unsigned int>(id);
+	if (!name.empty())
+	{
+		j["name"] = name;
+	}
+	j["position"] = Serializer::Serialize(translationComponent->GetTranslation());
+	j["rotation"] = Serializer::Serialize(rotationComponent->GetRotation());
+	j["scale"] = Serializer::Serialize(scalingComponent->GetScaling());
+	j["samples"] = {
+		{ "u", minorSegments },
+		{ "v", majorSegments },
+	};
+	j["smallRadius"] = minorRadius;
+	j["largeRadius"] = majorRadius;
 }
