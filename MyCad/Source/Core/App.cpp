@@ -13,7 +13,7 @@
 #include <stdexcept>
 #include <string>
 
-Camera App::camera = Camera(Algebra::Vector4(0.f, 20.f, 50.f, 1.f), 1.f);
+Camera App::camera = Camera(Algebra::Vector4(0.f, 0.f, 10.f, 1.f), 1.f);
 Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280.f / 720.f, 1.f, 1000.0f, std::numbers::pi_v<float> / 2.f);
 Algebra::StereoscopicMatrices App::stereoMatrices = Algebra::Matrix4::StereoscopicProjection(1280.f / 720.f, 1.f, 1000.0f,
 	std::numbers::pi_v<float> / 2.f, 0.064f, 5.f);
@@ -43,23 +43,21 @@ App::~App()
 
 void App::Run()
 {
+	glEnable(GL_DEPTH_TEST);
+
 	while (active && !window.ShouldClose())
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
 		DisplayParameters();
-		Render();
-
 		HandleInput();
 
 		if (operationFactory.OperationUpdated)
 		{
 			useCursor = false;
-			OperationParameters params {
+			OperationParameters params{
 				.camera = std::make_shared<Camera>(camera),
 				.cursor = axisCursor,
 				.selected = selectedShapes,
@@ -67,8 +65,29 @@ void App::Run()
 			currentOperation = operationFactory.CreateOperation(params);
 		}
 
-		ImGui::Render();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
 
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+		projectionMatrix = stereoMatrices.left;
+		Render();
+
+		glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glDepthFunc(GL_LEQUAL);
+		glDepthMask(GL_FALSE);
+		projectionMatrix = stereoMatrices.right;
+		Render();
+
+		glDepthMask(GL_TRUE);
+		glDepthFunc(GL_LESS);
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glDisable(GL_BLEND);
+
+
+		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		window.ProcessFrame();
@@ -693,7 +712,7 @@ void App::Render()
 {
 	if (showGrid)
 	{
-		grid.Render(camera.GetViewMatrix(), projectionMatrix, camera.GetPosition());
+		//grid.Render(camera.GetViewMatrix(), projectionMatrix, camera.GetPosition());
 	}
 
 	if (auto avgPos = selectedShapes->GetAveragePosition())
