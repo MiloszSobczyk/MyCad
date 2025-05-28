@@ -155,6 +155,7 @@ void App::DisplayMainMenu()
 	ImGui::Checkbox("Show grid", &showGrid);
 	DisplaySaveToFile();
 	DisplayLoadFromFile();
+	DisplayClearShapes();
 
 	if (currentOperation)
 	{
@@ -587,6 +588,16 @@ void App::DisplayLoadFromFile()
 				IdManager::RegisterShape(bs);
 			}
 		}
+	}
+}
+
+void App::DisplayClearShapes()
+{
+	if (ImGui::Button("Clear all"))
+	{
+		shapes.clear();
+		selectedShapes->Clear();
+		Shape::ResetIdCounter();
 	}
 }
 

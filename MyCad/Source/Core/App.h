@@ -88,6 +88,7 @@ public:
 
 	void DisplaySaveToFile();
 	void DisplayLoadFromFile();
+	void DisplayClearShapes();
 
 	Algebra::Vector4 ScreenToNDC(float x, float y);
 	void GetClickedPoint();
