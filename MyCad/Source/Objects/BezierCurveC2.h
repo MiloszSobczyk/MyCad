@@ -50,4 +50,5 @@ public:
     void RecalculateDeBoorPoints();
 
 	json Serialize() const override;
+    static std::shared_ptr<BezierCurveC2> Deserialize(const json& j);
 };

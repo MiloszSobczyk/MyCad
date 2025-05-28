@@ -50,4 +50,5 @@ public:
         std::vector<float>& beta, std::vector<Algebra::Vector4>& r);
 
 	json Serialize() const override;
+	static std::shared_ptr<InterpolatingCurve> Deserialize(const json& j);
 };

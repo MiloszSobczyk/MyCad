@@ -554,6 +554,24 @@ void App::DisplayLoadFromFile()
 				shapes.push_back(pl);
 				IdManager::RegisterShape(pl);
 			}
+			else if (gj.at("objectType").get<std::string>() == "bezierC0")
+			{
+				auto bc = BezierCurve::Deserialize(gj);
+				shapes.push_back(bc);
+				IdManager::RegisterShape(bc);
+			}
+			else if (gj.at("objectType").get<std::string>() == "bezierC2")
+			{
+				auto bc = BezierCurveC2::Deserialize(gj);
+				shapes.push_back(bc);
+				IdManager::RegisterShape(bc);
+			}
+			else if (gj.at("objectType").get<std::string>() == "interpolatedC2")
+			{
+				auto ic = InterpolatingCurve::Deserialize(gj);
+				shapes.push_back(ic);
+				IdManager::RegisterShape(ic);
+			}
 		}
 	}
 }

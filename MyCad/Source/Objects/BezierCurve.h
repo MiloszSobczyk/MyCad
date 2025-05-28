@@ -34,4 +34,5 @@ public:
     void OnNotified() override;
 
 	json Serialize() const override;
+    static std::shared_ptr<BezierCurve> Deserialize(const json& j);
 };

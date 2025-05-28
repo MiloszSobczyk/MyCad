@@ -10,11 +10,83 @@
                 },
                 {
                     "id": 4
+                },
+                {
+                    "id": 5
+                },
+                {
+                    "id": 6
                 }
             ],
-            "id": 5,
-            "name": "Polyline_5",
+            "id": 7,
+            "name": "Polyline_7",
             "objectType": "chain"
+        },
+        {
+            "controlPoints": [
+                {
+                    "id": 2
+                },
+                {
+                    "id": 3
+                },
+                {
+                    "id": 4
+                },
+                {
+                    "id": 5
+                },
+                {
+                    "id": 6
+                }
+            ],
+            "id": 8,
+            "name": "BezierCurve8",
+            "objectType": "bezierC0"
+        },
+        {
+            "controlPoints": [
+                {
+                    "id": 2
+                },
+                {
+                    "id": 3
+                },
+                {
+                    "id": 4
+                },
+                {
+                    "id": 5
+                },
+                {
+                    "id": 6
+                }
+            ],
+            "id": 10,
+            "name": "BezierCurveC2_10",
+            "objectType": "bezierC2"
+        },
+        {
+            "controlPoints": [
+                {
+                    "id": 2
+                },
+                {
+                    "id": 3
+                },
+                {
+                    "id": 4
+                },
+                {
+                    "id": 5
+                },
+                {
+                    "id": 6
+                }
+            ],
+            "id": 25,
+            "name": "InterpolatingCurve_25",
+            "objectType": "interpolatedC2"
         }
     ],
     "points": [
@@ -22,7 +94,7 @@
             "id": 2,
             "name": "Point_2",
             "position": {
-                "x": 36.14182662963867,
+                "x": 20.0,
                 "y": 0.0,
                 "z": 0.0
             }
@@ -31,14 +103,32 @@
             "id": 3,
             "name": "Point_3",
             "position": {
-                "x": 17.83237075805664,
-                "y": 22.737518310546875,
+                "x": 0.0,
+                "y": 20.0,
                 "z": 0.0
             }
         },
         {
             "id": 4,
             "name": "Point_4",
+            "position": {
+                "x": -20.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "id": 5,
+            "name": "Point_5",
+            "position": {
+                "x": 0.0,
+                "y": -20.0,
+                "z": 0.0
+            }
+        },
+        {
+            "id": 6,
+            "name": "Point_6",
             "position": {
                 "x": 0.0,
                 "y": 0.0,

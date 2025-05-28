@@ -1,5 +1,7 @@
 #include "BezierCurve.h"
 #include "Core/App.h"
+#include "Managers/IdManager.h"
+#include <memory>
 
 BezierCurve::BezierCurve()
     : renderer(VertexDataType::PositionVertexData),
@@ -245,4 +247,31 @@ json BezierCurve::Serialize() const
     j["controlPoints"] = cp;
 
     return j;
+}
+
+std::shared_ptr<BezierCurve> BezierCurve::Deserialize(const json& j)
+{
+    auto bc = std::make_shared<BezierCurve>();
+
+    bc->id = j.at("id").get<unsigned int>();
+    if (j.contains("name"))
+    {
+        bc->name = j.at("name").get<std::string>();
+    }
+    else
+    {
+        bc->name = "Polyline_" + std::to_string(bc->id);
+    }
+
+    for (const auto& cp : j.at("controlPoints"))
+    {
+        unsigned int pid = cp.at("id").get<unsigned int>();
+        auto shape = IdManager::GetById(pid);
+        if (auto pt = std::dynamic_pointer_cast<Point>(shape))
+        {
+            bc->AddPoint(pt);
+        }
+    }
+
+    return bc;
 }
