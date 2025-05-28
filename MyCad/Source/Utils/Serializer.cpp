@@ -2,11 +2,12 @@
 
 json Serializer::Serialize(const Algebra::Quaternion& q)
 {
+	auto normQ = q.Normalize();
 	return json {
-		{ "x", q.x },
-		{ "y", q.y },
-		{ "z", q.z },
-		{ "w", q.w }
+		{ "x", normQ.x },
+		{ "y", normQ.y },
+		{ "z", normQ.z },
+		{ "w", normQ.w }
 	};
 }
 
@@ -27,7 +28,7 @@ Algebra::Quaternion Serializer::DeserializeQuaternion(const json& j)
 	float z = j.value("z", 0.0f);
 	float w = j.value("w", 1.0f);
 
-	return Algebra::Quaternion(w, x, y, z);
+	return Algebra::Quaternion(w, x, y, z).Normalize();
 }
 
 Algebra::Vector4 Serializer::DeserializeVector4(const json& j)
