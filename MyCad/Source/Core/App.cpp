@@ -13,10 +13,16 @@
 #include <stdexcept>
 #include <string>
 
-Camera App::camera = Camera(Algebra::Vector4(0.f, 0.f, 10.f, 1.f), 1.f);
-Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280.f / 720.f, 1.f, 1000.0f, std::numbers::pi_v<float> / 2.f);
-Algebra::StereoscopicMatrices App::stereoMatrices = Algebra::Matrix4::StereoscopicProjection(1280.f / 720.f, 1.f, 1000.0f,
-	std::numbers::pi_v<float> / 2.f, 0.064f, 5.f);
+Camera App::camera = Camera(Globals::StartingCameraPosition, 1.f);
+
+Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(
+	static_cast<float>((Globals::StartingWidth - Globals::RightInterfaceWidth)) / static_cast<float>(Globals::StartingHeight), 
+	Globals::NearPlane, Globals::FarPlane, Globals::Fov);
+
+Algebra::StereoscopicMatrices App::stereoMatrices = Algebra::Matrix4::StereoscopicProjection(
+	static_cast<float>((Globals::StartingWidth - Globals::RightInterfaceWidth)) / static_cast<float>(Globals::StartingHeight),
+	Globals::NearPlane, Globals::FarPlane, Globals::Fov, 0.064f, 5.f);
+
 static bool CannotDeletePoint = false;
 
 App::App()
@@ -76,13 +82,10 @@ void App::Run()
 		Render();
 
 		glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
-		glDepthFunc(GL_LEQUAL);
-		glDepthMask(GL_FALSE);
+		glClear(GL_DEPTH_BUFFER_BIT);
 		projectionMatrix = stereoMatrices.right;
 		Render();
 
-		glDepthMask(GL_TRUE);
-		glDepthFunc(GL_LESS);
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 		glDisable(GL_BLEND);
 
@@ -147,9 +150,9 @@ void App::HandleResize()
 	float newWidth = static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth);
 	float newHeight = static_cast<float>(window.GetHeight());
 	float aspect = newWidth / newHeight;
-	projectionMatrix = Algebra::Matrix4::Projection(aspect, 1.f, 1000.0f, std::numbers::pi_v<float> / 2.f);
-	stereoMatrices = Algebra::Matrix4::StereoscopicProjection(aspect, 1.f, 1000.0f,
-		std::numbers::pi_v<float> / 2.f, interocularDistance, convergenceDistance);
+	projectionMatrix = Algebra::Matrix4::Projection(aspect, Globals::NearPlane, Globals::FarPlane, Globals::Fov);
+	stereoMatrices = Algebra::Matrix4::StereoscopicProjection(aspect, Globals::NearPlane, Globals::FarPlane, Globals::Fov, 
+		interocularDistance, convergenceDistance);
 }
 
 void App::DisplayParameters()
