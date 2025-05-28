@@ -4,11 +4,7 @@
 
 namespace Algebra
 {
-	struct StereoscopicMatrices
-	{
-		Matrix4 left;
-		Matrix4 right;
-	};
+	struct StereoscopicMatrices;
 
 	class Matrix4
 	{
@@ -59,5 +55,11 @@ namespace Algebra
 
 		static Matrix4 Projection(float aspect, float f, float n, float fov);
 		static StereoscopicMatrices StereoscopicProjection(float aspect, float f, float n, float fov, float d, float c);
+	};
+
+	struct StereoscopicMatrices
+	{
+		Matrix4 left;
+		Matrix4 right;
 	};
 }

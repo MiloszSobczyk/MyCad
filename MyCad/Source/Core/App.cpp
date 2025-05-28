@@ -14,7 +14,9 @@
 #include <string>
 
 Camera App::camera = Camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f);
-Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280 / 720, 0.1f, 10000.0f, std::numbers::pi_v<float> / 2.f);
+Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280.f / 720.f, 1.f, 1000.0f, std::numbers::pi_v<float> / 2.f);
+Algebra::StereoscopicMatrices App::stereoMatrices = Algebra::Matrix4::StereoscopicProjection(1280.f / 720.f, 1.f, 1000.0f,
+	std::numbers::pi_v<float> / 2.f, 0.064f, 5.f);
 static bool CannotDeletePoint = false;
 
 App::App()
@@ -43,8 +45,7 @@ void App::Run()
 {
 	while (active && !window.ShouldClose())
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
-		//glClear(GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -127,7 +128,9 @@ void App::HandleResize()
 	float newWidth = static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth);
 	float newHeight = static_cast<float>(window.GetHeight());
 	float aspect = newWidth / newHeight;
-	projectionMatrix = Algebra::Matrix4::Projection(aspect, 0.1f, 10000.0f, std::numbers::pi_v<float> / 2.f);
+	projectionMatrix = Algebra::Matrix4::Projection(aspect, 1.f, 1000.0f, std::numbers::pi_v<float> / 2.f);
+	stereoMatrices = Algebra::Matrix4::StereoscopicProjection(aspect, 1.f, 1000.0f,
+		std::numbers::pi_v<float> / 2.f, interocularDistance, convergenceDistance);
 }
 
 void App::DisplayParameters()
@@ -153,6 +156,8 @@ void App::DisplayMainMenu()
 {
 	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 	ImGui::Checkbox("Show grid", &showGrid);
+	DisplayStereoscopyParameters();
+
 	DisplaySaveToFile();
 	DisplayLoadFromFile();
 	DisplayClearShapes();
@@ -593,12 +598,34 @@ void App::DisplayLoadFromFile()
 
 void App::DisplayClearShapes()
 {
-	//if (ImGui::Button("Clear all"))
-	//{
-	//	selectedShapes->Clear();
-	//	shapes.clear();
-	//	Shape::ResetIdCounter();
-	//}
+
+}
+
+void App::DisplayStereoscopyParameters()
+{
+	bool changed = false;
+
+	changed |= ImGui::SliderFloat("Interocular Distance (d)",
+		&interocularDistance,
+		0.05f,
+		10.f,
+		"%.3f");
+
+	changed |= ImGui::SliderFloat("Convergence Distance (c)",
+		&convergenceDistance,
+		2.0f,
+		100.f,
+		"%.2f");
+
+	if (changed)
+	{
+		float newWidth = static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth);
+		float newHeight = static_cast<float>(window.GetHeight());
+		float aspect = newWidth / newHeight;
+
+		stereoMatrices = Algebra::Matrix4::StereoscopicProjection(aspect, 1.f, 1000.0f,
+			std::numbers::pi_v<float> / 2.f, interocularDistance, convergenceDistance);
+	}
 }
 
 Algebra::Vector4 App::ScreenToNDC(float x, float y)

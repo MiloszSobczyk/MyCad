@@ -66,9 +66,13 @@ private:
 	OperationMode operationMode;
 	BezierSurfaceParams bezierParams;
 
+	float interocularDistance = 0.064f;
+	float convergenceDistance = 5.f;
+
 public:
 	static Camera camera;
 	static Algebra::Matrix4 projectionMatrix;
+	static Algebra::StereoscopicMatrices stereoMatrices;
 
 	App();
 	~App();
@@ -89,6 +93,8 @@ public:
 	void DisplaySaveToFile();
 	void DisplayLoadFromFile();
 	void DisplayClearShapes();
+
+	void DisplayStereoscopyParameters();
 
 	Algebra::Vector4 ScreenToNDC(float x, float y);
 	void GetClickedPoint();
