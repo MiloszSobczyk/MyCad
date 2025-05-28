@@ -3,11 +3,58 @@
 #include "Core/App.h"
 
 #include <numbers>
+#include <Managers/IdManager.h>
 
 // ADD CHOOSING AXIS FOR CYLINDER
 // ADD MESH DRAWING
 // ADD COLORS
 // FIX POLYGON
+
+
+BezierSurfaceC0::BezierSurfaceC0()
+	: renderer(VertexDataType::PositionVertexData)
+{
+	name = "BezierSurfaceC0_" + std::to_string(id);
+	color = ColorPalette::Get(Color::Purple);
+}
+
+void BezierSurfaceC0::InitNormally(std::vector<std::shared_ptr<Point>>& points)
+{
+	isCylinder = false;
+
+	const int columns = widthPatches * 3 + 1;
+	const int rows = heightPatches * 3 + 1;
+
+	controlPoints.reserve(rows * columns);
+	controlPoints = points;
+
+	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
+	{
+		std::vector<std::weak_ptr<Point>> points;
+		std::vector<std::size_t> indices;
+
+		int startingI = patchIndex / widthPatches;
+		int startingJ = patchIndex % widthPatches;
+
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				points.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
+			}
+		}
+
+		patches.push_back(Patch(points, indices));
+	}
+
+	UpdateSurface();
+	SetupPolygon();
+}
+
+void BezierSurfaceC0::InitAsCylinder(std::vector<std::shared_ptr<Point>>& points)
+{
+	isCylinder = true;
+}
 
 BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches)
 	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
@@ -286,6 +333,22 @@ std::shared_ptr<Point> BezierSurfaceC0::GetPointAt(int row, int col) const
 	return controlPoints[(row * columns + col) % controlPoints.size()];
 }
 
+bool BezierSurfaceC0::HasDuplicates(const json& controlPointsJson)
+{
+	std::unordered_set<unsigned int> seen;
+	seen.reserve(controlPointsJson.size());
+
+	for (const auto& elem : controlPointsJson) 
+	{
+		unsigned int id = elem.at("id").get<unsigned int>();
+		if (!seen.insert(id).second) 
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void BezierSurfaceC0::SetupPolygon()
 {
 	std::vector<std::weak_ptr<Point>> points;
@@ -401,4 +464,47 @@ json BezierSurfaceC0::Serialize() const
 	};
 
 	return j;
+}
+
+std::shared_ptr<BezierSurfaceC0> BezierSurfaceC0::Deserialize(const json& j)
+{
+	auto surf = std::make_shared<BezierSurfaceC0>();
+
+	surf->id = j.at("id").get<unsigned int>();
+	if (j.contains("name"))
+	{
+		surf->name = j.at("name").get<std::string>();
+	}
+
+	const auto& size = j.at("size");
+	surf->widthPatches = size.at("u").get<int>();
+	surf->heightPatches = size.at("v").get<int>();
+
+	const auto& samples = j.at("samples");
+	surf->tessLevelU = samples.at("u").get<int>();
+	surf->tessLevelV = samples.at("v").get<int>();
+
+	surf->isCylinder = surf->HasDuplicates(j.at("controlPoints"));
+
+	std::vector<std::shared_ptr<Point>> points;
+	for (const auto& cp : j.at("controlPoints"))
+	{
+		unsigned int pid = cp.at("id").get<unsigned int>();
+		auto shape = IdManager::GetById(pid);
+		if (auto pt = std::dynamic_pointer_cast<Point>(shape))
+		{
+			points.push_back(pt);
+		}
+	}
+
+	if (surf->isCylinder)
+	{
+		surf->InitAsCylinder(points);
+	}
+	else
+	{
+		surf->InitNormally(points);
+	}
+
+	return surf;
 }

@@ -572,6 +572,13 @@ void App::DisplayLoadFromFile()
 				shapes.push_back(ic);
 				IdManager::RegisterShape(ic);
 			}
+			else if (gj.at("objectType").get<std::string>() == "bezierSurfaceC0")
+			{
+				auto bs = BezierSurfaceC0::Deserialize(gj);
+				bs->Init();
+				shapes.push_back(bs);
+				IdManager::RegisterShape(bs);
+			}
 		}
 	}
 }

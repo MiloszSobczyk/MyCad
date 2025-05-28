@@ -30,11 +30,17 @@ private:
 	void UpdateSurface();
 	std::shared_ptr<Point> GetPointAt(int row, int col) const;
 
+	bool HasDuplicates(const json& controlPointsJson);
+
 public:
+	BezierSurfaceC0();
+	void InitNormally(std::vector<std::shared_ptr<Point>>& controlPoints);
+	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& controlPoints);
 	BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	// Axes: 0 - X, 1 - Y, 2 - Z
 	BezierSurfaceC0(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches);
 	void SetupPolygon();
+
 
 	void OnNotified() override;
 	void Init();
@@ -46,4 +52,5 @@ public:
 	inline void ClearSelection() { selectedPatches.clear(); UpdateColors(); }
 
 	json Serialize() const override;
+	static std::shared_ptr<BezierSurfaceC0> Deserialize(const json& j);
 };
