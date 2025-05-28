@@ -4,6 +4,12 @@
 
 namespace Algebra
 {
+	struct StereoscopicMatrices
+	{
+		Matrix4 left;
+		Matrix4 right;
+	};
+
 	class Matrix4
 	{
 	private:
@@ -52,5 +58,6 @@ namespace Algebra
 		static Matrix4 Scale(Vector4 scale);
 
 		static Matrix4 Projection(float aspect, float f, float n, float fov);
+		static StereoscopicMatrices StereoscopicProjection(float aspect, float f, float n, float fov, float d, float c);
 	};
 }

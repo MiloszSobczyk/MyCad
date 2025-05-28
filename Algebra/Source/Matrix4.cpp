@@ -230,3 +230,39 @@ Matrix4 Algebra::Matrix4::Projection(float aspect, float f, float n, float fov)
 
 	return result;
 }
+
+StereoscopicMatrices Matrix4::StereoscopicProjection(float aspect, float f, float n, float fov, float d, float c)
+{
+	float top = n * tanf(fov * 0.5f);
+	float bottom = -top;
+	float right = top * aspect;
+	float left = -right;
+
+	float shift = (d * 0.5f) * n / c;
+	float lL = left + shift;
+	float rL = right + shift;
+	float lR = left - shift;
+	float rR = right - shift;
+
+	auto makeOffAxis = [&](float l, float r) {
+		Matrix4 P;
+
+		P[0][0] = 2.0f * n / (r - l);
+		P[0][2] = (r + l) / (r - l);
+
+		P[1][1] = 2.0f * n / (top - bottom);
+		P[1][2] = (top + bottom) / (top - bottom);
+
+		P[2][2] = (f + n) / (f - n);
+		P[2][3] = -2.0f * n * f / (f - n);
+
+		P[3][2] = 1.0f;
+		return P;
+	};
+
+	StereoscopicMatrices matrices;
+	matrices.left = makeOffAxis(lL, rL) * Translation(d * 0.5f, 0.f, 0.f);
+	matrices.right = makeOffAxis(lR, rR) * Translation(-d * 0.5f, 0.f, 0.f);;
+	
+	return matrices;
+}
