@@ -593,12 +593,12 @@ void App::DisplayLoadFromFile()
 
 void App::DisplayClearShapes()
 {
-	if (ImGui::Button("Clear all"))
-	{
-		shapes.clear();
-		selectedShapes->Clear();
-		Shape::ResetIdCounter();
-	}
+	//if (ImGui::Button("Clear all"))
+	//{
+	//	selectedShapes->Clear();
+	//	shapes.clear();
+	//	Shape::ResetIdCounter();
+	//}
 }
 
 Algebra::Vector4 App::ScreenToNDC(float x, float y)

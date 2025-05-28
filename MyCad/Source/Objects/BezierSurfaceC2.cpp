@@ -47,8 +47,44 @@ void BezierSurfaceC2::InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoin
 	SetupPolygon();
 }
 
-void BezierSurfaceC2::InitAsCylinder(std::vector<std::shared_ptr<Point>>& controlPoints)
+void BezierSurfaceC2::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints)
 {
+	const int columns = widthPatches + 2;
+	const int rows = heightPatches + 3;
+
+	controlPoints.reserve(rows * columns);
+
+	for (int i = 0; i < jsonPoints.size(); ++i)
+	{
+		if ((i - columns) % (columns + 1) != 0)
+		{
+			controlPoints.push_back(jsonPoints[i]);
+		}
+	}
+
+	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
+	{
+		std::vector<std::weak_ptr<Point>> points;
+		std::vector<std::size_t> indices;
+
+		int startingI = patchIndex / (widthPatches + 3);
+		int startingJ = patchIndex % (widthPatches + 3);
+
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				int index = (startingI + i) * columns + (startingJ + j) % columns;
+				points.push_back(controlPoints[index]);
+			}
+		}
+
+		std::sort(indices.begin(), indices.end());
+		patches.push_back(Patch(points, indices));
+	}
+
+	UpdateSurface();
+	SetupPolygon();
 }
 
 BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches)
@@ -619,7 +655,7 @@ json BezierSurfaceC2::Serialize() const
 	{
 		for (int j = 0; j < cols; ++j)
 		{
-			int jCole = isCylinder ? j % (widthPatches + 3) : j;
+			int jCole = isCylinder ? j % (widthPatches + 2) : j;
 			auto point = GetPointAt(i, jCole);
 			cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
 		}

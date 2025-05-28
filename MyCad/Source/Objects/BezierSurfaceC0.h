@@ -34,8 +34,8 @@ private:
 
 public:
 	BezierSurfaceC0();
-	void InitNormally(std::vector<std::shared_ptr<Point>>& controlPoints);
-	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& controlPoints);
+	void InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints);
+	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints);
 	BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	// Axes: 0 - X, 1 - Y, 2 - Z
 	BezierSurfaceC0(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches);
