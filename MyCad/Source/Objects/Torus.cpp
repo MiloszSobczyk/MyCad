@@ -68,7 +68,7 @@ void Torus::Render()
 	shader->Bind();
 	shader->SetUniformVec4f("u_color", color);
 	shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
-	shader->SetUniformMat4f("u_projectionMatrix", App::stereoMatrices.left);
+	shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
 	shader->SetUniformMat4f("u_modelMatrix", GetModelMatrix());
 
 	renderer.Render(GL_LINES);

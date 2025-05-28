@@ -45,7 +45,7 @@ class App
 {
 private:
 	bool active;
-	bool showGrid;
+	bool showGrid = false;
 	bool useCursor = true;
 	Window window;
 	InfiniteGrid grid;
@@ -68,6 +68,7 @@ private:
 
 	float interocularDistance = 0.064f;
 	float convergenceDistance = 5.f;
+	bool useStereoscopy = false;
 
 public:
 	static Camera camera;
@@ -79,6 +80,7 @@ public:
 
 	void Run();
 	void Render();
+	void RenderSingleScene();
 	void HandleInput();
 	void HandleResize();
 

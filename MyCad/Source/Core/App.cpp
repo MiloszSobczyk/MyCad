@@ -21,7 +21,7 @@ static bool CannotDeletePoint = false;
 
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
-	active(true), showGrid(true), shapes(),
+	active(true), showGrid(false), shapes(),
 	axisCursor(std::make_shared<AxisCursor>()), appMode(AppMode::Camera), selectedShapes(std::make_shared<SelectedShapes>()), 
 	middlePoint(), bezierParams()
 {
@@ -43,10 +43,9 @@ App::~App()
 
 void App::Run()
 {
+	glEnable(GL_DEPTH_TEST);
 	while (active && !window.ShouldClose())
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -605,6 +604,8 @@ void App::DisplayStereoscopyParameters()
 {
 	bool changed = false;
 
+	changed |= ImGui::Checkbox("Use stereoscopy", &useStereoscopy);
+
 	changed |= ImGui::SliderFloat("Interocular Distance (d)",
 		&interocularDistance,
 		0.05f,
@@ -619,12 +620,7 @@ void App::DisplayStereoscopyParameters()
 
 	if (changed)
 	{
-		float newWidth = static_cast<float>(window.GetWidth() - Globals::RightInterfaceWidth);
-		float newHeight = static_cast<float>(window.GetHeight());
-		float aspect = newWidth / newHeight;
-
-		stereoMatrices = Algebra::Matrix4::StereoscopicProjection(aspect, 1.f, 1000.0f,
-			std::numbers::pi_v<float> / 2.f, interocularDistance, convergenceDistance);
+		HandleResize();
 	}
 }
 
@@ -691,6 +687,36 @@ void App::GetClickedPoint()
 
 void App::Render()
 {
+	if (useStereoscopy)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+		projectionMatrix = stereoMatrices.left;
+		RenderSingleScene();
+
+		glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		projectionMatrix = stereoMatrices.right;
+		RenderSingleScene();
+
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glDisable(GL_BLEND);
+	}
+	else
+	{
+		RenderSingleScene();
+	}
+}
+
+void App::RenderSingleScene()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	if (showGrid)
 	{
 		grid.Render(camera.GetViewMatrix(), projectionMatrix, camera.GetPosition());
@@ -707,5 +733,9 @@ void App::Render()
 		shape->Render();
 	}
 
+	if (useStereoscopy)
+	{
+		HandleResize();
+	}
 	axisCursor->Render();
 }
