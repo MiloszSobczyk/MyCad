@@ -91,7 +91,9 @@ Algebra::Vector4 Camera::GetPosition()
 
 Algebra::Matrix4 Camera::GetViewMatrix()
 {
-    return GetRotationMatrix() * GetTranslationMatrix() * GetZoomMatrix();
+    Algebra::Matrix4 mirrorZ = Algebra::Matrix4::Scale(1.0f, 1.0f, -1.0f);
+
+    return mirrorZ * GetRotationMatrix() * GetTranslationMatrix() * GetZoomMatrix();
 }
 
 void Camera::HandleInput()

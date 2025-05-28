@@ -13,7 +13,7 @@
 #include <stdexcept>
 #include <string>
 
-Camera App::camera = Camera(Algebra::Vector4(0.f, 20.f, -50.f, 1.f), 1.f);
+Camera App::camera = Camera(Algebra::Vector4(0.f, 20.f, 50.f, 1.f), 1.f);
 Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280.f / 720.f, 1.f, 1000.0f, std::numbers::pi_v<float> / 2.f);
 Algebra::StereoscopicMatrices App::stereoMatrices = Algebra::Matrix4::StereoscopicProjection(1280.f / 720.f, 1.f, 1000.0f,
 	std::numbers::pi_v<float> / 2.f, 0.064f, 5.f);
