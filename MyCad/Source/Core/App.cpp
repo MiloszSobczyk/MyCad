@@ -189,6 +189,7 @@ void App::DisplayMainMenu()
 		currentOperation->RenderUI();
 	}
 	DisplayShapeSelection();
+	DisplaySelectAllShapes();
 	ImGui::Separator();
 	axisCursor->RenderUI();
 	ImGui::Separator();
@@ -621,6 +622,19 @@ void App::DisplayLoadFromFile()
 void App::DisplayClearShapes()
 {
 
+}
+
+void App::DisplaySelectAllShapes()
+{
+	if (ImGui::Button("Select all"))
+	{
+		selectedShapes->Clear();
+
+		for (const auto& shape : shapes)
+		{
+			selectedShapes->AddShape(shape);
+		}
+	}
 }
 
 void App::DisplayStereoscopyParameters()
