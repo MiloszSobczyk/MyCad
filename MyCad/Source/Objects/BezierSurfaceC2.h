@@ -30,11 +30,15 @@ private:
 	bool drawBernsteinPolygon = false;
 	bool drawDeBoorPolygon = false;
 
-
 	void Render() override;
 	void UpdateSurface();
 
+	bool HasDuplicates(const json& controlPointsJson);
+
 public:
+	BezierSurfaceC2();
+	void InitNormally(std::vector<std::shared_ptr<Point>>& controlPoints);
+	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& controlPoints);
 	BezierSurfaceC2(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	// Axes: 0 - X, 1 - Y, 2 - Z
 	BezierSurfaceC2(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches);
@@ -54,4 +58,5 @@ public:
 	inline void ClearSelection() { selectedPatches.clear(); UpdateColors(); }
 
 	json Serialize() const override;
+	static std::shared_ptr<BezierSurfaceC2> Deserialize(const json& j);
 };
