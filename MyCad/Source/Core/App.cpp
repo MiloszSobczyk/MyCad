@@ -717,10 +717,12 @@ void App::RenderSingleScene()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glDisable(GL_DEPTH_TEST);
 	if (showGrid)
 	{
 		grid.Render(camera.GetViewMatrix(), projectionMatrix, camera.GetPosition());
 	}
+	glEnable(GL_DEPTH_TEST);
 
 	if (auto avgPos = selectedShapes->GetAveragePosition())
 	{
