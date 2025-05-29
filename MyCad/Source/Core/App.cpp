@@ -18,6 +18,7 @@ Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280.f / 7
 Algebra::StereoscopicMatrices App::stereoMatrices = Algebra::Matrix4::StereoscopicProjection(1280.f / 720.f, 1.f, 1000.0f,
 	std::numbers::pi_v<float> / 2.f, 0.064f, 5.f);
 static bool CannotDeletePoint = false;
+bool App::useStereoscopy = false;
 
 App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),

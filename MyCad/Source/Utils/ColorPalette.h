@@ -12,6 +12,7 @@ enum class Color
     Purple,
     Teal,
     Emerald,
+    White
 };
 
 class ColorPalette

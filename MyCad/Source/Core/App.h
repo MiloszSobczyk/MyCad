@@ -72,9 +72,10 @@ private:
 
 	float interocularDistance = 0.064f;
 	float convergenceDistance = 5.f;
-	bool useStereoscopy = false;
 
 public:
+	static bool useStereoscopy;
+	
 	static Camera camera;
 	static Algebra::Matrix4 projectionMatrix;
 	static Algebra::StereoscopicMatrices stereoMatrices;

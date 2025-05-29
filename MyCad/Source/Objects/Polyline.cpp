@@ -25,7 +25,7 @@ void Polyline::Render()
         auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
         
         shader->Bind();
-        shader->SetUniformVec4f("u_color", color);
+        shader->SetUniformVec4f("u_color", App::useStereoscopy ? ColorPalette::Get(Color::White) : color);
         shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
         shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
         shader->SetUniformMat4f("u_modelMatrix", GetModelMatrix());
