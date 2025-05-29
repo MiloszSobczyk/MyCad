@@ -529,8 +529,8 @@ json BezierSurfaceC0::Serialize() const
 	}
 	j["controlPoints"] = cp;
 	j["size"] = {
-		{ "u", widthPatches * 3 + 1 },
-		{ "v", heightPatches * 3 + 1 },
+		{ "u", cols },
+		{ "v", rows },
 	};
 	j["samples"] = {
 		{ "u", tessLevelU },
