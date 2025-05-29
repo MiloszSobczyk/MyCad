@@ -60,7 +60,7 @@ void AxisCursor::HandleInput()
 
         if (fabs(delta.x) > FLT_EPSILON || fabs(delta.y) > FLT_EPSILON)
         {
-            Algebra::Vector4 direction = Algebra::Vector4(delta.x, 0, -delta.y, 0);
+            Algebra::Vector4 direction = Algebra::Vector4(delta.x, 0, delta.y, 0);
 
             if (direction.Length() > 0)
             {

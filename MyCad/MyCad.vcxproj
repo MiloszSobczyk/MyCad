@@ -199,6 +199,7 @@
     <ClCompile Include="Source\Utils\Serializer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Libs\imgui\imfilebrowser.h" />
     <ClInclude Include="Source\Core\IObserver.h" />
     <ClInclude Include="Source\Core\Observable.h" />
     <ClInclude Include="Source\Engine\ShaderBuilder.h" />

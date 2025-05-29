@@ -9,7 +9,8 @@
 #include "Objects/SelectedShapes.h"
 #include "Operations/OperationFactory.h"
 #include "Utils/Init.h"
-#include <nlohmann/json.hpp>
+#include "nlohmann/json.hpp"
+#include "imgui/imfilebrowser.h"
 
 #include <array>
 #include <string>
@@ -49,6 +50,9 @@ private:
 	bool useCursor = true;
 	Window window;
 	InfiniteGrid grid;
+
+	ImGui::FileBrowser openFileBrowser;
+	ImGui::FileBrowser saveFileBrowser;
 
 	std::vector<std::shared_ptr<Shape>> shapes;
 	std::shared_ptr<SelectedShapes> selectedShapes;

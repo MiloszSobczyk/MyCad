@@ -23,10 +23,15 @@ App::App()
 	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
 	active(true), showGrid(false), shapes(),
 	axisCursor(std::make_shared<AxisCursor>()), appMode(AppMode::Camera), selectedShapes(std::make_shared<SelectedShapes>()), 
-	middlePoint(), bezierParams()
+	middlePoint(), bezierParams(), saveFileBrowser(ImGuiFileBrowserFlags_EnterNewFilename)
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
+
+	openFileBrowser.SetTitle("Load Scene");
+	openFileBrowser.SetTypeFilters({ ".json" });
+	saveFileBrowser.SetTitle("Save Scene");
+	saveFileBrowser.SetTypeFilters({ ".json" });
 
 	middlePoint.SetColor(ColorPalette::Get(Color::Red));
 
@@ -490,40 +495,49 @@ void App::DisplayAddSurfacePopup()
 
 void App::DisplaySaveToFile()
 {
-	if (ImGui::Button("Save"))
-	{
-		json j;
+	if (ImGui::Button("Save file"))
+		saveFileBrowser.Open();
 
+	saveFileBrowser.Display();
+
+	if (saveFileBrowser.HasSelected())
+	{
+		const auto path = saveFileBrowser.GetSelected().string();
+		json j;
 		json points = json::array();
 		json geometry = json::array();
+
 		for (auto& shape : shapes)
 		{
-			if (auto point = std::dynamic_pointer_cast<Point>(shape))
-			{
-				points.push_back(point->Serialize());
-			}
+			if (auto pt = std::dynamic_pointer_cast<Point>(shape))
+				points.push_back(pt->Serialize());
 			else
-			{
 				geometry.push_back(shape->Serialize());
-			}
 		}
 
 		j["points"] = points;
 		j["geometry"] = geometry;
 
-		std::ofstream ofs("scene1.json");
-
+		std::ofstream ofs(path);
 		ofs << j.dump(4);
-
 		ofs.close();
+
+		saveFileBrowser.ClearSelected();
 	}
 }
 
 void App::DisplayLoadFromFile()
 {
-	if (ImGui::Button("Load from file"))
+	if (ImGui::Button("Open file"))
+		openFileBrowser.Open();
+
+	openFileBrowser.Display();
+
+	if (openFileBrowser.HasSelected())
 	{
-		std::ifstream ifs("scene1.json");
+		const auto path = openFileBrowser.GetSelected().string();
+
+		std::ifstream ifs(path);
 		if (!ifs.is_open()) 
 		{
 			return;
@@ -593,6 +607,8 @@ void App::DisplayLoadFromFile()
 				IdManager::RegisterShape(bs);
 			}
 		}
+
+		openFileBrowser.ClearSelected();
 	}
 }
 
