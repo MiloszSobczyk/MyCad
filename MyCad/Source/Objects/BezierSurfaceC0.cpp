@@ -62,7 +62,6 @@ void BezierSurfaceC0::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPo
 	{
 		if ((i - columns) % (columns + 1) != 0)
 		{
-			std::cout << jsonPoints[i]->GetId() << '\n';
 			controlPoints.push_back(jsonPoints[i]);
 		}
 	}
