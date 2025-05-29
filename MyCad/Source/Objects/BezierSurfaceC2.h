@@ -20,6 +20,7 @@ private:
 	std::vector<std::shared_ptr<Point>> bernsteinPoints;
 	std::shared_ptr<Polyline> bernsteinPolygon;
 	std::shared_ptr<Polyline> deBoorPolygon;
+	bool somethingChanged = false;
 
 	int widthPatches;
 	int heightPatches;

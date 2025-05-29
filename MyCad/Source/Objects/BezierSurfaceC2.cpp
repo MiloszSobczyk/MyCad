@@ -62,7 +62,7 @@ void BezierSurfaceC2::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPo
 		}
 	}
 
-	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
+	for (int patchIndex = 0; patchIndex < widthPatches * (heightPatches + 3); ++patchIndex)
 	{
 		std::vector<std::weak_ptr<Point>> points;
 		std::vector<std::size_t> indices;
@@ -208,7 +208,7 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radi
 
 void BezierSurfaceC2::OnNotified()
 {
-	UpdateSurface();
+	somethingChanged = true;
 }
 
 void BezierSurfaceC2::Init()
@@ -302,6 +302,12 @@ void BezierSurfaceC2::UpdateColors()
 
 void BezierSurfaceC2::Render()
 {
+	if (somethingChanged)
+	{
+		UpdateSurface();
+		somethingChanged = false;
+	}
+
 	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
 	shader->Bind();
@@ -662,8 +668,8 @@ json BezierSurfaceC2::Serialize() const
 	}
 	j["controlPoints"] = cp;
 	j["size"] = {
-		{ "u", widthPatches },
-		{ "v", heightPatches },
+		{ "u", cols },
+		{ "v", rows },
 	};
 	j["samples"] = {
 		{ "u", tessLevelU },
@@ -684,8 +690,8 @@ std::shared_ptr<BezierSurfaceC2> BezierSurfaceC2::Deserialize(const json& j)
 	}
 
 	const auto& size = j.at("size");
-	surf->widthPatches = size.at("u").get<int>();
-	surf->heightPatches = size.at("v").get<int>();
+	surf->widthPatches = size.at("u").get<int>() - 3;
+	surf->heightPatches = size.at("v").get<int>() - 3;
 
 	const auto& samples = j.at("samples");
 	surf->tessLevelU = samples.at("u").get<int>();
