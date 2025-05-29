@@ -22,6 +22,7 @@ enum class AxisMode
 private:
     bool drawBernsteinPolygon = false;
     bool drawInterpolatingPolygon = false;
+    bool somethingChanged = false;
 
     std::vector<std::shared_ptr<Point>> bernsteinPoints;
     Renderer<PositionVertexData> renderer;

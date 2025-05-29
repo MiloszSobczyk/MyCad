@@ -13,6 +13,7 @@ class BezierCurve : public std::enable_shared_from_this<BezierCurve>, public Sha
 {
 private:
     bool drawPolyline = false;
+    bool somethingChanged = false;
 
     Renderer<PositionVertexData> renderer;
     std::vector<std::weak_ptr<Point>> controlPoints;

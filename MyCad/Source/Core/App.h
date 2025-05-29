@@ -95,6 +95,7 @@ public:
 	void DisplaySaveToFile();
 	void DisplayLoadFromFile();
 	void DisplayClearShapes();
+	void DisplaySelectAll();
 
 	void DisplayStereoscopyParameters();
 

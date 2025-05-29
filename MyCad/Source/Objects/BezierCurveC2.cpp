@@ -15,6 +15,11 @@ BezierCurveC2::BezierCurveC2()
 
 void BezierCurveC2::Render()
 {
+    if(somethingChanged)
+    {
+        somethingChanged = false;
+        UpdateCurve();
+    }
     if (drawDeBoorPolygon)
     {
         polyline->Render();
@@ -207,7 +212,7 @@ void BezierCurveC2::SwapPoints(int index1, int index2)
 
 void BezierCurveC2::OnNotified()
 {
-    UpdateCurve();
+    somethingChanged = true;
 }
 
 void BezierCurveC2::HandleInput()

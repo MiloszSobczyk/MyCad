@@ -22,6 +22,7 @@ private:
     bool drawDeBoorPolygon = false;
     bool drawBernsteinBase = false;
     bool drawBernsteinPolygon = false;
+    bool somethingChanged = false;
 
     std::vector<std::shared_ptr<Point>> bernsteinPoints;
     Renderer<PositionVertexData> renderer;

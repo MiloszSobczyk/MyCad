@@ -160,6 +160,7 @@ void App::DisplayMainMenu()
 	DisplaySaveToFile();
 	DisplayLoadFromFile();
 	DisplayClearShapes();
+	DisplaySelectAll();
 
 	if (currentOperation)
 	{
@@ -600,6 +601,18 @@ void App::DisplayClearShapes()
 
 }
 
+void App::DisplaySelectAll()
+{
+	if (ImGui::Button("Select all"))
+	{
+		selectedShapes->Clear();
+		for (auto& shape : shapes)
+		{
+			selectedShapes->AddShape(shape);
+		}
+	}
+}
+
 void App::DisplayStereoscopyParameters()
 {
 	bool changed = false;
@@ -717,12 +730,10 @@ void App::RenderSingleScene()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glDisable(GL_DEPTH_TEST);
 	if (showGrid)
 	{
 		grid.Render(camera.GetViewMatrix(), projectionMatrix, camera.GetPosition());
 	}
-	glEnable(GL_DEPTH_TEST);
 
 	if (auto avgPos = selectedShapes->GetAveragePosition())
 	{

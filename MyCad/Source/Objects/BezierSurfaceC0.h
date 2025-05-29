@@ -17,6 +17,7 @@ private:
 	std::vector<Patch> patches;
 	std::vector<int> selectedPatches;
 	std::shared_ptr<Polyline> bernsteinPolygon;
+	bool somethingChanged = false;
 
 	int widthPatches;
 	int heightPatches;

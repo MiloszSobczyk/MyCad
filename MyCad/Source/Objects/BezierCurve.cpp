@@ -12,6 +12,11 @@ BezierCurve::BezierCurve()
 
 void BezierCurve::Render()
 {
+    if (somethingChanged)
+    {
+        UpdateCurve();
+        somethingChanged = false;
+    }
     if (drawPolyline)
     {
         polyline->Render();
@@ -149,7 +154,7 @@ void BezierCurve::SwapPoints(int index1, int index2)
 
 void BezierCurve::OnNotified()
 {
-    UpdateCurve();
+    somethingChanged = true;
 }
 
 void BezierCurve::UpdateCurve()

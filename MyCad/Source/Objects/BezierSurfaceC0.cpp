@@ -211,7 +211,7 @@ BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radi
 
 void BezierSurfaceC0::OnNotified()
 {
-	UpdateSurface();
+	somethingChanged = true;
 }
 
 void BezierSurfaceC0::Init()
@@ -305,6 +305,12 @@ void BezierSurfaceC0::UpdateColors()
 
 void BezierSurfaceC0::Render()
 {
+	if (somethingChanged)
+	{
+		somethingChanged = false;
+		UpdateSurface();
+	}
+
 	auto shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface);
 
 	shader->Bind();

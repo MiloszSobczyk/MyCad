@@ -19,6 +19,12 @@ InterpolatingCurve::InterpolatingCurve()
 
 void InterpolatingCurve::Render()
 {
+    if (somethingChanged)
+    {
+        UpdateCurve();
+        somethingChanged = false;
+    }
+
     if (drawBernsteinPolygon)
     {
         bernsteinPolyline->Render();
@@ -163,7 +169,7 @@ void InterpolatingCurve::SwapPoints(int index1, int index2)
 
 void InterpolatingCurve::OnNotified()
 {
-    UpdateCurve();
+    somethingChanged = true;
 }
 
 // Move to Algebra library
