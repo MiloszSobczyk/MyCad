@@ -30,17 +30,18 @@ private:
 	void UpdateSurface();
 	std::shared_ptr<Point> GetPointAt(int row, int col) const;
 
-	bool HasDuplicates(const json& controlPointsJson);
+	int HasDuplicates(const json& controlPointsJson);
+	std::vector<unsigned int> ProcessPoints(std::vector<unsigned int> ids, int connectionType);
 
 public:
 	BezierSurfaceC0();
 	void InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints);
 	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints);
+
 	BezierSurfaceC0(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	// Axes: 0 - X, 1 - Y, 2 - Z
 	BezierSurfaceC0(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches);
 	void SetupPolygon();
-
 
 	void OnNotified() override;
 	void Init();
