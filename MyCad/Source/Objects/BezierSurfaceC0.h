@@ -34,6 +34,8 @@ private:
 	inline int GetColumns() const { return widthPatches * 3 + 1; };
 	inline int GetRows() const { return heightPatches * 3 + 1; };
 	
+	void DetectConnectionType();
+
 	inline void OnNotified() override { somethingChanged = true; };
 
 	void SetupControlPoints(Algebra::Vector4 position, float width, float height);
@@ -41,6 +43,7 @@ private:
 
 	void Render() override;
 	void Update();
+
 public:
 	std::vector<std::shared_ptr<Point>> GetUniqueControlPoints();
 

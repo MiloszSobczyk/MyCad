@@ -28,11 +28,20 @@ std::vector<std::shared_ptr<Point>> BezierSurfaceC0::GetUniqueControlPoints()
 	return unique;
 }
 
-BezierSurfaceC0::BezierSurfaceC0()
-	: renderer(VertexDataType::PositionVertexData)
+void BezierSurfaceC0::DetectConnectionType()
 {
-	name = "BezierSurfaceC0_" + std::to_string(id);
-	color = ColorPalette::Get(Color::Purple);
+	if (controlPoints[0]->GetId() == controlPoints[GetColumns() - 1]->GetId())
+	{
+		connectionType = ConnectionType::Columns;
+	}
+	else if(controlPoints[0]->GetId() == controlPoints[(GetRows() - 1) * GetColumns()]->GetId())
+	{
+		connectionType = ConnectionType::Rows;
+	}
+	else
+	{
+		connectionType = ConnectionType::Flat;
+	}
 }
 
 void BezierSurfaceC0::SetupControlPoints(Algebra::Vector4 position, float width, float height)
@@ -130,6 +139,13 @@ void BezierSurfaceC0::SetupPatches()
 		patch.SetBernsteinPoints(points);
 		patches.push_back(patch);
 	}
+}
+
+BezierSurfaceC0::BezierSurfaceC0()
+	: renderer(VertexDataType::PositionVertexData)
+{
+	name = "BezierSurfaceC0_" + std::to_string(id);
+	color = ColorPalette::Get(Color::Purple);
 }
 
 BezierSurfaceC0::BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, 
@@ -260,42 +276,31 @@ json BezierSurfaceC0::Serialize() const
 
 std::shared_ptr<BezierSurfaceC0> BezierSurfaceC0::Deserialize(const json& j)
 {
-	auto surf = std::make_shared<BezierSurfaceC0>();
+	auto surface = std::make_shared<BezierSurfaceC0>();
 
-	surf->id = j.at("id").get<unsigned int>();
+	surface->id = j.at("id").get<unsigned int>();
 	if (j.contains("name"))
 	{
-		surf->name = j.at("name").get<std::string>();
+		surface->name = j.at("name").get<std::string>();
 	}
 
 	const auto& size = j.at("size");
-	surf->widthPatches = (size.at("u").get<int>() - 1) / 3;
-	surf->heightPatches = (size.at("v").get<int>() - 1) / 3;
+	surface->widthPatches = (size.at("u").get<int>() - 1) / 3;
+	surface->heightPatches = (size.at("v").get<int>() - 1) / 3;
 
 	const auto& samples = j.at("samples");
-	surf->tessLevelU = samples.at("u").get<int>();
-	surf->tessLevelV = samples.at("v").get<int>();
+	surface->tessLevelU = samples.at("u").get<int>();
+	surface->tessLevelV = samples.at("v").get<int>();
 
-	auto controlPointsJson = j.at("controlPoints");
+	for (const auto& point : j.at("controlPoints"))
+	{
+		unsigned int id = point.at("id").get<unsigned int>();
+		surface->controlPoints.push_back(dynamic_pointer_cast<Point>(IdManager::GetById(id)));
+	}
 
-	//int connectionType1 = surf->HasDuplicates(controlPointsJson);
+	surface->DetectConnectionType();
+	surface->SetupPatches();
+	surface->Update();
 
-	//std::vector<unsigned int> ids;
-
-	//for (const auto& cp : j.at("controlPoints"))
-	//{
-	//	unsigned int pid = cp.at("id").get<unsigned int>();
-	//	ids.push_back(pid);
-	//}
-
-	//ids = surf->ProcessPoints(ids, connectionType1);
-
-	//std::vector<std::shared_ptr<Point>> points;
-
-	//for (const auto& id : ids)
-	//{
-	//	points.push_back(dynamic_pointer_cast<Point>(IdManager::GetById(id)));
-	//}
-
-	return surf;
+	return surface;
 }
