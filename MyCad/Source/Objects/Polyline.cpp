@@ -153,6 +153,28 @@ void Polyline::AddPoint(const std::shared_ptr<Point>& point)
     UpdatePoints();
 }
 
+void Polyline::AddPoint(const std::weak_ptr<Point>& point)
+{
+    auto spPoint = point.lock();
+    if (!spPoint)
+        return;
+
+    for (const auto& w : points)
+    {
+        if (auto spExisting = w.lock())
+        {
+            if (spExisting == spPoint)
+                return;
+        }
+    }
+
+    points.push_back(point);
+    spPoint->AddObserver(shared_from_this());
+
+    UpdatePoints();
+}
+
+
 void Polyline::RemovePoint(const std::shared_ptr<Point>& point)
 {
     points.erase(

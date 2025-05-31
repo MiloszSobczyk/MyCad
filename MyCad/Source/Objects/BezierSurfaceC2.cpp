@@ -40,7 +40,7 @@ void BezierSurfaceC2::InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoin
 			}
 		}
 
-		patches.push_back(Patch(points, indices));
+		patches.push_back(Patch(points));
 	}
 
 	UpdateSurface();
@@ -80,7 +80,7 @@ void BezierSurfaceC2::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPo
 		}
 
 		std::sort(indices.begin(), indices.end());
-		patches.push_back(Patch(points, indices));
+		patches.push_back(Patch(points));
 	}
 
 	UpdateSurface();
@@ -139,7 +139,7 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float h
 			}
 		}
 
-		patches.push_back(Patch(points, indices));
+		patches.push_back(Patch(points));
 	}
 
 	UpdateSurface();
@@ -199,7 +199,7 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radi
 		}
 
 		std::sort(indices.begin(), indices.end());
-		patches.push_back(Patch(points, indices));
+		patches.push_back(Patch(points));
 	}
 
 	UpdateSurface();
@@ -288,16 +288,7 @@ void BezierSurfaceC2::RenderUI()
 
 void BezierSurfaceC2::UpdateColors()
 {
-	for (auto& patch : patches)
-	{
-		patch.SetColor(ColorPalette::Get(Color::Purple));
-	}
 
-	for (int idx : selectedPatches)
-	{
-		if (idx >= 0 && idx < patches.size())
-			patches[idx].SetColor(ColorPalette::Get(Color::Teal));
-	}
 }
 
 void BezierSurfaceC2::Render()
@@ -408,7 +399,7 @@ void BezierSurfaceC2::UpdateSurface()
 				bPoints.push_back(bernsteinPoints[patchIndex * 16 + i * 4 + j]);
 			}
 
-		patch.AddBernstein(bPoints);
+		patch.SetBernsteinPoints(bPoints);
 	}
 
 	for (auto& point : bernsteinPoints)

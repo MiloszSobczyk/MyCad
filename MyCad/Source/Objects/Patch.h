@@ -10,19 +10,15 @@ class Patch
 {
 private:
 	std::vector<std::weak_ptr<Point>> points;
-	std::vector<std::size_t> uniqueIndices;
 	std::shared_ptr<Polyline> polyline;
 
 public:
 	bool drawPolyline = true;
 
-	Patch(std::vector<std::weak_ptr<Point>>& points, std::vector<std::size_t>& uniqueIndices);
-
-	void SetColor(Algebra::Vector4 color);
+	Patch(std::vector<std::weak_ptr<Point>>& points);
 
 	void Render();
-
-	void AddBernstein(std::vector<std::weak_ptr<Point>> points);
+	void SetBernsteinPoints(std::vector<std::weak_ptr<Point>> bernsteinPoints);
 
 	inline std::vector<std::weak_ptr<Point>> GetPoints() { return points; };
 };

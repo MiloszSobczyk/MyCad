@@ -8,7 +8,6 @@
 #include "Shape.h"
 #include "Patch.h"
 #include "Polyline.h"
-#include "Point.h"
 
 class BezierSurfaceC2 : public std::enable_shared_from_this<BezierSurfaceC2>, public Shape, public IObserver
 {

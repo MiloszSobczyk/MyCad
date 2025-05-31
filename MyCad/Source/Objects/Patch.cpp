@@ -1,72 +1,67 @@
 #include "Patch.h"
 
-Patch::Patch(std::vector<std::weak_ptr<Point>>& points, std::vector<std::size_t>& uniqueIndices)
-	: points(points), uniqueIndices(uniqueIndices)
+Patch::Patch(std::vector<std::weak_ptr<Point>>& points)
+	: points(points)
 {
-}
-
-void Patch::SetColor(Algebra::Vector4 color)
-{
-	for (auto point : points)
-	{
-		if (auto sp = point.lock())
-		{
-			sp->SetColor(color);
-		}
-	}
+	polyline = std::make_shared<Polyline>();
+	polyline->SetColor(ColorPalette::Get(Color::Teal));
 }
 
 void Patch::Render()
 {
-	if(polyline)
+	if (polyline)
 		polyline->Render();
 }
 
-void Patch::AddBernstein(std::vector<std::weak_ptr<Point>> points)
+void Patch::SetBernsteinPoints(std::vector<std::weak_ptr<Point>> bernsteinPoints)
 {
-	std::vector<std::weak_ptr<Point>> points2;
+    std::vector<std::weak_ptr<Point>> polyPoints = {
+        // Rows
+        bernsteinPoints[0],
+        bernsteinPoints[1],
+        bernsteinPoints[2],
+        bernsteinPoints[3],
 
-	points2.push_back(points[0]);
-	points2.push_back(points[1]);
-	points2.push_back(points[2]);
-	points2.push_back(points[3]);
+        bernsteinPoints[7],
+        bernsteinPoints[6],
+        bernsteinPoints[5],
+        bernsteinPoints[4],
 
-	points2.push_back(points[7]);
-	points2.push_back(points[6]);
-	points2.push_back(points[5]);
-	points2.push_back(points[4]);
+        bernsteinPoints[8],
+        bernsteinPoints[9],
+        bernsteinPoints[10],
+        bernsteinPoints[11],
 
-	points2.push_back(points[8]);
-	points2.push_back(points[9]);
-	points2.push_back(points[10]);
-	points2.push_back(points[11]);
+        bernsteinPoints[15],
+        bernsteinPoints[14],
+        bernsteinPoints[13],
+        bernsteinPoints[12],
 
-	points2.push_back(points[15]);
-	points2.push_back(points[14]);
-	points2.push_back(points[13]);
-	points2.push_back(points[12]);
+        // Columns
+        bernsteinPoints[12],
+        bernsteinPoints[8],
+        bernsteinPoints[4],
+        bernsteinPoints[0],
 
-	points2.push_back(points[12]);
-	points2.push_back(points[8]);
-	points2.push_back(points[4]);
-	points2.push_back(points[0]);
+        bernsteinPoints[1],
+        bernsteinPoints[5],
+        bernsteinPoints[9],
+        bernsteinPoints[13],
 
-	points2.push_back(points[1]);
-	points2.push_back(points[5]);
-	points2.push_back(points[9]);
-	points2.push_back(points[13]);
+        bernsteinPoints[14],
+        bernsteinPoints[10],
+        bernsteinPoints[6],
+        bernsteinPoints[2],
 
-	points2.push_back(points[14]);
-	points2.push_back(points[10]);
-	points2.push_back(points[6]);
-	points2.push_back(points[2]);
+        bernsteinPoints[3],
+        bernsteinPoints[7],
+        bernsteinPoints[11],
+        bernsteinPoints[15]
+    };
 
-	points2.push_back(points[3]);
-	points2.push_back(points[7]);
-	points2.push_back(points[11]);
-	points2.push_back(points[15]);
-
-	polyline = std::make_shared<Polyline>(points2);
-	polyline->InitFromPoints();
-	polyline->SetColor(ColorPalette::Get(Color::Teal));
+	polyline->ClearPoints();
+	for (const auto polyPoint : polyPoints)
+	{
+		polyline->AddPoint(polyPoint);
+	}
 }
