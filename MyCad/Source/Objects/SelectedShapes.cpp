@@ -4,17 +4,6 @@
 
 void SelectedShapes::Clear()
 {
-	for (auto& shape : selectedShapes)
-	{
-		if (auto surfaceC0 = std::dynamic_pointer_cast<BezierSurfaceC0>(shape))
-		{
-			surfaceC0->ClearSelection();
-		}
-		else if (auto surfaceC2 = std::dynamic_pointer_cast<BezierSurfaceC2>(shape))
-		{
-			surfaceC2->ClearSelection();
-		}
-	}
 	selectedShapes.clear();
 }
 
@@ -31,15 +20,6 @@ void SelectedShapes::AddShape(std::shared_ptr<Shape> shape)
 void SelectedShapes::RemoveShape(std::shared_ptr<Shape> shape)
 {
 	selectedShapes.erase(std::find(selectedShapes.begin(), selectedShapes.end(), shape));
-
-	if (auto surfaceC0 = std::dynamic_pointer_cast<BezierSurfaceC0>(shape))
-	{
-		surfaceC0->ClearSelection();
-	}
-	else if (auto surfaceC2 = std::dynamic_pointer_cast<BezierSurfaceC2>(shape))
-	{
-		surfaceC2->ClearSelection();
-	}
 }
 
 void SelectedShapes::ToggleShape(std::shared_ptr<Shape> shape)

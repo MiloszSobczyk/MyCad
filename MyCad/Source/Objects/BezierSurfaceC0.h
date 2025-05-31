@@ -13,10 +13,11 @@ class BezierSurfaceC0 : public std::enable_shared_from_this<BezierSurfaceC0>, pu
 {
 private:
 	Renderer<PositionVertexData> renderer;
+
 	std::vector<std::shared_ptr<Point>> controlPoints;
 	std::vector<Patch> patches;
-	std::vector<int> selectedPatches;
 	std::shared_ptr<Polyline> bernsteinPolygon;
+
 	bool somethingChanged = false;
 
 	int widthPatches;
@@ -46,12 +47,10 @@ public:
 
 	void OnNotified() override;
 	void Init();
-	void UpdateColors();
 	
 	void RenderUI() override;
 	
 	inline std::vector<std::shared_ptr<Point>> GetControlPoints() { return controlPoints; };
-	inline void ClearSelection() { selectedPatches.clear(); UpdateColors(); }
 
 	json Serialize() const override;
 	static std::shared_ptr<BezierSurfaceC0> Deserialize(const json& j);

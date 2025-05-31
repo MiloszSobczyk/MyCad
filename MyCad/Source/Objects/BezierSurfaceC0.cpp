@@ -231,67 +231,6 @@ void BezierSurfaceC0::RenderUI()
 	ImGui::SeparatorText("Tessellation");
 	ImGui::SliderInt("Tess Level U", &tessLevelU, 1, 64);
 	ImGui::SliderInt("Tess Level V", &tessLevelV, 1, 64);
-
-	ImGui::SeparatorText("Patches");
-
-	if (patches.empty())
-	{
-		ImGui::Text("No patches available.");
-	}
-	else
-	{
-		ImGuiIO& io = ImGui::GetIO();
-		bool ctrlHeld = io.KeyCtrl;
-		bool changed = false;
-
-		for (int i = 0; i < patches.size(); ++i)
-		{
-			bool isSelected = std::find(selectedPatches.begin(), selectedPatches.end(), i) != selectedPatches.end();
-			std::string label = "Patch " + std::to_string(i) + "##patch" + std::to_string(i);
-
-			if (ImGui::Selectable(label.c_str(), isSelected))
-			{
-				changed = true;
-				if (ctrlHeld)
-				{
-					if (isSelected)
-					{
-						selectedPatches.erase(
-							std::remove(selectedPatches.begin(), selectedPatches.end(), i),
-							selectedPatches.end()
-						);
-					}
-					else
-					{
-						selectedPatches.push_back(i);
-					}
-				}
-				else
-				{
-					if (isSelected)
-					{
-						selectedPatches.clear();
-					}
-					else
-					{
-						selectedPatches.clear();
-						selectedPatches.push_back(i);
-					}
-				}
-			}
-		}
-
-		if (changed)
-		{
-			UpdateColors();
-		}
-	}
-}
-
-
-void BezierSurfaceC0::UpdateColors()
-{
-
 }
 
 void BezierSurfaceC0::Render()

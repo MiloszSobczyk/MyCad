@@ -15,7 +15,6 @@ private:
 	Renderer<PositionVertexData> renderer;
 	std::vector<std::shared_ptr<Point>> controlPoints;
 	std::vector<Patch> patches;
-	std::vector<int> selectedPatches;
 	std::vector<std::shared_ptr<Point>> bernsteinPoints;
 	std::shared_ptr<Polyline> bernsteinPolygon;
 	std::shared_ptr<Polyline> deBoorPolygon;
@@ -53,9 +52,6 @@ public:
 	std::shared_ptr<Point> GetBernsteinPointAt(int row, int col);
 	void SetupPolygon();
 	void SetupDeBoorPolygon();
-
-	void UpdateColors();
-	inline void ClearSelection() { selectedPatches.clear(); UpdateColors(); }
 
 	json Serialize() const override;
 	static std::shared_ptr<BezierSurfaceC2> Deserialize(const json& j);
