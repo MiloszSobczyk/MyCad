@@ -5,6 +5,45 @@
 #include <numbers>
 #include <Managers/IdManager.h>
 
+std::vector<std::shared_ptr<Point>> BezierSurfaceC2::GetUniqueControlPoints()
+{
+	std::vector<std::shared_ptr<Point>> unique;
+	unique.reserve(controlPoints.size());
+
+	std::unordered_set<int> seenIds;
+	seenIds.reserve(controlPoints.size());
+
+	for (const auto& p : controlPoints)
+	{
+		if (!p)
+			continue;
+
+		int id = p->GetId();
+		if (seenIds.insert(id).second)
+		{
+			unique.push_back(p);
+		}
+	}
+
+	return unique;
+}
+
+void BezierSurfaceC2::DetectConnectionType()
+{
+	if (controlPoints[0]->GetId() == controlPoints[GetColumns() - 1]->GetId())
+	{
+		connectionType = ConnectionType::Columns;
+	}
+	else if (controlPoints[0]->GetId() == controlPoints[(GetRows() - 1) * GetColumns()]->GetId())
+	{
+		connectionType = ConnectionType::Rows;
+	}
+	else
+	{
+		connectionType = ConnectionType::Flat;
+	}
+}
+
 void BezierSurfaceC2::SetupControlPoints(Algebra::Vector4 position, float width, float height)
 {
 	controlPoints.reserve(GetRows() * GetColumns());
@@ -100,7 +139,7 @@ void BezierSurfaceC2::SetupPatches()
 		}
 
 		Patch patch;
-		patch.SetBernsteinPoints(points);
+		patch.SetDeBoorPoints(points);
 		patches.push_back(patch);
 	}
 }
@@ -124,14 +163,9 @@ BezierSurfaceC2::BezierSurfaceC2(ConnectionType connectionType, Algebra::Vector4
 	Update();
 }
 
-void BezierSurfaceC2::OnNotified()
-{
-	somethingChanged = true;
-}
-
 void BezierSurfaceC2::Init()
 {
-	for (auto point : controlPoints)
+	for (auto point : GetUniqueControlPoints())
 	{
 		point->Init();
 		point->AddObserver(shared_from_this());
@@ -210,7 +244,6 @@ void BezierSurfaceC2::Update()
 		for (int i = 0; i < patches.size() * 16; ++i)
 		{
 			auto point = std::make_shared<Point>();
-			point->GetTranslationComponent()->SetTranslation(Algebra::Vector4());
 			bernsteinPoints.push_back(point);
 		}
 	}
@@ -218,49 +251,55 @@ void BezierSurfaceC2::Update()
 	std::vector<PositionVertexData> vertices;
 
 	static const float A[4][4] = {
-		{ 1.f / 6, 4.f / 6.f, 1.f / 6.f, 0.f },
-		{ 0.f,     4.f / 6.f, 2.f / 6.f, 0.f },
-		{ 0.f,     2.f / 6.f, 4.f / 6.f, 0.f },
-		{ 0.f,     1.f / 6.f, 4.f / 6.f, 1.f / 6.f }
+		{ 1.f / 6.f, 4.f / 6.f, 1.f / 6.f, 0.f       },
+		{ 0.f,       4.f / 6.f, 2.f / 6.f, 0.f       },
+		{ 0.f,       2.f / 6.f, 4.f / 6.f, 0.f       },
+		{ 0.f,       1.f / 6.f, 4.f / 6.f, 1.f / 6.f }
 	};
 
-	//for (int patchIndex = 0; patchIndex < patches.size(); ++patchIndex)
-	//{
-	//	auto& patch = patches[patchIndex];
+	for (int patchIndex = 0; patchIndex < patches.size(); ++patchIndex)
+	{
+		auto& patch = patches[patchIndex];
 
-	//	std::array<std::array<Algebra::Vector4, 4>, 4> P;
-	//	const auto& wps = patch.GetPoints();
-	//	for (int i = 0; i < 4; ++i)
-	//		for (int j = 0; j < 4; ++j)
-	//		{
-	//			auto sp = wps[i * 4 + j].lock();
-	//			P[i][j] = sp->GetTranslationComponent()->GetTranslation();
-	//		}
+		std::array<std::array<Algebra::Vector4, 4>, 4> P;
+		const auto& wps = patch.GetDeBoorPoints();
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				auto sp = wps[i * 4 + j].lock();
+				P[i][j] = sp->GetTranslationComponent()->GetTranslation();
+			}
+		}
 
-	//	std::array<std::array<Algebra::Vector4, 4>, 4> Q;
-	//	for (int i = 0; i < 4; ++i)
-	//		for (int j = 0; j < 4; ++j)
-	//		{
-	//			Q[i][j] = Algebra::Vector4();
-	//			for (int k = 0; k < 4; ++k)
-	//				Q[i][j] += A[i][k] * P[k][j];
-	//		}
+		std::array<std::array<Algebra::Vector4, 4>, 4> Q;
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				Q[i][j] = Algebra::Vector4();
+				for (int k = 0; k < 4; ++k)
+					Q[i][j] += A[i][k] * P[k][j];
+			}
+		}
 
-	//	std::vector<Algebra::Vector4> B;
-	//	std::vector<std::weak_ptr<Point>> bPoints;
-	//	B.reserve(16);
-	//	for (int i = 0; i < 4; ++i)
-	//		for (int j = 0; j < 4; ++j)
-	//		{
-	//			Algebra::Vector4 b = Algebra::Vector4();
-	//			for (int k = 0; k < 4; ++k)
-	//				b += Q[i][k] * A[j][k];
-	//			bernsteinPoints[patchIndex * 16 + i * 4 + j]->GetTranslationComponent()->SetTranslation(b);
-	//			bPoints.push_back(bernsteinPoints[patchIndex * 16 + i * 4 + j]);
-	//		}
+		std::vector<Algebra::Vector4> B;
+		std::vector<std::weak_ptr<Point>> bPoints;
+		B.reserve(16);
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				Algebra::Vector4 b = Algebra::Vector4();
+				for (int k = 0; k < 4; ++k)
+					b += Q[i][k] * A[j][k];
+				bernsteinPoints[patchIndex * 16 + i * 4 + j]->GetTranslationComponent()->SetTranslation(b);
+				bPoints.push_back(bernsteinPoints[patchIndex * 16 + i * 4 + j]);
+			}
+		}
 
-	//	patch.SetBernsteinPoints(bPoints);
-	//}
+		patch.SetBernsteinPoints(bPoints);
+	}
 
 	for (auto& point : bernsteinPoints)
 	{
@@ -270,23 +309,6 @@ void BezierSurfaceC2::Update()
 	}
 
 	renderer.SetVertices(vertices);
-}
-
-
-bool BezierSurfaceC2::HasDuplicates(const json& controlPointsJson)
-{
-	std::unordered_set<unsigned int> seen;
-	seen.reserve(controlPointsJson.size());
-
-	for (const auto& elem : controlPointsJson)
-	{
-		unsigned int id = elem.at("id").get<unsigned int>();
-		if (!seen.insert(id).second)
-		{
-			return true;
-		}
-	}
-	return false;
 }
 
 json BezierSurfaceC2::Serialize() const
@@ -301,21 +323,15 @@ json BezierSurfaceC2::Serialize() const
 	}
 
 	json cp = json::array();
-	int rows = heightPatches + 3;
-	int cols = widthPatches + 3;
-	//for (int i = 0; i < rows; ++i)
-	//{
-	//	for (int j = 0; j < cols; ++j)
-	//	{
-	//		int jCole = isCylinder ? j % (widthPatches + 2) : j;
-	//		auto point = GetPointAt(i, jCole);
-	//		cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
-	//	}
-	//}
+	for (auto& point : controlPoints)
+	{
+		cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
+	}
 	j["controlPoints"] = cp;
+
 	j["size"] = {
-		{ "u", cols },
-		{ "v", rows },
+		{ "u", GetColumns() },
+		{ "v", GetRows() },
 	};
 	j["samples"] = {
 		{ "u", tessLevelU },
@@ -327,34 +343,31 @@ json BezierSurfaceC2::Serialize() const
 
 std::shared_ptr<BezierSurfaceC2> BezierSurfaceC2::Deserialize(const json& j)
 {
-	auto surf = std::make_shared<BezierSurfaceC2>();
+	auto surface = std::make_shared<BezierSurfaceC2>();
 
-	surf->id = j.at("id").get<unsigned int>();
+	surface->id = j.at("id").get<unsigned int>();
 	if (j.contains("name"))
 	{
-		surf->name = j.at("name").get<std::string>();
+		surface->name = j.at("name").get<std::string>();
 	}
 
 	const auto& size = j.at("size");
-	surf->widthPatches = size.at("u").get<int>() - 3;
-	surf->heightPatches = size.at("v").get<int>() - 3;
+	surface->widthPatches = size.at("u").get<int>() - 3;
+	surface->heightPatches = size.at("v").get<int>() - 3;
 
 	const auto& samples = j.at("samples");
-	surf->tessLevelU = samples.at("u").get<int>();
-	surf->tessLevelV = samples.at("v").get<int>();
+	surface->tessLevelU = samples.at("u").get<int>();
+	surface->tessLevelV = samples.at("v").get<int>();
 
-	//surf->isCylinder = surf->HasDuplicates(j.at("controlPoints"));
-
-	std::vector<std::shared_ptr<Point>> points;
-	for (const auto& cp : j.at("controlPoints"))
+	for (const auto& point : j.at("controlPoints"))
 	{
-		unsigned int pid = cp.at("id").get<unsigned int>();
-		auto shape = IdManager::GetById(pid);
-		if (auto pt = std::dynamic_pointer_cast<Point>(shape))
-		{
-			points.push_back(pt);
-		}
+		unsigned int id = point.at("id").get<unsigned int>();
+		surface->controlPoints.push_back(dynamic_pointer_cast<Point>(IdManager::GetById(id)));
 	}
 
-	return surf;
+	surface->DetectConnectionType();
+	surface->SetupPatches();
+	surface->Update();
+
+	return surface;
 }

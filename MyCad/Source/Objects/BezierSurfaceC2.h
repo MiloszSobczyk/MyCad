@@ -34,21 +34,22 @@ private:
 	inline int GetColumns() const { return widthPatches + 3; };
 	inline int GetRows() const { return heightPatches + 3; };
 
-	void Render() override;
-	void Update();
+	inline void OnNotified() override { somethingChanged = true; };
+
+	void DetectConnectionType();
 
 	void SetupControlPoints(Algebra::Vector4 position, float width, float height);
 	void SetupPatches();
-
-	bool HasDuplicates(const json& controlPointsJson);
+	
+	void Render() override;
+	void Update();
 
 public:
+	std::vector<std::shared_ptr<Point>> GetUniqueControlPoints();
+
 	BezierSurfaceC2();
 	BezierSurfaceC2(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 
-	inline std::vector<std::shared_ptr<Point>> GetControlPoints() { return controlPoints; };
-
-	void OnNotified() override;
 	void Init();
 	void RenderUI() override;
 

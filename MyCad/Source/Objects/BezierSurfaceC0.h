@@ -32,9 +32,9 @@ private:
 	inline int GetColumns() const { return widthPatches * 3 + 1; };
 	inline int GetRows() const { return heightPatches * 3 + 1; };
 	
-	void DetectConnectionType();
-
 	inline void OnNotified() override { somethingChanged = true; };
+	
+	void DetectConnectionType();
 
 	void SetupControlPoints(Algebra::Vector4 position, float width, float height);
 	void SetupPatches();
