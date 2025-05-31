@@ -40,7 +40,7 @@ void BezierSurfaceC2::InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoin
 			}
 		}
 
-		patches.push_back(Patch(points));
+		patches.push_back(Patch());
 	}
 
 	UpdateSurface();
@@ -80,7 +80,7 @@ void BezierSurfaceC2::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPo
 		}
 
 		std::sort(indices.begin(), indices.end());
-		patches.push_back(Patch(points));
+		patches.push_back(Patch());
 	}
 
 	UpdateSurface();
@@ -139,7 +139,7 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float h
 			}
 		}
 
-		patches.push_back(Patch(points));
+		patches.push_back(Patch());
 	}
 
 	UpdateSurface();
@@ -199,7 +199,7 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radi
 		}
 
 		std::sort(indices.begin(), indices.end());
-		patches.push_back(Patch(points));
+		patches.push_back(Patch());
 	}
 
 	UpdateSurface();
@@ -304,43 +304,43 @@ void BezierSurfaceC2::UpdateSurface()
 		{ 0.f,     1.f / 6.f, 4.f / 6.f, 1.f / 6.f }
 	};
 
-	for (int patchIndex = 0; patchIndex < patches.size(); ++patchIndex)
-	{
-		auto& patch = patches[patchIndex];
+	//for (int patchIndex = 0; patchIndex < patches.size(); ++patchIndex)
+	//{
+	//	auto& patch = patches[patchIndex];
 
-		std::array<std::array<Algebra::Vector4, 4>, 4> P;
-		const auto& wps = patch.GetPoints();
-		for (int i = 0; i < 4; ++i)
-			for (int j = 0; j < 4; ++j)
-			{
-				auto sp = wps[i * 4 + j].lock();
-				P[i][j] = sp->GetTranslationComponent()->GetTranslation();
-			}
+	//	std::array<std::array<Algebra::Vector4, 4>, 4> P;
+	//	const auto& wps = patch.GetPoints();
+	//	for (int i = 0; i < 4; ++i)
+	//		for (int j = 0; j < 4; ++j)
+	//		{
+	//			auto sp = wps[i * 4 + j].lock();
+	//			P[i][j] = sp->GetTranslationComponent()->GetTranslation();
+	//		}
 
-		std::array<std::array<Algebra::Vector4, 4>, 4> Q;
-		for (int i = 0; i < 4; ++i)
-			for (int j = 0; j < 4; ++j)
-			{
-				Q[i][j] = Algebra::Vector4();
-				for (int k = 0; k < 4; ++k)
-					Q[i][j] += A[i][k] * P[k][j];
-			}
+	//	std::array<std::array<Algebra::Vector4, 4>, 4> Q;
+	//	for (int i = 0; i < 4; ++i)
+	//		for (int j = 0; j < 4; ++j)
+	//		{
+	//			Q[i][j] = Algebra::Vector4();
+	//			for (int k = 0; k < 4; ++k)
+	//				Q[i][j] += A[i][k] * P[k][j];
+	//		}
 
-		std::vector<Algebra::Vector4> B;
-		std::vector<std::weak_ptr<Point>> bPoints;
-		B.reserve(16);
-		for (int i = 0; i < 4; ++i)
-			for (int j = 0; j < 4; ++j)
-			{
-				Algebra::Vector4 b = Algebra::Vector4();
-				for (int k = 0; k < 4; ++k)
-					b += Q[i][k] * A[j][k];
-				bernsteinPoints[patchIndex * 16 + i * 4 + j]->GetTranslationComponent()->SetTranslation(b);
-				bPoints.push_back(bernsteinPoints[patchIndex * 16 + i * 4 + j]);
-			}
+	//	std::vector<Algebra::Vector4> B;
+	//	std::vector<std::weak_ptr<Point>> bPoints;
+	//	B.reserve(16);
+	//	for (int i = 0; i < 4; ++i)
+	//		for (int j = 0; j < 4; ++j)
+	//		{
+	//			Algebra::Vector4 b = Algebra::Vector4();
+	//			for (int k = 0; k < 4; ++k)
+	//				b += Q[i][k] * A[j][k];
+	//			bernsteinPoints[patchIndex * 16 + i * 4 + j]->GetTranslationComponent()->SetTranslation(b);
+	//			bPoints.push_back(bernsteinPoints[patchIndex * 16 + i * 4 + j]);
+	//		}
 
-		patch.SetBernsteinPoints(bPoints);
-	}
+	//	patch.SetBernsteinPoints(bPoints);
+	//}
 
 	for (auto& point : bernsteinPoints)
 	{

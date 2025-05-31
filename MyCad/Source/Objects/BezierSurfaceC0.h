@@ -10,6 +10,8 @@
 #include "Polyline.h"
 #include "ConnectionType.h"
 
+// TODO: add uniform manager
+
 class BezierSurfaceC0 : public std::enable_shared_from_this<BezierSurfaceC0>, public Shape, public IObserver
 {
 private:
@@ -17,23 +19,20 @@ private:
 
 	std::vector<std::shared_ptr<Point>> controlPoints;
 	std::vector<Patch> patches;
-	std::shared_ptr<Polyline> bernsteinPolygon;
 
 	int widthPatches = 0;
 	int heightPatches = 0;
 	ConnectionType connectionType = ConnectionType::Flat;
-	bool isCylinder = false;
 
 	int tessLevelU = 4;
 	int tessLevelV = 4;
-	bool drawBernsteinPolygon = false;
+	bool drawBernsteinPolygon = true;
 
 	bool somethingChanged = false;
 
 private:
 	inline int GetColumns() const { return widthPatches * 3 + 1; };
 	inline int GetRows() const { return heightPatches * 3 + 1; };
-	std::shared_ptr<Point> GetPointAt(int row, int col) const;
 	
 	inline void OnNotified() override { somethingChanged = true; };
 
@@ -43,8 +42,6 @@ private:
 	void Render() override;
 	void Update();
 
-	// TODO: Move to patch. Patch should have both Bernstein and DeBoor's polygon 
-	void SetupPolygon();
 
 	int HasDuplicates(const json& controlPointsJson);
 	std::vector<unsigned int> ProcessPoints(std::vector<unsigned int> ids, int connectionType);
@@ -55,8 +52,8 @@ public:
 	BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	
 	BezierSurfaceC0();
-	void InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints);
-	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints);
+	//void InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints);
+	//void InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints);
 
 	void Init();
 	

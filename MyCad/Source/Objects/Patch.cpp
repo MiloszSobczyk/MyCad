@@ -1,21 +1,31 @@
 #include "Patch.h"
 
-Patch::Patch(std::vector<std::weak_ptr<Point>>& points)
-	: points(points)
+Patch::Patch()
 {
-	polyline = std::make_shared<Polyline>();
-	polyline->SetColor(ColorPalette::Get(Color::Teal));
+	bernsteinPolygon = std::make_shared<Polyline>();
+	bernsteinPolygon->SetColor(ColorPalette::Get(Color::Teal));
+
+    deBoorPolygon = std::make_shared<Polyline>();
+    deBoorPolygon->SetColor(ColorPalette::Get(Color::Emerald));
 }
 
-void Patch::Render()
+void Patch::RenderBernsteinPolygon()
 {
-	if (polyline)
-		polyline->Render();
+    if (bernsteinPolygon)
+        bernsteinPolygon->Render();
+}
+
+void Patch::RenderDeBoorPolygon()
+{
+    if (deBoorPolygon)
+        deBoorPolygon->Render();
 }
 
 void Patch::SetBernsteinPoints(std::vector<std::weak_ptr<Point>> bernsteinPoints)
 {
-    std::vector<std::weak_ptr<Point>> polyPoints = {
+    this->bernsteinPoints = bernsteinPoints;
+
+    std::vector<std::weak_ptr<Point>> polygonPoints = {
         // Rows
         bernsteinPoints[0],
         bernsteinPoints[1],
@@ -59,9 +69,64 @@ void Patch::SetBernsteinPoints(std::vector<std::weak_ptr<Point>> bernsteinPoints
         bernsteinPoints[15]
     };
 
-	polyline->ClearPoints();
-	for (const auto polyPoint : polyPoints)
+	bernsteinPolygon->ClearPoints();
+	for (const auto polygonPoint : polygonPoints)
 	{
-		polyline->AddPoint(polyPoint);
+		bernsteinPolygon->AddPoint(polygonPoint);
 	}
+}
+
+void Patch::SetDeBoorPoints(std::vector<std::weak_ptr<Point>> deBoorPoints)
+{
+    this->deBoorPoints = deBoorPoints;
+
+    std::vector<std::weak_ptr<Point>> polygonPoints = {
+        // Rows
+        deBoorPoints[0],
+        deBoorPoints[1],
+        deBoorPoints[2],
+        deBoorPoints[3],
+
+        deBoorPoints[7],
+        deBoorPoints[6],
+        deBoorPoints[5],
+        deBoorPoints[4],
+
+        deBoorPoints[8],
+        deBoorPoints[9],
+        deBoorPoints[10],
+        deBoorPoints[11],
+
+        deBoorPoints[15],
+        deBoorPoints[14],
+        deBoorPoints[13],
+        deBoorPoints[12],
+
+        // Columns
+        deBoorPoints[12],
+        deBoorPoints[8],
+        deBoorPoints[4],
+        deBoorPoints[0],
+
+        deBoorPoints[1],
+        deBoorPoints[5],
+        deBoorPoints[9],
+        deBoorPoints[13],
+
+        deBoorPoints[14],
+        deBoorPoints[10],
+        deBoorPoints[6],
+        deBoorPoints[2],
+
+        deBoorPoints[3],
+        deBoorPoints[7],
+        deBoorPoints[11],
+        deBoorPoints[15]
+    };
+
+    deBoorPolygon->ClearPoints();
+    for (const auto polygonPoint : polygonPoints)
+    {
+        deBoorPolygon->AddPoint(polygonPoint);
+    }
 }

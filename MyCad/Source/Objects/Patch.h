@@ -9,16 +9,20 @@
 class Patch
 {
 private:
-	std::vector<std::weak_ptr<Point>> points;
-	std::shared_ptr<Polyline> polyline;
+	std::vector<std::weak_ptr<Point>> bernsteinPoints;
+	std::vector<std::weak_ptr<Point>> deBoorPoints;
+	std::shared_ptr<Polyline> bernsteinPolygon;
+	std::shared_ptr<Polyline> deBoorPolygon;
 
 public:
-	bool drawPolyline = true;
+	Patch();
 
-	Patch(std::vector<std::weak_ptr<Point>>& points);
+	void RenderBernsteinPolygon();
+	void RenderDeBoorPolygon();
 
-	void Render();
 	void SetBernsteinPoints(std::vector<std::weak_ptr<Point>> bernsteinPoints);
+	inline std::vector<std::weak_ptr<Point>> GetBernsteinPoints() { return bernsteinPoints; };
 
-	inline std::vector<std::weak_ptr<Point>> GetPoints() { return points; };
+	void SetDeBoorPoints(std::vector<std::weak_ptr<Point>> deBoorPoints);
+	inline std::vector<std::weak_ptr<Point>> GetDeBoorPoints() { return deBoorPoints; };
 };

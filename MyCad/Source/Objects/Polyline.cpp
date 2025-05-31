@@ -138,15 +138,6 @@ void Polyline::AddPoint(const std::shared_ptr<Point>& point)
 {
     if (!point) return;
 
-    for (const auto& p : points)
-    {
-        if (auto sp = p.lock())
-        {
-            if (sp == point)
-                return;
-        }
-    }
-
     points.push_back(point);
     point->AddObserver(shared_from_this());
 
@@ -158,15 +149,6 @@ void Polyline::AddPoint(const std::weak_ptr<Point>& point)
     auto spPoint = point.lock();
     if (!spPoint)
         return;
-
-    for (const auto& w : points)
-    {
-        if (auto spExisting = w.lock())
-        {
-            if (spExisting == spPoint)
-                return;
-        }
-    }
 
     points.push_back(point);
     spPoint->AddObserver(shared_from_this());

@@ -1,15 +1,9 @@
 #include "BezierSurfaceC0.h"
 #include "Managers/ShaderManager.h"
+#include "Managers/IdManager.h"
 #include "Core/App.h"
 
 #include <numbers>
-#include <Managers/IdManager.h>
-
-// ADD CHOOSING AXIS FOR CYLINDER
-// ADD MESH DRAWING
-// ADD COLORS
-// FIX POLYGON
-
 
 std::vector<std::shared_ptr<Point>> BezierSurfaceC0::GetUniqueControlPoints()
 {
@@ -132,7 +126,9 @@ void BezierSurfaceC0::SetupPatches()
 			}
 		}
 
-		patches.push_back(Patch(points));
+		Patch patch;
+		patch.SetBernsteinPoints(points);
+		patches.push_back(patch);
 	}
 }
 
@@ -145,82 +141,81 @@ BezierSurfaceC0::BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4
 
 	SetupControlPoints(position, width, height);
 	SetupPatches();
-	SetupPolygon();
 
 	Update();
 }
 
-void BezierSurfaceC0::InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints)
-{
-	isCylinder = false;
-
-	const int columns = widthPatches * 3 + 1;
-	const int rows = heightPatches * 3 + 1;
-
-	controlPoints.reserve(rows * columns);
-	controlPoints = jsonPoints;
-
-	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
-	{
-		std::vector<std::weak_ptr<Point>> points;
-		std::vector<std::size_t> indices;
-
-		int startingI = patchIndex / widthPatches;
-		int startingJ = patchIndex % widthPatches;
-
-		for (int i = 0; i < 4; ++i)
-		{
-			for (int j = 0; j < 4; ++j)
-			{
-				points.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
-			}
-		}
-
-		patches.push_back(Patch(points));
-	}
-
-	Update();
-	SetupPolygon();
-}
-
-void BezierSurfaceC0::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints)
-{
-	const int columns = widthPatches * 3;
-	const int rows = heightPatches * 3 + 1;
-
-	controlPoints.reserve(rows * columns);
-
-	for (int i = 0; i < jsonPoints.size(); ++i)
-	{
-		if ((i - columns) % (columns + 1) != 0)
-		{
-			controlPoints.push_back(jsonPoints[i]);
-		}
-	}
-
-	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
-	{
-		std::vector<std::weak_ptr<Point>> points;
-		std::vector<std::size_t> indices;
-
-		int startingI = patchIndex / widthPatches;
-		int startingJ = patchIndex % widthPatches;
-
-		for (int i = 0; i < 4; ++i)
-		{
-			for (int j = 0; j < 4; ++j)
-			{
-				int index = (startingI * 3 + i) * (columns + 1) + (startingJ * 3 + j) % (columns + 1);
-				points.push_back(jsonPoints[index]);
-			}
-		}
-
-		patches.push_back(Patch(points));
-	}
-
-	Update();
-	SetupPolygon();
-}
+//void BezierSurfaceC0::InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints)
+//{
+//	isCylinder = false;
+//
+//	const int columns = widthPatches * 3 + 1;
+//	const int rows = heightPatches * 3 + 1;
+//
+//	controlPoints.reserve(rows * columns);
+//	controlPoints = jsonPoints;
+//
+//	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
+//	{
+//		std::vector<std::weak_ptr<Point>> points;
+//		std::vector<std::size_t> indices;
+//
+//		int startingI = patchIndex / widthPatches;
+//		int startingJ = patchIndex % widthPatches;
+//
+//		for (int i = 0; i < 4; ++i)
+//		{
+//			for (int j = 0; j < 4; ++j)
+//			{
+//				points.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
+//			}
+//		}
+//
+//		patches.push_back(Patch(points));
+//	}
+//
+//	Update();
+//	SetupPolygon();
+//}
+//
+//void BezierSurfaceC0::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints)
+//{
+//	const int columns = widthPatches * 3;
+//	const int rows = heightPatches * 3 + 1;
+//
+//	controlPoints.reserve(rows * columns);
+//
+//	for (int i = 0; i < jsonPoints.size(); ++i)
+//	{
+//		if ((i - columns) % (columns + 1) != 0)
+//		{
+//			controlPoints.push_back(jsonPoints[i]);
+//		}
+//	}
+//
+//	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
+//	{
+//		std::vector<std::weak_ptr<Point>> points;
+//		std::vector<std::size_t> indices;
+//
+//		int startingI = patchIndex / widthPatches;
+//		int startingJ = patchIndex % widthPatches;
+//
+//		for (int i = 0; i < 4; ++i)
+//		{
+//			for (int j = 0; j < 4; ++j)
+//			{
+//				int index = (startingI * 3 + i) * (columns + 1) + (startingJ * 3 + j) % (columns + 1);
+//				points.push_back(jsonPoints[index]);
+//			}
+//		}
+//
+//		patches.push_back(Patch(points));
+//	}
+//
+//	Update();
+//	SetupPolygon();
+//}
 
 void BezierSurfaceC0::Init()
 {
@@ -279,7 +274,10 @@ void BezierSurfaceC0::Render()
 
 	if (drawBernsteinPolygon)
 	{
-		bernsteinPolygon->Render();
+		for (auto& patch : patches)
+		{
+			patch.RenderBernsteinPolygon();
+		}
 	}
 }
 
@@ -289,7 +287,7 @@ void BezierSurfaceC0::Update()
 
 	for (auto& patch : patches)
 	{
-		for (auto weakPoint : patch.GetPoints())
+		for (auto weakPoint : patch.GetBernsteinPoints())
 		{
 			if (auto sharedPoint = weakPoint.lock())
 			{
@@ -301,12 +299,6 @@ void BezierSurfaceC0::Update()
 	}
 
 	renderer.SetVertices(vertices);
-}
-
-std::shared_ptr<Point> BezierSurfaceC0::GetPointAt(int row, int col) const
-{
-	int columns = widthPatches * 3 + (isCylinder ? 0 : 1);
-	return controlPoints[(row * columns + col) % controlPoints.size()];
 }
 
 // 0 - no duplicates
@@ -358,85 +350,6 @@ std::vector<unsigned int> BezierSurfaceC0::ProcessPoints(std::vector<unsigned in
 	return ids;
 }
 
-void BezierSurfaceC0::SetupPolygon()
-{
-	std::vector<std::weak_ptr<Point>> points;
-
-	if (!isCylinder)
-	{
-		const int C = widthPatches * 3 + 1;
-		const int R = heightPatches * 3 + 1;
-		points.reserve(R * C + R * C);
-
-		for (int i = 0; i < R; ++i)
-		{
-			if (i % 2 == 0)
-			{
-				for (int j = 0; j < C; ++j)
-					points.push_back(GetPointAt(i, j));
-			}
-			else
-			{
-				for (int j = C - 1; j >= 0; --j)
-					points.push_back(GetPointAt(i, j));
-			}
-		}
-
-		int startJ = widthPatches % 2 == 0 ? C - 1 : 0;
-		int changeJ = widthPatches % 2 == 0 ? -1 : 1;
-
-		for (int j = startJ; j < C && j >= 0; j += changeJ)
-		{
-			if (j % 2 == 0)
-			{
-				for (int i = 0; i < R; ++i)
-					points.push_back(GetPointAt(i, j));
-			}
-			else
-			{
-				for (int i = R - 1; i >= 0; --i)
-					points.push_back(GetPointAt(i, j));
-			}
-		}
-	}
-	else 
-	{
-		const int C = widthPatches * 3;
-		const int R = heightPatches * 3 + 1;
-		points.reserve(R * C + R * C);
-		std::vector<int> indices;
-
-		for (int i = 0; i < R; ++i)
-		{
-			for (int j = 0; j < C + 1; ++j)
-			{
-				points.push_back(GetPointAt(i, j % C));
-			}
-		}
-
-		for (int j = 1; j < C; ++j)
-		{
-			if (j % 2 == 0)
-			{
-				for (int i = 0; i < R; ++i)
-				{
-					points.push_back(GetPointAt(i, j));
-				}
-			}
-			else
-			{
-				for (int i = R - 1; i >= 0; --i)
-				{
-					points.push_back(GetPointAt(i, j));
-				}
-			}
-		}
-	}
-
-	bernsteinPolygon = std::make_shared<Polyline>(points);
-	bernsteinPolygon->SetColor(ColorPalette::Get(Color::Teal));
-	bernsteinPolygon->InitFromPoints();
-}
 
 json BezierSurfaceC0::Serialize() const
 {
@@ -457,9 +370,7 @@ json BezierSurfaceC0::Serialize() const
 	{
 		for (int j = 0; j < cols; ++j)
 		{
-			int jCole = isCylinder ? j % (widthPatches * 3) : j;
-			auto point = GetPointAt(i, jCole);
-			cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
+
 		}
 	}
 	j["controlPoints"] = cp;
@@ -495,9 +406,7 @@ std::shared_ptr<BezierSurfaceC0> BezierSurfaceC0::Deserialize(const json& j)
 
 	auto controlPointsJson = j.at("controlPoints");
 
-	int connectionType = surf->HasDuplicates(controlPointsJson);
-
-	surf->isCylinder = connectionType != 0;
+	int connectionType1 = surf->HasDuplicates(controlPointsJson);
 
 	std::vector<unsigned int> ids;
 
@@ -507,22 +416,13 @@ std::shared_ptr<BezierSurfaceC0> BezierSurfaceC0::Deserialize(const json& j)
 		ids.push_back(pid);
 	}
 
-	ids = surf->ProcessPoints(ids, connectionType);
+	ids = surf->ProcessPoints(ids, connectionType1);
 
 	std::vector<std::shared_ptr<Point>> points;
 
 	for (const auto& id : ids)
 	{
 		points.push_back(dynamic_pointer_cast<Point>(IdManager::GetById(id)));
-	}
-
-	if (surf->isCylinder)
-	{
-		surf->InitAsCylinder(points);
-	}
-	else
-	{
-		surf->InitNormally(points);
 	}
 
 	return surf;
