@@ -463,7 +463,7 @@ void App::DisplayAddSurfacePopup()
 				std::shared_ptr<BezierSurfaceC0> bezierSurface;
 				if (!bezierParams.isCylinder)
 				{
-					bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(),
+					bezierSurface = std::make_shared<BezierSurfaceC0>(ConnectionType::Flat, axisCursor->GetTranslationComponent()->GetTranslation(),
 						bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
 				}
 				else

@@ -2,6 +2,10 @@
 
 int Shape::idCounter = 0;
 
+void Shape::Update()
+{
+}
+
 Shape::Shape()
     : id(idCounter++), name("Shape" + std::to_string(id))
 {

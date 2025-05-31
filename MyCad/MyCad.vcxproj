@@ -212,6 +212,7 @@
     <ClInclude Include="Source\Objects\BezierSurfaceC2.h" />
     <ClInclude Include="Source\Objects\Components\ObservableTranslationComponent.h" />
     <ClInclude Include="Source\Objects\Components\Transformations.h" />
+    <ClInclude Include="Source\Objects\ConnectionType.h" />
     <ClInclude Include="Source\Objects\InterpolatingCurve.h" />
     <ClInclude Include="Source\Objects\Patch.h" />
     <ClInclude Include="Source\Objects\Point.h" />

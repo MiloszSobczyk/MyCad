@@ -18,6 +18,10 @@ protected:
     std::string name;
     Algebra::Vector4 color;
 
+    // TODO: make us of those lines in the future, replacing all the UpdateSurface methods and stuff
+    //bool somethingChanged = false;
+    virtual void Update();
+
 public:
     Shape();
     virtual ~Shape() = default;
