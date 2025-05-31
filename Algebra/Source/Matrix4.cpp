@@ -261,8 +261,8 @@ StereoscopicMatrices Matrix4::StereoscopicProjection(float aspect, float f, floa
 	};
 
 	StereoscopicMatrices matrices;
-	matrices.left = makeOffAxis(lL, rL) * Translation(d * 0.5f, 0.f, 0.f);
-	matrices.right = makeOffAxis(lR, rR) * Translation(-d * 0.5f, 0.f, 0.f);;
+	matrices.left = makeOffAxis(lL, rL) * Translation(-d * 0.5f, 0.f, 0.f);
+	matrices.right = makeOffAxis(lR, rR) * Translation(d * 0.5f, 0.f, 0.f);;
 	
 	return matrices;
 }
