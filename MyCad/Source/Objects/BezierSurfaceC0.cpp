@@ -11,6 +11,29 @@
 // FIX POLYGON
 
 
+std::vector<std::shared_ptr<Point>> BezierSurfaceC0::GetUniqueControlPoints()
+{
+	std::vector<std::shared_ptr<Point>> unique;
+	unique.reserve(controlPoints.size());
+
+	std::unordered_set<int> seenIds;
+	seenIds.reserve(controlPoints.size());
+
+	for (const auto& p : controlPoints)
+	{
+		if (!p)
+			continue;
+
+		int id = p->GetId();
+		if (seenIds.insert(id).second)
+		{
+			unique.push_back(p);
+		}
+	}
+
+	return unique;
+}
+
 BezierSurfaceC0::BezierSurfaceC0()
 	: renderer(VertexDataType::PositionVertexData)
 {
@@ -201,7 +224,7 @@ void BezierSurfaceC0::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPo
 
 void BezierSurfaceC0::Init()
 {
-	for (auto point : controlPoints)
+	for (auto point : GetUniqueControlPoints())
 	{
 		point->Init();
 		point->AddObserver(shared_from_this());
@@ -240,7 +263,6 @@ void BezierSurfaceC0::Render()
 
 	shader->Unbind();
 
-
 	shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierSurface2);
 	
 	shader->Bind();
@@ -249,8 +271,6 @@ void BezierSurfaceC0::Render()
 	shader->SetUniformInt("u_tessLevelU", tessLevelU);
 	shader->SetUniformInt("u_tessLevelV", tessLevelV);
 	
-	renderer.SetPatchParameters(16);
-
 	renderer.Render(GL_PATCHES);
 	
 	shader->Unbind();

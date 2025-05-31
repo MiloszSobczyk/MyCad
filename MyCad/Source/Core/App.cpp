@@ -461,7 +461,7 @@ void App::DisplayAddSurfacePopup()
 				bezierSurface->Init();
 				shapes.push_back(bezierSurface);
 
-				auto points = bezierSurface->GetControlPoints();
+				auto points = bezierSurface->GetUniqueControlPoints();
 				for (auto point : points)
 				{
 					shapes.push_back(point);

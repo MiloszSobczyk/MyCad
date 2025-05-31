@@ -50,14 +50,13 @@ private:
 	std::vector<unsigned int> ProcessPoints(std::vector<unsigned int> ids, int connectionType);
 
 public:
-	// TODO: Change to GetUniqueControlPoints
-	inline std::vector<std::shared_ptr<Point>> GetControlPoints() { return controlPoints; };
+	std::vector<std::shared_ptr<Point>> GetUniqueControlPoints();
 
+	BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
+	
 	BezierSurfaceC0();
 	void InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints);
 	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints);
-
-	BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 
 	void Init();
 	
