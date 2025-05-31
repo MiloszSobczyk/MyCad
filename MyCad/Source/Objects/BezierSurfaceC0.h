@@ -10,8 +10,6 @@
 #include "Polyline.h"
 #include "ConnectionType.h"
 
-// TODO: add uniform manager
-
 class BezierSurfaceC0 : public std::enable_shared_from_this<BezierSurfaceC0>, public Shape, public IObserver
 {
 private:

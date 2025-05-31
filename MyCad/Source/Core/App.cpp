@@ -439,9 +439,9 @@ void App::DisplayAddSurfacePopup()
 
 			if (bezierParams.C2)
 			{
-				std::shared_ptr<BezierSurfaceC2> bezierSurface;
-				bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(), 
-					bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
+				std::shared_ptr<BezierSurfaceC2> bezierSurface = std::make_shared<BezierSurfaceC2>(bezierParams.connectionType,
+					axisCursor->GetTranslationComponent()->GetTranslation(), bezierParams.width, bezierParams.height,
+					bezierParams.widthPatches, bezierParams.heightPatches);
 
 				bezierSurface->Init();
 				shapes.push_back(bezierSurface);

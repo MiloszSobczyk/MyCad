@@ -122,7 +122,6 @@ void BezierSurfaceC0::SetupPatches()
 	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
 	{
 		std::vector<std::weak_ptr<Point>> points;
-		std::vector<std::size_t> indices;
 
 		int startingI = patchIndex / widthPatches;
 		int startingJ = patchIndex % widthPatches;

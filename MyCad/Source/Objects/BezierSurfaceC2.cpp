@@ -5,13 +5,73 @@
 #include <numbers>
 #include <Managers/IdManager.h>
 
-// ADD CHOOSING AXIS FOR CYLINDER
-// ADD MESH DRAWING
+void BezierSurfaceC2::SetupControlPoints(Algebra::Vector4 position, float width, float height)
+{
+	controlPoints.reserve(GetRows() * GetColumns());
 
+	if (connectionType == ConnectionType::Flat)
+	{
+		float dx = width / static_cast<float>(GetColumns() - 1);
+		float dy = height / static_cast<float>(GetRows() - 1);
+
+		Algebra::Vector4 startingPosition = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
+
+		for (int i = 0; i < GetRows(); ++i)
+		{
+			for (int j = 0; j < GetColumns(); ++j)
+			{
+				auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
+				auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
+
+				auto point = std::make_shared<Point>("SurfacePoint_");
+				point->GetTranslationComponent()->SetTranslation(startingPosition + widthOffset + heightOffset);
+
+				controlPoints.push_back(point);
+			}
+		}
+	}
+}
+
+void BezierSurfaceC2::SetupPatches()
+{
+	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
+	{
+		std::vector<std::weak_ptr<Point>> points;
+
+		int startingI = patchIndex / widthPatches;
+		int startingJ = patchIndex % widthPatches;
+
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				points.push_back(controlPoints[(startingI + i) * GetColumns() + startingJ + j]);
+			}
+		}
+
+		Patch patch;
+		patch.SetBernsteinPoints(points);
+		patches.push_back(patch);
+	}
+}
 
 BezierSurfaceC2::BezierSurfaceC2()
 	: renderer(VertexDataType::PositionVertexData)
 {
+	name = "BezierSurfaceC2_" + std::to_string(id);
+	color = ColorPalette::Get(Color::Purple);
+}
+
+BezierSurfaceC2::BezierSurfaceC2(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, 
+	int widthPatches, int heightPatches)
+	: renderer(VertexDataType::PositionVertexData), connectionType(connectionType), widthPatches(widthPatches), heightPatches(heightPatches)
+{
+	name = "BezierSurfaceC2_" + std::to_string(id);
+	color = ColorPalette::Get(Color::Purple);
+
+	SetupControlPoints(position, width, height);
+	SetupPatches();
+	Update();
 }
 
 void BezierSurfaceC2::InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints)
@@ -43,7 +103,7 @@ void BezierSurfaceC2::InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoin
 		patches.push_back(Patch());
 	}
 
-	UpdateSurface();
+	Update();
 	SetupPolygon();
 }
 
@@ -83,66 +143,7 @@ void BezierSurfaceC2::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPo
 		patches.push_back(Patch());
 	}
 
-	UpdateSurface();
-	SetupPolygon();
-}
-
-BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches)
-	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(false)
-{
-	name = "BezierSurfaceC2_" + std::to_string(id);
-
-	const int columns = widthPatches + 3;
-	const int rows = heightPatches + 3;
-
-	float dx = width / static_cast<float>(columns - 1);
-	float dy = height / static_cast<float>(rows - 1);
-
-	Algebra::Vector4 startingPosition = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
-
-	controlPoints.reserve(rows * columns);
-
-	// Width is along X axis and height is along Y axis, Z axis is flat
-	// storing points by columns then rows, like in matrix
-	// 0 1 2 3
-	// 4 5 6 7
-
-	for (int i = 0; i < rows; ++i)
-	{
-		for (int j = 0; j < columns; ++j)
-		{
-			auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
-			auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
-
-			auto pos = startingPosition + widthOffset + heightOffset;
-
-			auto point = std::make_shared<Point>("SurfacePoint_");
-			point->GetTranslationComponent()->SetTranslation(startingPosition + widthOffset + heightOffset);
-
-			controlPoints.push_back(point);
-		}
-	}
-
-	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
-	{
-		std::vector<std::weak_ptr<Point>> points;
-		std::vector<std::size_t> indices;
-
-		int startingI = patchIndex / widthPatches;
-		int startingJ = patchIndex % widthPatches;
-
-		for (int i = 0; i < 4; ++i)
-		{
-			for (int j = 0; j < 4; ++j)
-			{
-				points.push_back(controlPoints[(startingI + i) * columns + startingJ + j]);
-			}
-		}
-
-		patches.push_back(Patch());
-	}
-
-	UpdateSurface();
+	Update();
 	SetupPolygon();
 }
 
@@ -202,7 +203,7 @@ BezierSurfaceC2::BezierSurfaceC2(Algebra::Vector4 position, int axis, float radi
 		patches.push_back(Patch());
 	}
 
-	UpdateSurface();
+	Update();
 	SetupPolygon();
 }
 
@@ -235,7 +236,7 @@ void BezierSurfaceC2::Render()
 {
 	if (somethingChanged)
 	{
-		UpdateSurface();
+		Update();
 		somethingChanged = false;
 	}
 
@@ -283,7 +284,7 @@ void BezierSurfaceC2::Render()
 	//}
 }
 
-void BezierSurfaceC2::UpdateSurface()
+void BezierSurfaceC2::Update()
 {
 	if (bernsteinPoints.empty())
 	{
@@ -353,6 +354,7 @@ void BezierSurfaceC2::UpdateSurface()
 
 	SetupDeBoorPolygon();
 }
+
 
 bool BezierSurfaceC2::HasDuplicates(const json& controlPointsJson)
 {

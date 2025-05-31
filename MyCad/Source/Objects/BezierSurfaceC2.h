@@ -8,37 +8,50 @@
 #include "Shape.h"
 #include "Patch.h"
 #include "Polyline.h"
+#include "ConnectionType.h"
 
 class BezierSurfaceC2 : public std::enable_shared_from_this<BezierSurfaceC2>, public Shape, public IObserver
 {
 private:
 	Renderer<PositionVertexData> renderer;
+
 	std::vector<std::shared_ptr<Point>> controlPoints;
-	std::vector<Patch> patches;
 	std::vector<std::shared_ptr<Point>> bernsteinPoints;
+	std::vector<Patch> patches;
+
 	std::shared_ptr<Polyline> bernsteinPolygon;
 	std::shared_ptr<Polyline> deBoorPolygon;
-	bool somethingChanged = false;
 
-	int widthPatches;
-	int heightPatches;
-	bool isCylinder;
+	int widthPatches = 0;
+	int heightPatches = 0;
+	ConnectionType connectionType = ConnectionType::Flat;
+	bool isCylinder = false;
 
 	int tessLevelU = 4;
 	int tessLevelV = 4;
 	bool drawBernsteinPolygon = false;
 	bool drawDeBoorPolygon = false;
+	
+	bool somethingChanged = false;
+
+private:
+	inline int GetColumns() const { return widthPatches + 3; };
+	inline int GetRows() const { return heightPatches + 3; };
 
 	void Render() override;
-	void UpdateSurface();
+	void Update();
+
+	void SetupControlPoints(Algebra::Vector4 position, float width, float height);
+	void SetupPatches();
 
 	bool HasDuplicates(const json& controlPointsJson);
 
 public:
 	BezierSurfaceC2();
+	BezierSurfaceC2(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
+
 	void InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints);
 	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints);
-	BezierSurfaceC2(Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	// Axes: 0 - X, 1 - Y, 2 - Z
 	BezierSurfaceC2(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches);
 
