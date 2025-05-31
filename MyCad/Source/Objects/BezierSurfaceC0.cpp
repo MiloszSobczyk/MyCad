@@ -18,29 +18,75 @@ BezierSurfaceC0::BezierSurfaceC0()
 	color = ColorPalette::Get(Color::Purple);
 }
 
-
 void BezierSurfaceC0::SetupControlPoints(Algebra::Vector4 position, float width, float height)
 {
-	float dx = width / static_cast<float>(GetColumns() - 1);
-	float dy = height / static_cast<float>(GetRows() - 1);
-
-	Algebra::Vector4 startingPosition = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
-
 	controlPoints.reserve(GetRows() * GetColumns());
 
-	for (int i = 0; i < GetRows(); ++i)
+	if (connectionType == ConnectionType::Flat)
 	{
+		float dx = width / static_cast<float>(GetColumns() - 1);
+		float dy = height / static_cast<float>(GetRows() - 1);
+
+		Algebra::Vector4 startingPosition = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
+
+		for (int i = 0; i < GetRows(); ++i)
+		{
+			for (int j = 0; j < GetColumns(); ++j)
+			{
+				auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
+				auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
+
+				auto point = std::make_shared<Point>("SurfacePoint_");
+				point->GetTranslationComponent()->SetTranslation(startingPosition + widthOffset + heightOffset);
+
+				controlPoints.push_back(point);
+			}
+		}
+	}
+	else if (connectionType == ConnectionType::Columns)
+	{
+		float dHeight = height / static_cast<float>(GetRows() - 1);
+		float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(GetColumns() - 1);
+
+		Algebra::Vector4 startingPosition = position - Algebra::Vector4(0.f, 0.f, height / 2.f);
+
+		for (int i = 0; i < GetRows(); ++i)
+		{
+			for (int j = 0; j < GetColumns() - 1; ++j)
+			{
+				Algebra::Vector4 heightOffset = Algebra::Vector4(0.f, 0.f, i * dHeight);
+				Algebra::Vector4 radiusOffset = Algebra::Matrix4::RotationZ(dAngle * j) * Algebra::Vector4(width / 2.f, 0.f, 0.f);
+
+				auto point = std::make_shared<Point>("SurfacePoint_");
+				point->GetTranslationComponent()->SetTranslation(startingPosition + heightOffset + radiusOffset);
+				controlPoints.push_back(point);
+			}
+			controlPoints.push_back(controlPoints[i * GetColumns()]);
+		}
+	}
+	else if (connectionType == ConnectionType::Rows)
+	{
+		float dHeight = height / static_cast<float>(GetColumns() - 1);
+		float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(GetRows() - 1);
+
+		Algebra::Vector4 startingPosition = position - Algebra::Vector4(height / 2.f, 0.f, 0.f);
+
+		for (int i = 0; i < GetRows() - 1; ++i)
+		{
+			for (int j = 0; j < GetColumns(); ++j)
+			{
+				Algebra::Vector4 radiusOffset = Algebra::Matrix4::RotationX(dAngle * i) * Algebra::Vector4(0.f, width / 2.f, 0.f);
+				Algebra::Vector4 heightOffset = Algebra::Vector4(j * dHeight, 0.f, 0.f);
+
+				auto point = std::make_shared<Point>("SurfacePoint_");
+				point->GetTranslationComponent()->SetTranslation(startingPosition + heightOffset + radiusOffset);
+				controlPoints.push_back(point);
+			}
+		}
+
 		for (int j = 0; j < GetColumns(); ++j)
 		{
-			auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
-			auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
-
-			auto pos = startingPosition + widthOffset + heightOffset;
-
-			auto point = std::make_shared<Point>("SurfacePoint_");
-			point->GetTranslationComponent()->SetTranslation(startingPosition + widthOffset + heightOffset);
-
-			controlPoints.push_back(point);
+			controlPoints.push_back(controlPoints[j]);
 		}
 	}
 }
@@ -79,64 +125,6 @@ BezierSurfaceC0::BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4
 	SetupPolygon();
 
 	Update();
-}
-
-BezierSurfaceC0::BezierSurfaceC0(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches)
-	: renderer(VertexDataType::PositionVertexData), widthPatches(widthPatches), heightPatches(heightPatches), isCylinder(true)
-{
-	name = "BezierSurfaceC0_" + std::to_string(id);
-
-	const int columns = widthPatches * 3;
-	const int rows = heightPatches * 3 + 1;
-
-	float dHeight = height / static_cast<float>(heightPatches * 3);
-	float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(columns);
-
-	Algebra::Vector4 startingPosition = position - Algebra::Vector4(0.f, 0.f, height / 2.f);
-
-	controlPoints.reserve(rows * columns);
-
-	// Width is along X axis and height is along Y axis, Z axis is flat
-	// storing points by columns then rows, like in matrix
-	// 0 1 2 3
-	// 4 5 6 7
-
-	for (int i = 0; i < rows; ++i)
-	{
-		for (int j = 0; j < columns; ++j)
-		{
-			Algebra::Vector4 heightOffset = Algebra::Vector4(0.f, 0.f, i * dHeight);
-			Algebra::Vector4 radiusOffset = Algebra::Matrix4::RotationZ(dAngle * j) * Algebra::Vector4(radius, 0.f, 0.f);
-			
-			auto point = std::make_shared<Point>("SurfacePoint_");
-			point->GetTranslationComponent()->SetTranslation(startingPosition + heightOffset + radiusOffset);
-
-			controlPoints.push_back(point);
-		}
-	}
-
-	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
-	{
-		std::vector<std::weak_ptr<Point>> points;
-		std::vector<std::size_t> indices;
-
-		int startingI = patchIndex / widthPatches;
-		int startingJ = patchIndex % widthPatches;
-
-		for (int i = 0; i < 4; ++i)
-		{
-			for (int j = 0; j < 4; ++j)
-			{
-				int index = (startingI * 3 + i) * columns + (startingJ * 3 + j) % columns;
-				points.push_back(controlPoints[index]);
-			}
-		}
-
-		patches.push_back(Patch(points));
-	}
-
-	Update();
-	SetupPolygon();
 }
 
 void BezierSurfaceC0::InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints)
@@ -281,13 +269,13 @@ void BezierSurfaceC0::Update()
 
 	for (auto& patch : patches)
 	{
-		for (auto wp : patch.GetPoints())
+		for (auto weakPoint : patch.GetPoints())
 		{
-			if (auto sp = wp.lock())
+			if (auto sharedPoint = weakPoint.lock())
 			{
-				auto p = sp->GetTranslationComponent()->GetTranslation();
-				p.w = 1.f;
-				vertices.push_back(PositionVertexData{ .Position = p });
+				auto position = sharedPoint->GetTranslationComponent()->GetTranslation();
+				position.w = 1.f;
+				vertices.push_back(PositionVertexData{ .Position = position });
 			}
 		}
 	}

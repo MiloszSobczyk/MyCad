@@ -32,10 +32,9 @@ struct BezierSurfaceParams
 {
 	bool showPopup = false;
 	bool C2 = false;
-	bool isCylinder = false;
+	ConnectionType connectionType = ConnectionType::Flat;
 	float width = 20.f;
 	float height = 20.f;
-	float radius = 10.f;
 	int axis = 1;
 	int widthPatches = 1;
 	int heightPatches = 1;

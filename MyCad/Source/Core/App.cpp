@@ -400,23 +400,25 @@ void App::DisplayAddSurfacePopup()
 	if (ImGui::BeginPopupModal("Edit Bezier Surface", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::Checkbox("Ensure C2 continuity", &bezierParams.C2);
-		ImGui::Checkbox("Is Cylinder", &bezierParams.isCylinder);
 
-		if (!bezierParams.isCylinder)
+		static const char* connectionItems[] = { "Flat", "Rows", "Columns" };
+		int current = static_cast<int>(bezierParams.connectionType);
+		if (ImGui::Combo("Connection Type", &current, connectionItems, IM_ARRAYSIZE(connectionItems))) 
+		{
+			bezierParams.connectionType = static_cast<ConnectionType>(current);
+		}
+
+		if (bezierParams.connectionType == ConnectionType::Flat)
 		{
 			ImGui::InputFloat("Width", &bezierParams.width);
 			if (bezierParams.width < 1.0f) bezierParams.width = 1.0f;
 			if (bezierParams.width > 1000.0f) bezierParams.width = 1000.0f;
 		}
-
-		if (bezierParams.isCylinder)
+		else
 		{
-			//const char* axes[] = { "Y", "X", "Z" };
-			//ImGui::Combo("Axis", &bezierParams.axis, axes, IM_ARRAYSIZE(axes));
-
-			ImGui::InputFloat("Radius", &bezierParams.radius);
-			if (bezierParams.width < 1.0f) bezierParams.radius = 1.0f;
-			if (bezierParams.width > 1000.0f) bezierParams.radius = 1000.0f;
+			ImGui::InputFloat("Diameter", &bezierParams.width);
+			if (bezierParams.width < 1.0f) bezierParams.width = 1.0f;
+			if (bezierParams.width > 1000.0f) bezierParams.width = 1000.0f;
 		}
 
 		ImGui::InputFloat("Height", &bezierParams.height);
@@ -438,16 +440,8 @@ void App::DisplayAddSurfacePopup()
 			if (bezierParams.C2)
 			{
 				std::shared_ptr<BezierSurfaceC2> bezierSurface;
-				if (!bezierParams.isCylinder)
-				{
-					bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(), 
-						bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
-				}
-				else
-				{
-					bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(),
-						bezierParams.axis, bezierParams.radius, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
-				}
+				bezierSurface = std::make_shared<BezierSurfaceC2>(axisCursor->GetTranslationComponent()->GetTranslation(), 
+					bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
 
 				bezierSurface->Init();
 				shapes.push_back(bezierSurface);
@@ -460,17 +454,9 @@ void App::DisplayAddSurfacePopup()
 			}
 			else
 			{
-				std::shared_ptr<BezierSurfaceC0> bezierSurface;
-				if (!bezierParams.isCylinder)
-				{
-					bezierSurface = std::make_shared<BezierSurfaceC0>(ConnectionType::Flat, axisCursor->GetTranslationComponent()->GetTranslation(),
-						bezierParams.width, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
-				}
-				else
-				{
-					bezierSurface = std::make_shared<BezierSurfaceC0>(axisCursor->GetTranslationComponent()->GetTranslation(),
-						bezierParams.axis, bezierParams.radius, bezierParams.height, bezierParams.widthPatches, bezierParams.heightPatches);
-				}
+				std::shared_ptr<BezierSurfaceC0> bezierSurface = std::make_shared<BezierSurfaceC0>(bezierParams.connectionType, 
+					axisCursor->GetTranslationComponent()->GetTranslation(), bezierParams.width, bezierParams.height, 
+					bezierParams.widthPatches, bezierParams.heightPatches);
 
 				bezierSurface->Init();
 				shapes.push_back(bezierSurface);

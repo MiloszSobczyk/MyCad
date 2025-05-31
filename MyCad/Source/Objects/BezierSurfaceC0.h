@@ -40,17 +40,17 @@ private:
 	void SetupControlPoints(Algebra::Vector4 position, float width, float height);
 	void SetupPatches();
 
-	// Move to patch. Patch should have both Bernstein and DeBoor's polygon 
-	void SetupPolygon();
-
 	void Render() override;
 	void Update();
 
+	// TODO: Move to patch. Patch should have both Bernstein and DeBoor's polygon 
+	void SetupPolygon();
 
 	int HasDuplicates(const json& controlPointsJson);
 	std::vector<unsigned int> ProcessPoints(std::vector<unsigned int> ids, int connectionType);
 
 public:
+	// TODO: Change to GetUniqueControlPoints
 	inline std::vector<std::shared_ptr<Point>> GetControlPoints() { return controlPoints; };
 
 	BezierSurfaceC0();
@@ -58,8 +58,6 @@ public:
 	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints);
 
 	BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
-	// Axes: 0 - X, 1 - Y, 2 - Z
-	BezierSurfaceC0(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches);
 
 	void Init();
 	
