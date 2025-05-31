@@ -1,5 +1,7 @@
 #include "Serializer.h"
 
+#include <nlohmann/json.hpp>
+
 json Serializer::Serialize(const Algebra::Quaternion& q)
 {
 	auto normQ = q.Normalize();

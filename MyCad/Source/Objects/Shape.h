@@ -2,14 +2,11 @@
 
 #include <string>
 #include <imgui/imgui.h>
-#include <nlohmann/json.hpp>
 
 #include "Algebra.h"
 #include "Components/Transformations.h"
 #include "Utils/ColorPalette.h"
 #include "Utils/Serializer.h"
-
-using json = nlohmann::json;
 
 class Shape
 {

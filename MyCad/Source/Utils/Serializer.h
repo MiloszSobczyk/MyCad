@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Algebra.h"
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 using json = nlohmann::json;
 
