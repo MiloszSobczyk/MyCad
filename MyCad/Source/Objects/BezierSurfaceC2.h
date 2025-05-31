@@ -19,13 +19,9 @@ private:
 	std::vector<std::shared_ptr<Point>> bernsteinPoints;
 	std::vector<Patch> patches;
 
-	std::shared_ptr<Polyline> bernsteinPolygon;
-	std::shared_ptr<Polyline> deBoorPolygon;
-
 	int widthPatches = 0;
 	int heightPatches = 0;
 	ConnectionType connectionType = ConnectionType::Flat;
-	bool isCylinder = false;
 
 	int tessLevelU = 4;
 	int tessLevelV = 4;
@@ -55,11 +51,6 @@ public:
 	void OnNotified() override;
 	void Init();
 	void RenderUI() override;
-
-	std::shared_ptr<Point> GetPointAt(int row, int col) const;
-	std::shared_ptr<Point> GetBernsteinPointAt(int row, int col);
-	void SetupPolygon();
-	void SetupDeBoorPolygon();
 
 	json Serialize() const override;
 	static std::shared_ptr<BezierSurfaceC2> Deserialize(const json& j);

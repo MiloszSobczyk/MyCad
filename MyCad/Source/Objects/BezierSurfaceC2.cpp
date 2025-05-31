@@ -270,8 +270,6 @@ void BezierSurfaceC2::Update()
 	}
 
 	renderer.SetVertices(vertices);
-
-	SetupDeBoorPolygon();
 }
 
 
@@ -291,210 +289,6 @@ bool BezierSurfaceC2::HasDuplicates(const json& controlPointsJson)
 	return false;
 }
 
-std::shared_ptr<Point> BezierSurfaceC2::GetPointAt(int row, int col) const
-{
-	int columns = widthPatches + 2 + (isCylinder ? 0 : 1);
-	return controlPoints[(row * columns + col) % controlPoints.size()];
-}
-
-std::shared_ptr<Point> BezierSurfaceC2::GetBernsteinPointAt(int row, int col)
-{
-	int columns = widthPatches * 3 + (isCylinder ? 0 : 1);
-
-	int patchRow = row / 4;
-	int patchCol = col / 4;
-
-	if (col >= 4)
-	{
-		patchCol = (col + 1) / 4;
-	}
-	if (row >= 4)
-	{
-		patchRow = (row + 1) / 4;
-	}
-
-
-	int patchIndex = patchRow * widthPatches + patchCol;
-
-	int inPatchRow = row;
-	int inPatchColumn = col;
-
-	if (patchCol != 0)
-	{
-		inPatchColumn = (col - 1) % 3 + 1;
-	}
-	if (patchRow != 0)
-	{
-		inPatchRow = (row - 1) % 3 + 1;
-	}
-
-	int index = patchIndex * 16 + inPatchRow * 4 + inPatchColumn;
-
-	return bernsteinPoints[patchIndex * 16 + inPatchRow * 4 + inPatchColumn];
-}
-
-void BezierSurfaceC2::SetupPolygon()
-{
-	std::vector<std::weak_ptr<Point>> points;
-
-	if (!isCylinder)
-	{
-		const int C = widthPatches + 3;
-		const int R = heightPatches + 3;
-		points.reserve(R * C + R * C);
-
-		for (int i = 0; i < R; ++i)
-		{
-			if (i % 2 == 0)
-			{
-				for (int j = 0; j < C; ++j)
-					points.push_back(GetPointAt(i, j));
-			}
-			else
-			{
-				for (int j = C - 1; j >= 0; --j)
-					points.push_back(GetPointAt(i, j));
-			}
-		}
-
-		int startJ = widthPatches % 2 == 0 ? C - 1 : 0;
-		int changeJ = widthPatches % 2 == 0 ? -1 : 1;
-
-		for (int j = startJ; j < C && j >= 0; j += changeJ)
-		{
-			if (j % 2 == 0)
-			{
-				for (int i = 0; i < R; ++i)
-					points.push_back(GetPointAt(i, j));
-			}
-			else
-			{
-				for (int i = R - 1; i >= 0; --i)
-					points.push_back(GetPointAt(i, j));
-			}
-		}
-	}
-	else
-	{
-		const int C = widthPatches + 2;
-		const int R = heightPatches + 3;
-		points.reserve(R * C + R * C);
-		std::vector<int> indices;
-
-		for (int i = 0; i < R; ++i)
-		{
-			for (int j = 0; j < C + 1; ++j)
-			{
-				points.push_back(GetPointAt(i, j % C));
-			}
-		}
-
-		for (int j = 1; j < C; ++j)
-		{
-			if (j % 2 == 0)
-			{
-				for (int i = 0; i < R; ++i)
-				{
-					points.push_back(GetPointAt(i, j));
-				}
-			}
-			else
-			{
-				for (int i = R - 1; i >= 0; --i)
-				{
-					points.push_back(GetPointAt(i, j));
-				}
-			}
-		}
-	}
-
-	bernsteinPolygon = std::make_shared<Polyline>(points);
-	bernsteinPolygon->SetColor(ColorPalette::Get(Color::Teal));
-	bernsteinPolygon->InitFromPoints();
-
-	SetupDeBoorPolygon();
-}
-
-void BezierSurfaceC2::SetupDeBoorPolygon()
-{
-	std::vector<std::weak_ptr<Point>> points2;
-
-	if (!isCylinder)
-	{
-		const int C = widthPatches * 3 + 1;
-		const int R = heightPatches * 3 + 1;
-		points2.reserve(R * C + R * C);
-
-		for (int i = 0; i < R; ++i)
-		{
-			if (i % 2 == 0)
-			{
-				for (int j = 0; j < C; ++j)
-					points2.push_back(GetBernsteinPointAt(i, j));
-			}
-			else
-			{
-				for (int j = C - 1; j >= 0; --j)
-					points2.push_back(GetBernsteinPointAt(i, j));
-			}
-		}
-
-		int startJ = widthPatches % 2 == 0 ? C - 1 : 0;
-		int changeJ = widthPatches % 2 == 0 ? -1 : 1;
-
-		for (int j = startJ; j < C && j >= 0; j += changeJ)
-		{
-			if (j % 2 == 1)
-			{
-				for (int i = 0; i < R; ++i)
-					points2.push_back(GetBernsteinPointAt(i, j));
-			}
-			else
-			{
-				for (int i = R - 1; i >= 0; --i)
-					points2.push_back(GetBernsteinPointAt(i, j));
-			}
-		}
-	}
-	else
-	{
-		const int C = widthPatches * 3;
-		const int R = heightPatches * 3 + 1;
-		points2.reserve(R * C + R * C);
-		std::vector<int> indices;
-
-		for (int i = 0; i < R; ++i)
-		{
-			for (int j = 0; j < C + 1; ++j)
-			{
-				points2.push_back(GetBernsteinPointAt(i, j % C));
-			}
-		}
-
-		//for (int j = 1; j < C; ++j)
-		//{
-		//	if (j % 2 == 0)
-		//	{
-		//		for (int i = 0; i < R; ++i)
-		//		{
-		//			points2.push_back(GetBernsteinPointAt(i, j));
-		//		}
-		//	}
-		//	else
-		//	{
-		//		for (int i = R - 1; i >= 0; --i)
-		//		{
-		//			points2.push_back(GetBernsteinPointAt(i, j));
-		//		}
-		//	}
-		//}
-	}
-
-	deBoorPolygon = std::make_shared<Polyline>(points2);
-	deBoorPolygon->SetColor(ColorPalette::Get(Color::Red));
-	deBoorPolygon->InitFromPoints();
-}
-
 json BezierSurfaceC2::Serialize() const
 {
 	json j;
@@ -509,15 +303,15 @@ json BezierSurfaceC2::Serialize() const
 	json cp = json::array();
 	int rows = heightPatches + 3;
 	int cols = widthPatches + 3;
-	for (int i = 0; i < rows; ++i)
-	{
-		for (int j = 0; j < cols; ++j)
-		{
-			int jCole = isCylinder ? j % (widthPatches + 2) : j;
-			auto point = GetPointAt(i, jCole);
-			cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
-		}
-	}
+	//for (int i = 0; i < rows; ++i)
+	//{
+	//	for (int j = 0; j < cols; ++j)
+	//	{
+	//		int jCole = isCylinder ? j % (widthPatches + 2) : j;
+	//		auto point = GetPointAt(i, jCole);
+	//		cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
+	//	}
+	//}
 	j["controlPoints"] = cp;
 	j["size"] = {
 		{ "u", cols },
@@ -549,7 +343,7 @@ std::shared_ptr<BezierSurfaceC2> BezierSurfaceC2::Deserialize(const json& j)
 	surf->tessLevelU = samples.at("u").get<int>();
 	surf->tessLevelV = samples.at("v").get<int>();
 
-	surf->isCylinder = surf->HasDuplicates(j.at("controlPoints"));
+	//surf->isCylinder = surf->HasDuplicates(j.at("controlPoints"));
 
 	std::vector<std::shared_ptr<Point>> points;
 	for (const auto& cp : j.at("controlPoints"))
