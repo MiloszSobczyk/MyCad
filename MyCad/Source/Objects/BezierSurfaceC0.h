@@ -26,7 +26,7 @@ private:
 
 	int tessLevelU = 4;
 	int tessLevelV = 4;
-	bool drawBernsteinPolygon = true;
+	bool drawBernsteinPolygon = false;
 
 	bool somethingChanged = false;
 
@@ -41,20 +41,12 @@ private:
 
 	void Render() override;
 	void Update();
-
-
-	int HasDuplicates(const json& controlPointsJson);
-	std::vector<unsigned int> ProcessPoints(std::vector<unsigned int> ids, int connectionType);
-
 public:
 	std::vector<std::shared_ptr<Point>> GetUniqueControlPoints();
 
+	BezierSurfaceC0();
 	BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	
-	BezierSurfaceC0();
-	//void InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints);
-	//void InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints);
-
 	void Init();
 	
 	void RenderUI() override;

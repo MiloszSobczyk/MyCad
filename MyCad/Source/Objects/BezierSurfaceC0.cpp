@@ -141,81 +141,8 @@ BezierSurfaceC0::BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4
 
 	SetupControlPoints(position, width, height);
 	SetupPatches();
-
 	Update();
 }
-
-//void BezierSurfaceC0::InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints)
-//{
-//	isCylinder = false;
-//
-//	const int columns = widthPatches * 3 + 1;
-//	const int rows = heightPatches * 3 + 1;
-//
-//	controlPoints.reserve(rows * columns);
-//	controlPoints = jsonPoints;
-//
-//	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
-//	{
-//		std::vector<std::weak_ptr<Point>> points;
-//		std::vector<std::size_t> indices;
-//
-//		int startingI = patchIndex / widthPatches;
-//		int startingJ = patchIndex % widthPatches;
-//
-//		for (int i = 0; i < 4; ++i)
-//		{
-//			for (int j = 0; j < 4; ++j)
-//			{
-//				points.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
-//			}
-//		}
-//
-//		patches.push_back(Patch(points));
-//	}
-//
-//	Update();
-//	SetupPolygon();
-//}
-//
-//void BezierSurfaceC0::InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints)
-//{
-//	const int columns = widthPatches * 3;
-//	const int rows = heightPatches * 3 + 1;
-//
-//	controlPoints.reserve(rows * columns);
-//
-//	for (int i = 0; i < jsonPoints.size(); ++i)
-//	{
-//		if ((i - columns) % (columns + 1) != 0)
-//		{
-//			controlPoints.push_back(jsonPoints[i]);
-//		}
-//	}
-//
-//	for (int patchIndex = 0; patchIndex < widthPatches * heightPatches; ++patchIndex)
-//	{
-//		std::vector<std::weak_ptr<Point>> points;
-//		std::vector<std::size_t> indices;
-//
-//		int startingI = patchIndex / widthPatches;
-//		int startingJ = patchIndex % widthPatches;
-//
-//		for (int i = 0; i < 4; ++i)
-//		{
-//			for (int j = 0; j < 4; ++j)
-//			{
-//				int index = (startingI * 3 + i) * (columns + 1) + (startingJ * 3 + j) % (columns + 1);
-//				points.push_back(jsonPoints[index]);
-//			}
-//		}
-//
-//		patches.push_back(Patch(points));
-//	}
-//
-//	Update();
-//	SetupPolygon();
-//}
 
 void BezierSurfaceC0::Init()
 {
@@ -301,56 +228,6 @@ void BezierSurfaceC0::Update()
 	renderer.SetVertices(vertices);
 }
 
-// 0 - no duplicates
-// 1 - duplicates in each row
-// 2 - duplicates in last column
-int BezierSurfaceC0::HasDuplicates(const json& controlPointsJson)
-{
-	int columns = widthPatches * 3 + 1;
-	int rows = heightPatches * 3 + 1;
-
-	auto id1 = controlPointsJson[0].at("id").get<unsigned int>();
-	auto id2 = controlPointsJson[columns - 1].at("id").get<unsigned int>();
-	auto id3 = controlPointsJson[controlPointsJson.size() - columns].at("id").get<unsigned int>();
-	if (id1 == id2)
-	{
-		return 1;
-	}
-	else if (id1 == id3)
-	{
-		return 2;
-	}
-	return 0;
-}
-
-std::vector<unsigned int> BezierSurfaceC0::ProcessPoints(std::vector<unsigned int> ids1, int connectionType)
-{
-	if (connectionType != 2)
-	{
-		return ids1;
-	}
-
-	int temp = widthPatches;
-	widthPatches = heightPatches;
-	heightPatches = temp;
-
-	int columns = widthPatches * 3 + 1;
-	int rows = heightPatches * 3 + 1;
-
-	std::vector<unsigned int> ids;
-
-	for (int i = 0; i < rows; ++i)
-	{
-		for (int j = 0; j < columns; ++j)
-		{
-			ids.push_back(ids1[j * rows + i]);
-		}
-	}
-
-	return ids;
-}
-
-
 json BezierSurfaceC0::Serialize() const
 {
 	json j;
@@ -363,20 +240,15 @@ json BezierSurfaceC0::Serialize() const
 	}
 
 	json cp = json::array();
-	int rows = heightPatches * 3 + 1;
-	int cols = widthPatches * 3 + 1;
-
-	for (int i = 0; i < rows; ++i)
+	for (auto& point : controlPoints)
 	{
-		for (int j = 0; j < cols; ++j)
-		{
-
-		}
+		cp.push_back(json{ {"id", static_cast<unsigned int>(point->GetId())} });
 	}
 	j["controlPoints"] = cp;
+	
 	j["size"] = {
-		{ "u", cols },
-		{ "v", rows },
+		{ "u", GetColumns() },
+		{ "v", GetRows() },
 	};
 	j["samples"] = {
 		{ "u", tessLevelU },
@@ -406,24 +278,24 @@ std::shared_ptr<BezierSurfaceC0> BezierSurfaceC0::Deserialize(const json& j)
 
 	auto controlPointsJson = j.at("controlPoints");
 
-	int connectionType1 = surf->HasDuplicates(controlPointsJson);
+	//int connectionType1 = surf->HasDuplicates(controlPointsJson);
 
-	std::vector<unsigned int> ids;
+	//std::vector<unsigned int> ids;
 
-	for (const auto& cp : j.at("controlPoints"))
-	{
-		unsigned int pid = cp.at("id").get<unsigned int>();
-		ids.push_back(pid);
-	}
+	//for (const auto& cp : j.at("controlPoints"))
+	//{
+	//	unsigned int pid = cp.at("id").get<unsigned int>();
+	//	ids.push_back(pid);
+	//}
 
-	ids = surf->ProcessPoints(ids, connectionType1);
+	//ids = surf->ProcessPoints(ids, connectionType1);
 
-	std::vector<std::shared_ptr<Point>> points;
+	//std::vector<std::shared_ptr<Point>> points;
 
-	for (const auto& id : ids)
-	{
-		points.push_back(dynamic_pointer_cast<Point>(IdManager::GetById(id)));
-	}
+	//for (const auto& id : ids)
+	//{
+	//	points.push_back(dynamic_pointer_cast<Point>(IdManager::GetById(id)));
+	//}
 
 	return surf;
 }
