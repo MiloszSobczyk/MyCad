@@ -50,11 +50,6 @@ public:
 	BezierSurfaceC2();
 	BezierSurfaceC2(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 
-	void InitNormally(std::vector<std::shared_ptr<Point>>& jsonPoints);
-	void InitAsCylinder(std::vector<std::shared_ptr<Point>>& jsonPoints);
-	// Axes: 0 - X, 1 - Y, 2 - Z
-	BezierSurfaceC2(Algebra::Vector4 position, int axis, float radius, float height, int widthPatches, int heightPatches);
-
 	inline std::vector<std::shared_ptr<Point>> GetControlPoints() { return controlPoints; };
 
 	void OnNotified() override;
