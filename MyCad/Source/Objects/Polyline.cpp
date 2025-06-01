@@ -189,6 +189,25 @@ void Polyline::ClearPoints()
     points.clear();
 }
 
+void Polyline::SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+{
+    for (int i = 0; i < points.size(); ++i)
+    {
+        if (auto p = points[i].lock())
+        {
+            if (p == oldPoint)
+            {
+                oldPoint->RemoveObserver(shared_from_this());
+                points[i] = newPoint;
+                newPoint->AddObserver(shared_from_this());
+                break;
+            }
+        }
+    }
+
+    UpdatePoints();
+}
+
 void Polyline::OnNotified()
 {
     UpdatePoints();

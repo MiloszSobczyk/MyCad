@@ -83,6 +83,21 @@ void Point::OnNotified()
     NotifyObservers();
 }
 
+void Point::SwapFor(std::shared_ptr<Point> newPoint)
+{
+    for (const auto& observer : observers)
+    {
+        if (const auto sharedObserver = observer.lock())
+        {
+            if (const auto shape = std::dynamic_pointer_cast<Shape>(sharedObserver))
+            {
+                shape->SwapPoints(shared_from_this(), newPoint);
+            }
+        }
+    }
+
+}
+
 json Point::Serialize() const
 {
     auto t = translationComponent->GetTranslation();

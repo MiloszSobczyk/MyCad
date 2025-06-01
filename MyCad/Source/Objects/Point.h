@@ -25,6 +25,8 @@ public:
 
 	void OnNotified() override;
 
+	void SwapFor(std::shared_ptr<Point> newPoint);
+
 	json Serialize() const override;
 	static std::shared_ptr<Point> Deserialize(const json& j);
 

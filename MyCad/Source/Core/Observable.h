@@ -8,10 +8,9 @@
 
 class Observable
 {
-private:
-    std::vector<std::weak_ptr<IObserver>> observers;
-
 protected:
+    std::vector<std::weak_ptr<IObserver>> observers;
+    
     void NotifyObservers();
 
 public:

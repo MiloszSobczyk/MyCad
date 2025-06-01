@@ -8,6 +8,8 @@
 #include "Utils/ColorPalette.h"
 #include "Utils/Serializer.h"
 
+class Point;
+
 class Shape
 {
 private:
@@ -41,7 +43,7 @@ public:
 
 	virtual json Serialize() const = 0;
 
-    virtual void MergePoints() { };
+    virtual void SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint) {};
 
     inline static void ResetIdCounter() { idCounter = 0; }
 };

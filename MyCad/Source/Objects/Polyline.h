@@ -27,6 +27,8 @@ public:
     void SwapPoints(int index1, int index2);
     void ClearPoints();
 
+    void SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint) override;
+
     void OnNotified() override;
 
     void InitFromPoints();

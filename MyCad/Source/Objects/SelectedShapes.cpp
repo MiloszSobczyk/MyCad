@@ -80,6 +80,7 @@ std::optional<std::shared_ptr<Point>> SelectedShapes::MergePoints()
 	for (const auto& point : points) 
 	{
 		selectedShapes.erase(std::find(selectedShapes.begin(), selectedShapes.end(), point));
+
 		newPosition += point->GetTranslationComponent()->GetTranslation();
 	}
 
@@ -87,8 +88,12 @@ std::optional<std::shared_ptr<Point>> SelectedShapes::MergePoints()
 
 	auto newPoint = std::make_shared<Point>();
 	newPoint->GetTranslationComponent()->SetTranslation(newPosition);
-
 	selectedShapes.push_back(newPoint);
+
+	for (const auto& point : points)
+	{
+		point->SwapFor(newPoint);
+	}
 
 	return newPoint;
 }
