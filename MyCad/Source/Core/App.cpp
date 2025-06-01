@@ -14,17 +14,18 @@
 #include <string>
 
 Camera App::camera = Camera(Algebra::Vector4(0.f, 20.f, 50.f, 1.f), 1.f);
+
 Algebra::Matrix4 App::projectionMatrix = Algebra::Matrix4::Projection(1280.f / 720.f, 1.f, 1000.0f, std::numbers::pi_v<float> / 2.f);
+
 Algebra::StereoscopicMatrices App::stereoMatrices = Algebra::Matrix4::StereoscopicProjection(1280.f / 720.f, 1.f, 1000.0f,
 	std::numbers::pi_v<float> / 2.f, 0.064f, 5.f);
-static bool CannotDeletePoint = false;
+
 bool App::useStereoscopy = false;
 
 App::App()
-	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"),
-	active(true), showGrid(false), shapes(),
+	: window(Globals::StartingWidth + Globals::RightInterfaceWidth, Globals::StartingHeight, "Pierce the Heavens"), 
 	axisCursor(std::make_shared<AxisCursor>()), appMode(AppMode::Camera), selectedShapes(std::make_shared<SelectedShapes>()), 
-	middlePoint(), bezierParams(), saveFileBrowser(ImGuiFileBrowserFlags_EnterNewFilename)
+	saveFileBrowser(ImGuiFileBrowserFlags_EnterNewFilename)
 {
 	InitImgui(window.GetWindowPointer());
 	viewMatrix = Algebra::Matrix4::Identity();
@@ -220,6 +221,8 @@ void App::DisplayShapeSelection()
 	}
 
 	ImGui::EndChild();
+
+	static bool CannotDeletePoint = false;
 
 	if (ImGui::Button("Delete Selected"))
 	{
@@ -639,12 +642,12 @@ void App::DisplayStereoscopyParameters()
 	changed |= ImGui::SliderFloat("Interocular Distance (d)",
 		&interocularDistance,
 		0.05f,
-		10.f,
+		1.f,
 		"%.3f");
 
 	changed |= ImGui::SliderFloat("Convergence Distance (c)",
 		&convergenceDistance,
-		2.0f,
+		10.0f,
 		100.f,
 		"%.2f");
 

@@ -44,8 +44,8 @@ struct BezierSurfaceParams
 class App 
 {
 private:
-	bool active;
-	bool showGrid = false;
+	bool active = true;
+	bool showGrid = true;
 	bool useCursor = true;
 	Window window;
 	InfiniteGrid grid;
@@ -67,10 +67,10 @@ private:
 
 	AppMode appMode;
 	OperationMode operationMode;
-	BezierSurfaceParams bezierParams;
+	BezierSurfaceParams bezierParams = {};
 
-	float interocularDistance = 0.064f;
-	float convergenceDistance = 5.f;
+	float interocularDistance = 0.2f;
+	float convergenceDistance = 10.f;
 
 public:
 	static bool useStereoscopy;
