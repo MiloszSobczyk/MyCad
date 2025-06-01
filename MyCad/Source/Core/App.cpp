@@ -684,6 +684,7 @@ void App::DisplayMergePoints()
 			}
 
 			shapes.push_back(result.value());
+			result.value()->Init();
 		}
 
 	}
