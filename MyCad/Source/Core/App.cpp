@@ -601,7 +601,21 @@ void App::DisplayLoadFromFile()
 
 void App::DisplayClearShapes()
 {
+	if (ImGui::Button("Clear shapes"))
+	{
+		selectedShapes->Clear();
 
+		for (auto it = shapes.begin(); it != shapes.end(); )
+		{
+			if (!std::dynamic_pointer_cast<Point>(*it))
+				it = shapes.erase(it);
+			else
+				++it;
+		}
+
+		shapes.clear();
+		
+	}
 }
 
 void App::DisplaySelectAll()
