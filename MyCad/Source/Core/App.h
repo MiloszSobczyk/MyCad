@@ -103,6 +103,8 @@ public:
 
 	void DisplayStereoscopyParameters();
 
+	void DisplayMergePoints();
+
 	Algebra::Vector4 ScreenToNDC(float x, float y);
 	void GetClickedPoint();
 };

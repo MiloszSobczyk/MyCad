@@ -165,9 +165,12 @@ void App::DisplayMainMenu()
 	DisplayStereoscopyParameters();
 
 	DisplaySaveToFile();
+	ImGui::SameLine();
 	DisplayLoadFromFile();
-	DisplayClearShapes();
+
 	DisplaySelectAll();
+	ImGui::SameLine();
+	DisplayClearShapes();
 
 	if (currentOperation)
 	{
@@ -639,22 +642,32 @@ void App::DisplayStereoscopyParameters()
 
 	changed |= ImGui::Checkbox("Use stereoscopy", &useStereoscopy);
 
-	changed |= ImGui::SliderFloat("Interocular Distance (d)",
+	ImGui::Text("Interocular Distance (d)");
+	ImGui::PushItemWidth(150.0f);
+	changed |= ImGui::SliderFloat("##iod_slider",
 		&interocularDistance,
 		0.05f,
 		1.f,
 		"%.3f");
+	ImGui::PopItemWidth();
 
-	changed |= ImGui::SliderFloat("Convergence Distance (c)",
+	ImGui::Text("Convergence Distance (c)");
+	ImGui::PushItemWidth(150.0f);
+	changed |= ImGui::SliderFloat("##convg_slider",
 		&convergenceDistance,
 		10.0f,
 		100.f,
 		"%.2f");
+	ImGui::PopItemWidth();
 
 	if (changed)
 	{
 		HandleResize();
 	}
+}
+
+void App::DisplayMergePoints()
+{
 }
 
 Algebra::Vector4 App::ScreenToNDC(float x, float y)
