@@ -1,8 +1,13 @@
 #pragma once
+
 #include <vector>
 #include <memory>
-#include <Objects/Shape.h>
 #include <optional>
+
+#include "Algebra.h"
+
+class Shape;
+class Point;
 
 class SelectedShapes
 {
@@ -27,6 +32,8 @@ public:
 	std::shared_ptr<Shape> GetAt(int index) const;
 
 	std::optional<Algebra::Vector4> GetAveragePosition() const;
+
+	std::optional<std::shared_ptr<Point>> MergePoints();
 
 	template<typename T>
 	std::vector<std::shared_ptr<T>> GetSelectedWithType() const;

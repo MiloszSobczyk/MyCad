@@ -1,6 +1,7 @@
 #include "SelectedShapes.h"
-#include "BezierSurfaceC0.h"
-#include "BezierSurfaceC2.h"
+
+#include "Objects/Shape.h"
+#include "Objects/Point.h"
 
 void SelectedShapes::Clear()
 {
@@ -64,4 +65,30 @@ std::optional<Algebra::Vector4> SelectedShapes::GetAveragePosition() const
 
 	result = result / castShapes.size();
 	return result;
+}
+
+std::optional<std::shared_ptr<Point>> SelectedShapes::MergePoints()
+{
+	const auto points = GetSelectedWithType<Point>();
+
+	if (points.size() <= 1)
+	{
+		return std::nullopt;
+	}
+
+	Algebra::Vector4 newPosition;
+	for (const auto& point : points) 
+	{
+		selectedShapes.erase(std::find(selectedShapes.begin(), selectedShapes.end(), point));
+		newPosition += point->GetTranslationComponent()->GetTranslation();
+	}
+
+	newPosition = newPosition / points.size();
+
+	auto newPoint = std::make_shared<Point>();
+	newPoint->GetTranslationComponent()->SetTranslation(newPosition);
+
+	selectedShapes.push_back(newPoint);
+
+	return newPoint;
 }

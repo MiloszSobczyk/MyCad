@@ -178,6 +178,8 @@ void App::DisplayMainMenu()
 	}
 	DisplayShapeSelection();
 	ImGui::Separator();
+	DisplayMergePoints();
+	ImGui::Separator();
 	axisCursor->RenderUI();
 	ImGui::Separator();
 	DisplayAddShapeButtons();
@@ -668,6 +670,23 @@ void App::DisplayStereoscopyParameters()
 
 void App::DisplayMergePoints()
 {
+	if (ImGui::Button("Merge points"))
+	{
+		auto points = selectedShapes->GetSelectedWithType<Point>();
+		auto result = selectedShapes->MergePoints();
+		if (result.has_value())
+		{
+			for (const auto& point : points) 
+			{
+				auto it = std::find(shapes.begin(), shapes.end(), point);
+				if (it != shapes.end())
+					shapes.erase(it);
+			}
+
+			shapes.push_back(result.value());
+		}
+
+	}
 }
 
 Algebra::Vector4 App::ScreenToNDC(float x, float y)

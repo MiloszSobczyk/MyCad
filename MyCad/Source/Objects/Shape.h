@@ -41,5 +41,7 @@ public:
 
 	virtual json Serialize() const = 0;
 
+    virtual void MergePoints() { };
+
     inline static void ResetIdCounter() { idCounter = 0; }
 };
