@@ -210,6 +210,24 @@ void BezierCurveC2::SwapPoints(int index1, int index2)
     UpdateCurve();
 }
 
+void BezierCurveC2::SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+{
+    for (int i = 0; i < controlPoints.size(); ++i)
+    {
+        if (auto p = controlPoints[i].lock())
+        {
+            if (p == oldPoint)
+            {
+                controlPoints[i] = newPoint;
+                newPoint->AddObserver(shared_from_this());
+                break;
+            }
+        }
+    }
+
+    UpdateCurve();
+}
+
 void BezierCurveC2::OnNotified()
 {
     somethingChanged = true;

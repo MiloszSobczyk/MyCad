@@ -167,6 +167,24 @@ void InterpolatingCurve::SwapPoints(int index1, int index2)
     UpdateCurve();
 }
 
+void InterpolatingCurve::SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+{
+    for (int i = 0; i < controlPoints.size(); ++i)
+    {
+        if (auto p = controlPoints[i].lock())
+        {
+            if (p == oldPoint)
+            {
+                controlPoints[i] = newPoint;
+                newPoint->AddObserver(shared_from_this());
+                break;
+            }
+        }
+    }
+
+    UpdateCurve();
+}
+
 void InterpolatingCurve::OnNotified()
 {
     somethingChanged = true;

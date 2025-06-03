@@ -10,6 +10,8 @@
 
 class Point;
 
+// TODO: Change RemovePoint from collections so it takes in index instead of a pointer to the point
+
 class Shape
 {
 private:
