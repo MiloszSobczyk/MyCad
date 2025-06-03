@@ -16,4 +16,5 @@ protected:
 public:
     void AddObserver(std::shared_ptr<IObserver> observer);
     void RemoveObserver(std::shared_ptr<IObserver> observer);
+    void ClearObservers();
 };

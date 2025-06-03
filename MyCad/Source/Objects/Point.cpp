@@ -96,6 +96,7 @@ void Point::SwapFor(std::shared_ptr<Point> newPoint)
         }
     }
 
+    ClearObservers();
 }
 
 json Point::Serialize() const

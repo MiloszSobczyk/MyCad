@@ -34,6 +34,8 @@ public:
 
     void OnNotified() override;
 
+    void SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint) override;
+
 	json Serialize() const override;
     static std::shared_ptr<BezierCurve> Deserialize(const json& j);
 };

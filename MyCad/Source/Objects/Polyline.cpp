@@ -197,7 +197,6 @@ void Polyline::SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point
         {
             if (p == oldPoint)
             {
-                oldPoint->RemoveObserver(shared_from_this());
                 points[i] = newPoint;
                 newPoint->AddObserver(shared_from_this());
                 break;

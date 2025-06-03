@@ -43,7 +43,7 @@ public:
 
 	virtual json Serialize() const = 0;
 
-    virtual void SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint) {};
+    virtual void SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoints) {};
 
     inline static void ResetIdCounter() { idCounter = 0; }
 };

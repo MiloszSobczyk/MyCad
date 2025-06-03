@@ -39,3 +39,8 @@ void Observable::RemoveObserver(std::shared_ptr<IObserver> observer)
 		observers.end()
 	);
 }
+
+void Observable::ClearObservers()
+{
+	observers.clear();
+}
