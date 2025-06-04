@@ -48,6 +48,8 @@ public:
 	BezierSurfaceC0();
 	BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4 position, float width, float height, int widthPatches, int heightPatches);
 	
+	void SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint) override;
+
 	void Init();
 	
 	void RenderUI() override;

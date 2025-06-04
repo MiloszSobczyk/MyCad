@@ -20,6 +20,9 @@ public:
 	void RenderBernsteinPolygon();
 	void RenderDeBoorPolygon();
 
+	void SwapBernsteinPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint);
+	void SwapDeBoorPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint);
+
 	void SetBernsteinPoints(std::vector<std::weak_ptr<Point>> bernsteinPoints);
 	inline std::vector<std::weak_ptr<Point>> GetBernsteinPoints() { return bernsteinPoints; };
 

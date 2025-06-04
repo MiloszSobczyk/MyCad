@@ -159,6 +159,27 @@ BezierSurfaceC0::BezierSurfaceC0(ConnectionType connectionType, Algebra::Vector4
 	Update();
 }
 
+void BezierSurfaceC0::SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+{
+	for (int i = 0; i < controlPoints.size(); ++i)
+	{
+		if (controlPoints[i] == oldPoint)
+		{
+			controlPoints[i] = newPoint;
+		}
+	}
+
+	for (auto& patch : patches)
+	{
+		patch.SwapBernsteinPoints(oldPoint, newPoint);
+	}
+
+	newPoint->AddObserver(shared_from_this());
+	newPoint->Lock(shared_from_this());
+
+	Update();
+}
+
 void BezierSurfaceC0::Init()
 {
 	for (auto point : GetUniqueControlPoints())

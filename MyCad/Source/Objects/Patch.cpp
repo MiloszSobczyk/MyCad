@@ -21,6 +21,38 @@ void Patch::RenderDeBoorPolygon()
         deBoorPolygon->Render();
 }
 
+void Patch::SwapBernsteinPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+{
+    for (int i = 0; i < bernsteinPoints.size(); ++i)
+    {
+        if (auto p = bernsteinPoints[i].lock())
+        {
+            if (p == oldPoint)
+            {
+                bernsteinPoints[i] = newPoint;
+            }
+        }
+    }
+    
+    bernsteinPolygon->SwapPoints(oldPoint, newPoint);
+}
+
+void Patch::SwapDeBoorPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+{
+    for (int i = 0; i < deBoorPoints.size(); ++i)
+    {
+        if (auto p = deBoorPoints[i].lock())
+        {
+            if (p == oldPoint)
+            {
+                deBoorPoints[i] = newPoint;
+            }
+        }
+    }
+
+    deBoorPolygon->SwapPoints(oldPoint, newPoint);
+}
+
 void Patch::SetBernsteinPoints(std::vector<std::weak_ptr<Point>> bernsteinPoints)
 {
     this->bernsteinPoints = bernsteinPoints;

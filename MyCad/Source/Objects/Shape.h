@@ -11,6 +11,7 @@
 class Point;
 
 // TODO: Change RemovePoint from collections so it takes in index instead of a pointer to the point
+// TODO: Add ClearAdjacentDuplicates method that removes duplicate points if they are adjacent to each other
 
 class Shape
 {
@@ -45,7 +46,7 @@ public:
 
 	virtual json Serialize() const = 0;
 
-    virtual void SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoints) {};
+    virtual void SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint) {};
 
     inline static void ResetIdCounter() { idCounter = 0; }
 };
