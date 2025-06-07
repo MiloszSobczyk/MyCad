@@ -34,7 +34,7 @@ void Patch::SwapBernsteinPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr
         }
     }
     
-    bernsteinPolygon->SwapPoints(oldPoint, newPoint);
+    bernsteinPolygon->ReplacePoint(oldPoint, newPoint);
 }
 
 void Patch::SwapDeBoorPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
@@ -50,7 +50,7 @@ void Patch::SwapDeBoorPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Po
         }
     }
 
-    deBoorPolygon->SwapPoints(oldPoint, newPoint);
+    deBoorPolygon->ReplacePoint(oldPoint, newPoint);
 }
 
 void Patch::SetBernsteinPoints(std::vector<std::weak_ptr<Point>> bernsteinPoints)

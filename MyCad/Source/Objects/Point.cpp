@@ -91,7 +91,7 @@ void Point::SwapFor(std::shared_ptr<Point> newPoint)
         {
             if (const auto shape = std::dynamic_pointer_cast<Shape>(sharedObserver))
             {
-                shape->SwapPoints(shared_from_this(), newPoint);
+                shape->ReplacePoint(shared_from_this(), newPoint);
             }
         }
     }

@@ -210,7 +210,7 @@ void BezierCurveC2::SwapPoints(int index1, int index2)
     UpdateCurve();
 }
 
-void BezierCurveC2::SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+void BezierCurveC2::ReplacePoint(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
 {
     for (int i = 0; i < controlPoints.size(); ++i)
     {

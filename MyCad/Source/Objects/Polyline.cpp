@@ -189,7 +189,7 @@ void Polyline::ClearPoints()
     points.clear();
 }
 
-void Polyline::SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+void Polyline::ReplacePoint(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
 {
     for (int i = 0; i < points.size(); ++i)
     {

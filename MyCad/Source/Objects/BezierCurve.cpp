@@ -157,7 +157,7 @@ void BezierCurve::OnNotified()
     somethingChanged = true;
 }
 
-void BezierCurve::SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+void BezierCurve::ReplacePoint(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
 {
     for (int i = 0; i < controlPoints.size(); ++i)
     {

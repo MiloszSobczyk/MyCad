@@ -163,7 +163,7 @@ BezierSurfaceC2::BezierSurfaceC2(ConnectionType connectionType, Algebra::Vector4
 	Update();
 }
 
-void BezierSurfaceC2::SwapPoints(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
+void BezierSurfaceC2::ReplacePoint(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
 {
 	for (int i = 0; i < controlPoints.size(); ++i)
 	{
