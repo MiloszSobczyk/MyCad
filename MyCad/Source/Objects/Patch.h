@@ -2,9 +2,43 @@
 
 #include <memory>
 #include <vector>
+#include <array>
 
 #include "Point.h"
 #include "Polyline.h"
+
+enum class EdgeDirection
+{
+	Bottom,
+	Right,
+	Up,
+	Left
+};
+
+class PatchEdge
+{
+private:
+    std::array<std::weak_ptr<Point>, 4> controlPoints;
+
+public:
+    PatchEdge(const std::weak_ptr<Point>& p0,
+        const std::weak_ptr<Point>& p1,
+        const std::weak_ptr<Point>& p2,
+        const std::weak_ptr<Point>& p3)
+        : controlPoints{ p0, p1, p2, p3 }
+    {
+    }
+
+    inline std::weak_ptr<Point> GetStart() const { return controlPoints[0]; }
+    inline std::weak_ptr<Point> GetEnd()   const { return controlPoints[3]; }
+
+	void Print()
+	{
+		std::cout << controlPoints[0].lock()->GetId() << ' ' << controlPoints[1].lock()->GetId() << ' '
+			<< controlPoints[2].lock()->GetId() << ' ' << controlPoints[3].lock()->GetId() << '\n';
+	}
+};
+
 
 class Patch
 {
@@ -28,4 +62,6 @@ public:
 
 	void SetDeBoorPoints(std::vector<std::weak_ptr<Point>> deBoorPoints);
 	inline std::vector<std::weak_ptr<Point>> GetDeBoorPoints() { return deBoorPoints; };
+
+	PatchEdge GetPatchEdge(EdgeDirection direction);
 };

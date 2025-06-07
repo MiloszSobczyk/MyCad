@@ -162,3 +162,22 @@ void Patch::SetDeBoorPoints(std::vector<std::weak_ptr<Point>> deBoorPoints)
         deBoorPolygon->AddPoint(polygonPoint);
     }
 }
+
+PatchEdge Patch::GetPatchEdge(EdgeDirection direction)
+{
+    std::array<int, 4> indices;
+    switch (direction)
+    {
+    case EdgeDirection::Bottom: indices = { 0, 1, 2, 3 };     break;
+    case EdgeDirection::Right:  indices = { 3, 7, 11, 15 };   break; 
+    case EdgeDirection::Up:     indices = { 15, 14, 13, 12 }; break;
+    case EdgeDirection::Left:   indices = { 12, 8, 4, 0 };    break;
+    }
+
+    return PatchEdge(
+        std::weak_ptr<Point>(bernsteinPoints[indices[0]]),
+        std::weak_ptr<Point>(bernsteinPoints[indices[1]]),
+        std::weak_ptr<Point>(bernsteinPoints[indices[2]]),
+        std::weak_ptr<Point>(bernsteinPoints[indices[3]])
+    );
+}

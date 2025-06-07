@@ -199,6 +199,30 @@ void BezierSurfaceC0::RenderUI()
 	ImGui::SliderInt("Tess Level V", &tessLevelV, 1, 64);
 }
 
+std::vector<PatchEdge> BezierSurfaceC0::GetOutsideEdges()
+{
+	std::vector<PatchEdge> edges;
+
+	for (int i = 0; i < widthPatches; ++i)
+	{
+		edges.push_back(patches[i].GetPatchEdge(EdgeDirection::Bottom));
+	}
+	for (int i = 0; i < heightPatches; ++i)
+	{
+		edges.push_back(patches[(i + 1) * widthPatches - 1].GetPatchEdge(EdgeDirection::Right));
+	}
+	for (int i = 0; i < widthPatches; ++i)
+	{
+		edges.push_back(patches[heightPatches * widthPatches - 1 - i].GetPatchEdge(EdgeDirection::Up));
+	}
+	for (int i = 0; i < heightPatches; ++i)
+	{
+		edges.push_back(patches[(heightPatches - 1 - i) * widthPatches].GetPatchEdge(EdgeDirection::Left));
+	}
+
+	return edges;
+}
+
 void BezierSurfaceC0::Render()
 {
 	if (somethingChanged)

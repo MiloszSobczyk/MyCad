@@ -184,6 +184,8 @@ void App::DisplayMainMenu()
 	ImGui::Separator();
 	DisplayAddShapeButtons();
 	ImGui::Separator();
+	DisplayFillHolesButton();
+	ImGui::Separator();
 	DisplayAddPointsButton();
 	ImGui::Separator();
 	DisplayShapeProperties();
@@ -485,6 +487,14 @@ void App::DisplayAddSurfacePopup()
 			bezierParams = BezierSurfaceParams();
 		}
 		ImGui::EndPopup();
+	}
+}
+
+void App::DisplayFillHolesButton()
+{
+	if (ImGui::Button("Fill holes"))
+	{
+		selectedShapes->FindEdgeCycles();
 	}
 }
 

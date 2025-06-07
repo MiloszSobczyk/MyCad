@@ -54,6 +54,8 @@ public:
 	
 	void RenderUI() override;
 
+	std::vector<PatchEdge> GetOutsideEdges();
+
 	json Serialize() const override;
 	static std::shared_ptr<BezierSurfaceC0> Deserialize(const json& j);
 };

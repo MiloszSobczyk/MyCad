@@ -8,6 +8,7 @@
 
 class Shape;
 class Point;
+class PatchEdge;
 
 class SelectedShapes
 {
@@ -30,10 +31,10 @@ public:
 	inline auto end() const { return selectedShapes.end(); }
 
 	std::shared_ptr<Shape> GetAt(int index) const;
-
 	std::optional<Algebra::Vector4> GetAveragePosition() const;
-
 	std::optional<std::shared_ptr<Point>> MergePoints();
+
+	std::vector<std::array<PatchEdge, 3>> FindEdgeCycles();
 
 	template<typename T>
 	std::vector<std::shared_ptr<T>> GetSelectedWithType() const;

@@ -95,6 +95,7 @@ public:
 	void DisplayAddShapeButtons();
 	void DisplayAddPointsButton();
 	void DisplayAddSurfacePopup();
+	void DisplayFillHolesButton();
 
 	void DisplaySaveToFile();
 	void DisplayLoadFromFile();

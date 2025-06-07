@@ -2,6 +2,7 @@
 
 #include "Objects/Shape.h"
 #include "Objects/Point.h"
+#include "Objects/BezierSurfaceC0.h"
 
 void SelectedShapes::Clear()
 {
@@ -97,3 +98,21 @@ std::optional<std::shared_ptr<Point>> SelectedShapes::MergePoints()
 
 	return newPoint;
 }
+
+std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
+{
+	auto bezierSurfaces = GetSelectedWithType<BezierSurfaceC0>();
+
+	if (bezierSurfaces.empty())
+	{
+		return {};
+	}
+
+	std::vector<PatchEdge> allEdges;
+	for (auto& surface : bezierSurfaces)
+	{
+		auto edges = surface->GetOutsideEdges();
+		allEdges.insert(allEdges.end(), edges.begin(), edges.end());
+	}
+	return {};
+}	
