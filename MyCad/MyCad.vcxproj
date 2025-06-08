@@ -173,6 +173,7 @@
     <ClCompile Include="Source\Objects\BezierSurfaceC0.cpp" />
     <ClCompile Include="Source\Objects\BezierSurfaceC2.cpp" />
     <ClCompile Include="Source\Objects\Components\ObservableTranslationComponent.cpp" />
+    <ClCompile Include="Source\Objects\GregoryPatch.cpp" />
     <ClCompile Include="Source\Objects\InterpolatingCurve.cpp" />
     <ClCompile Include="Source\Objects\Patch.cpp" />
     <ClCompile Include="Source\Objects\Point.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="Source\Objects\Components\ObservableTranslationComponent.h" />
     <ClInclude Include="Source\Objects\Components\Transformations.h" />
     <ClInclude Include="Source\Objects\ConnectionType.h" />
+    <ClInclude Include="Source\Objects\GregoryPatch.h" />
     <ClInclude Include="Source\Objects\InterpolatingCurve.h" />
     <ClInclude Include="Source\Objects\Patch.h" />
     <ClInclude Include="Source\Objects\Point.h" />

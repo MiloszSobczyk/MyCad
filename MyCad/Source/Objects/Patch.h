@@ -18,24 +18,24 @@ enum class EdgeDirection
 class PatchEdge
 {
 private:
-    std::array<std::weak_ptr<Point>, 4> controlPoints;
+    std::array<std::shared_ptr<Point>, 4> controlPoints;
 
 public:
-    PatchEdge(const std::weak_ptr<Point>& p0,
-        const std::weak_ptr<Point>& p1,
-        const std::weak_ptr<Point>& p2,
-        const std::weak_ptr<Point>& p3)
+    PatchEdge(const std::shared_ptr<Point>& p0,
+        const std::shared_ptr<Point>& p1,
+        const std::shared_ptr<Point>& p2,
+        const std::shared_ptr<Point>& p3)
         : controlPoints{ p0, p1, p2, p3 }
     {
     }
 
-    inline std::weak_ptr<Point> GetStart() const { return controlPoints[0]; }
-    inline std::weak_ptr<Point> GetEnd()   const { return controlPoints[3]; }
+    inline std::shared_ptr<Point> GetStart() const { return controlPoints[0]; }
+    inline std::shared_ptr<Point> GetEnd()   const { return controlPoints[3]; }
 
 	void Print()
 	{
-		std::cout << controlPoints[0].lock()->GetId() << ' ' << controlPoints[1].lock()->GetId() << ' '
-			<< controlPoints[2].lock()->GetId() << ' ' << controlPoints[3].lock()->GetId() << '\n';
+		std::cout << controlPoints[0]->GetId() << ' ' << controlPoints[1]->GetId() << ' '
+			<< controlPoints[2]->GetId() << ' ' << controlPoints[3]->GetId() << '\n';
 	}
 };
 

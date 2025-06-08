@@ -100,6 +100,8 @@ std::optional<std::shared_ptr<Point>> SelectedShapes::MergePoints()
 	return newPoint;
 }
 
+// TODO: remove enum and use directional graph, so edges are connected only if first's end is second's start 
+// and not the other way around
 enum class EdgeConnectionType
 {
 	None = 0,
@@ -109,15 +111,15 @@ enum class EdgeConnectionType
 
 static EdgeConnectionType SharesEndpoint(const PatchEdge& e1, const PatchEdge& e2)
 {
-	auto s1 = e1.GetStart().lock().get();
-	auto e1p = e1.GetEnd().lock().get();
-	auto s2 = e2.GetStart().lock().get();
-	auto e2p = e2.GetEnd().lock().get();
-	if (e1p && s2 && e1p == s2)
+	auto s1 = e1.GetStart().get();
+	auto e1p = e1.GetEnd().get();
+	auto s2 = e2.GetStart().get();
+	auto e2p = e2.GetEnd().get();
+	if (e1p == s2)
 	{
 		return EdgeConnectionType::EndStart;
 	}
-	else if (s1 && e2p && s1 == e2p)
+	else if (s1 == e2p)
 	{
 		return EdgeConnectionType::StartEnd;
 	}

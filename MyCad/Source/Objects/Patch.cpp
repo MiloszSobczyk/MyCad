@@ -175,9 +175,9 @@ PatchEdge Patch::GetPatchEdge(EdgeDirection direction)
     }
 
     return PatchEdge(
-        std::weak_ptr<Point>(bernsteinPoints[indices[0]]),
-        std::weak_ptr<Point>(bernsteinPoints[indices[1]]),
-        std::weak_ptr<Point>(bernsteinPoints[indices[2]]),
-        std::weak_ptr<Point>(bernsteinPoints[indices[3]])
+        std::shared_ptr<Point>(bernsteinPoints[indices[0]]),
+        std::shared_ptr<Point>(bernsteinPoints[indices[1]]),
+        std::shared_ptr<Point>(bernsteinPoints[indices[2]]),
+        std::shared_ptr<Point>(bernsteinPoints[indices[3]])
     );
 }
