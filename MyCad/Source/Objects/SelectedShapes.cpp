@@ -99,6 +99,16 @@ std::optional<std::shared_ptr<Point>> SelectedShapes::MergePoints()
 	return newPoint;
 }
 
+static bool SharesEndpoint(const PatchEdge& e1, const PatchEdge& e2)
+{
+	auto s1 = e1.GetStart().lock().get();
+	auto e1p = e1.GetEnd().lock().get();
+	auto s2 = e2.GetStart().lock().get();
+	auto e2p = e2.GetEnd().lock().get();
+	return (s1 && e2p && s1 == e2p) ||
+		(e1p && s2 && e1p == s2);
+}
+
 std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 {
 	auto bezierSurfaces = GetSelectedWithType<BezierSurfaceC0>();
@@ -108,11 +118,70 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 		return {};
 	}
 
-	std::vector<PatchEdge> allEdges;
+	std::vector<PatchEdge> edgeVertices;
 	for (auto& surface : bezierSurfaces)
 	{
 		auto edges = surface->GetOutsideEdges();
-		allEdges.insert(allEdges.end(), edges.begin(), edges.end());
+		edgeVertices.insert(edgeVertices.end(), edges.begin(), edges.end());
 	}
+
+	for (int i = 0; i < edgeVertices.size(); ++i)
+	{
+		if (i % 8 == 0)
+			std::cout << '\n';
+
+		std::cout << i << "   ";
+		edgeVertices[i].Print();
+	}
+	std::cout << '\n';
+
+	int N = edgeVertices.size();
+	std::vector<std::vector<bool>> edgeEdges(N, std::vector<bool>(N, false));
+
+	for (int i = 0; i < N; ++i)
+	{
+		for (int j = 0; j < N; ++j)
+		{
+			edgeEdges[i][j] = SharesEndpoint(edgeVertices[i], edgeVertices[j]);
+		}
+	}
+
+	for (int i = 0; i < edgeEdges.size(); ++i)
+	{
+		for (int j = 0; j < edgeEdges[0].size(); ++j)
+		{
+			std::cout << edgeEdges[i][j] << "  ";
+		}
+		std::cout << '\n';
+	}
+
+	std::vector<std::array<int, 3>> indexCycles;
+
+	for (int i = 0; i < edgeVertices.size(); ++i)
+	{
+		for (int j = 0; j < edgeVertices.size(); ++j)
+		{
+			if (j == i) continue;
+			for (int k = 0; k < edgeVertices.size(); ++k)
+			{
+				if (k == i || k == j) continue;
+				if (edgeEdges[i][j] && edgeEdges[j][k] && edgeEdges[k][i])
+				{
+					indexCycles.push_back({ i, j, k });
+				}
+			}
+		}
+	}
+
+	for (auto cycle : indexCycles)
+	{
+		for (auto x : cycle)
+		{
+			std::cout << x << "  ";
+		}
+		std::cout << '\n';
+	}
+
+
 	return {};
 }	
