@@ -3,6 +3,7 @@
 #include "Objects/Shape.h"
 #include "Objects/Point.h"
 #include "Objects/BezierSurfaceC0.h"
+#include <unordered_set>
 
 void SelectedShapes::Clear()
 {
@@ -132,6 +133,7 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 		return {};
 	}
 
+	// Populate graph
 	std::vector<PatchEdge> edgeVertices;
 	for (auto& surface : bezierSurfaces)
 	{
@@ -169,6 +171,7 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 		std::cout << '\n';
 	}
 
+	// Find cycles
 	std::vector<std::array<int, 3>> indexCycles;
 
 	for (int i = 0; i < edgeVertices.size(); ++i)
@@ -196,6 +199,33 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 			}
 		}
 	}
+
+	// Remove cycle permutations
+	std::vector<std::array<int, 3>> uniqueCycles;
+	uniqueCycles.reserve(indexCycles.size());
+
+	auto make_key = [](const std::array<int, 3>& a) {
+		return std::to_string(a[0]) + "_" +
+			std::to_string(a[1]) + "_" +
+			std::to_string(a[2]);
+		};
+
+	std::unordered_set<std::string> seen;
+	seen.reserve(indexCycles.size());
+
+	for (auto const& cycle : indexCycles) 
+	{
+		std::array<int, 3> sorted = cycle;
+		std::sort(sorted.begin(), sorted.end());
+
+		std::string key = make_key(sorted);
+		if (seen.insert(key).second) 
+		{
+			uniqueCycles.push_back(cycle);
+		}
+	}
+
+	indexCycles.swap(uniqueCycles);
 
 	for (auto cycle : indexCycles)
 	{
