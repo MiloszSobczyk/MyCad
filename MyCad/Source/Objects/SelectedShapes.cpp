@@ -99,14 +99,28 @@ std::optional<std::shared_ptr<Point>> SelectedShapes::MergePoints()
 	return newPoint;
 }
 
-static bool SharesEndpoint(const PatchEdge& e1, const PatchEdge& e2)
+enum class EdgeConnectionType
+{
+	None = 0,
+	EndStart = 1,
+	StartEnd = 2,
+};
+
+static EdgeConnectionType SharesEndpoint(const PatchEdge& e1, const PatchEdge& e2)
 {
 	auto s1 = e1.GetStart().lock().get();
 	auto e1p = e1.GetEnd().lock().get();
 	auto s2 = e2.GetStart().lock().get();
 	auto e2p = e2.GetEnd().lock().get();
-	return (s1 && e2p && s1 == e2p) ||
-		(e1p && s2 && e1p == s2);
+	if (e1p && s2 && e1p == s2)
+	{
+		return EdgeConnectionType::EndStart;
+	}
+	else if (s1 && e2p && s1 == e2p)
+	{
+		return EdgeConnectionType::StartEnd;
+	}
+	return EdgeConnectionType::None;
 }
 
 std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
@@ -127,7 +141,7 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 
 	for (int i = 0; i < edgeVertices.size(); ++i)
 	{
-		if (i % 8 == 0)
+		if (i % 4 == 0)
 			std::cout << '\n';
 
 		std::cout << i << "   ";
@@ -136,7 +150,7 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 	std::cout << '\n';
 
 	int N = edgeVertices.size();
-	std::vector<std::vector<bool>> edgeEdges(N, std::vector<bool>(N, false));
+	std::vector<std::vector<EdgeConnectionType>> edgeEdges(N, std::vector<EdgeConnectionType>(N, EdgeConnectionType::None));
 
 	for (int i = 0; i < N; ++i)
 	{
@@ -150,7 +164,7 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 	{
 		for (int j = 0; j < edgeEdges[0].size(); ++j)
 		{
-			std::cout << edgeEdges[i][j] << "  ";
+			std::cout << static_cast<int>(edgeEdges[i][j]) << "  ";
 		}
 		std::cout << '\n';
 	}
@@ -162,10 +176,20 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 		for (int j = 0; j < edgeVertices.size(); ++j)
 		{
 			if (j == i) continue;
+
 			for (int k = 0; k < edgeVertices.size(); ++k)
 			{
 				if (k == i || k == j) continue;
-				if (edgeEdges[i][j] && edgeEdges[j][k] && edgeEdges[k][i])
+
+				if (edgeEdges[i][j] == EdgeConnectionType::EndStart && 
+					edgeEdges[j][k] == EdgeConnectionType::EndStart && 
+					edgeEdges[k][i] == EdgeConnectionType::EndStart)
+				{
+					indexCycles.push_back({ i, j, k });
+				}
+				else if (edgeEdges[i][j] == EdgeConnectionType::StartEnd &&
+					edgeEdges[j][k] == EdgeConnectionType::StartEnd &&
+					edgeEdges[k][i] == EdgeConnectionType::StartEnd)
 				{
 					indexCycles.push_back({ i, j, k });
 				}
@@ -175,11 +199,11 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 
 	for (auto cycle : indexCycles)
 	{
+		std::cout << '\n';
 		for (auto x : cycle)
 		{
 			std::cout << x << "  ";
 		}
-		std::cout << '\n';
 	}
 
 
