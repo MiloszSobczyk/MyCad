@@ -494,7 +494,11 @@ void App::DisplayFillHolesButton()
 {
 	if (ImGui::Button("Fill holes"))
 	{
-		selectedShapes->FindEdgeCycles();
+		auto gregs = selectedShapes->CreateGregoryPatches();
+		for (auto greg : gregs)
+		{
+			shapes.push_back(greg);
+		}
 	}
 }
 

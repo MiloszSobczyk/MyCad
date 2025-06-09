@@ -31,6 +31,7 @@ public:
 
     inline std::shared_ptr<Point> GetStart() const { return controlPoints[0]; }
     inline std::shared_ptr<Point> GetEnd()   const { return controlPoints[3]; }
+    inline std::shared_ptr<Point> GetAt(int i)   const { return controlPoints[i]; }
 
 	void Print()
 	{

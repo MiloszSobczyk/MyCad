@@ -3,6 +3,7 @@
 #include "Objects/Shape.h"
 #include "Objects/Point.h"
 #include "Objects/BezierSurfaceC0.h"
+#include "Objects/GregoryPatch.h"
 #include <unordered_set>
 
 void SelectedShapes::Clear()
@@ -126,7 +127,7 @@ static EdgeConnectionType SharesEndpoint(const PatchEdge& e1, const PatchEdge& e
 	return EdgeConnectionType::None;
 }
 
-std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
+std::vector<std::shared_ptr<GregoryPatch>> SelectedShapes::CreateGregoryPatches()
 {
 	auto bezierSurfaces = GetSelectedWithType<BezierSurfaceC0>();
 
@@ -143,16 +144,6 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 		edgeVertices.insert(edgeVertices.end(), edges.begin(), edges.end());
 	}
 
-	for (int i = 0; i < edgeVertices.size(); ++i)
-	{
-		if (i % 4 == 0)
-			std::cout << '\n';
-
-		std::cout << i << "   ";
-		edgeVertices[i].Print();
-	}
-	std::cout << '\n';
-
 	int N = edgeVertices.size();
 	std::vector<std::vector<EdgeConnectionType>> edgeEdges(N, std::vector<EdgeConnectionType>(N, EdgeConnectionType::None));
 
@@ -162,15 +153,6 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 		{
 			edgeEdges[i][j] = SharesEndpoint(edgeVertices[i], edgeVertices[j]);
 		}
-	}
-
-	for (int i = 0; i < edgeEdges.size(); ++i)
-	{
-		for (int j = 0; j < edgeEdges[0].size(); ++j)
-		{
-			std::cout << static_cast<int>(edgeEdges[i][j]) << "  ";
-		}
-		std::cout << '\n';
 	}
 
 	// Find cycles
@@ -229,15 +211,31 @@ std::vector<std::array<PatchEdge, 3>> SelectedShapes::FindEdgeCycles()
 
 	indexCycles.swap(uniqueCycles);
 
+	std::vector<std::shared_ptr<GregoryPatch>> gregoryPatches;
+
 	for (auto cycle : indexCycles)
 	{
-		std::cout << '\n';
-		for (auto x : cycle)
-		{
-			std::cout << x << "  ";
-		}
+		std::array<std::shared_ptr<Point>, 4> edge0;
+		std::array<std::shared_ptr<Point>, 4> edge1;
+		std::array<std::shared_ptr<Point>, 4> edge2;
+		
+		edge0[0] = edgeVertices[cycle[0]].GetAt(0);
+		edge0[1] = edgeVertices[cycle[0]].GetAt(1);
+		edge0[2] = edgeVertices[cycle[0]].GetAt(2);
+		edge0[3] = edgeVertices[cycle[0]].GetAt(3);
+
+		edge1[0] = edgeVertices[cycle[1]].GetAt(0);
+		edge1[1] = edgeVertices[cycle[1]].GetAt(1);
+		edge1[2] = edgeVertices[cycle[1]].GetAt(2);
+		edge1[3] = edgeVertices[cycle[1]].GetAt(3);
+
+		edge2[0] = edgeVertices[cycle[2]].GetAt(0);
+		edge2[1] = edgeVertices[cycle[2]].GetAt(1);
+		edge2[2] = edgeVertices[cycle[2]].GetAt(2);
+		edge2[3] = edgeVertices[cycle[2]].GetAt(3);
+
+		gregoryPatches.push_back(std::make_shared<GregoryPatch>(edge0, edge1, edge2));
 	}
 
-
-	return {};
+	return gregoryPatches;
 }	

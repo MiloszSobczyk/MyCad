@@ -1,4 +1,6 @@
 #include "GregoryPatch.h"
+#include "Core/App.h"
+#include "Managers/ShaderManager.h"
 #include "Point.h"
 
 GregoryPatch::GregoryPatch(std::array<std::shared_ptr<Point>, 4> edge1, std::array<std::shared_ptr<Point>, 4> edge2,
@@ -38,26 +40,36 @@ void GregoryPatch::Update()
 
     std::vector<PositionVertexData> cp;
 
-    cp[0] = { .Position = v1 };
-    cp[1] = { .Position = c12 };
-    cp[2] = { .Position = c13 };
-    cp[3] = { .Position = v2 };
-
-    cp[4] = { .Position = c23 };
-    cp[5] = { .Position = c24 };
-    cp[6] = { .Position = v3 };
-
-    cp[7] = { .Position = c31 };
-    cp[8] = { .Position = c32 };
-
-    cp[9] = { .Position = (v1 + v2 + v3 + twist1 + twist2 + twist3) / 6.0f };
+    cp.push_back({ .Position = v1 });
+    cp.push_back({ .Position = c12 });
+    cp.push_back({ .Position = c13 });
+    cp.push_back({ .Position = v2 });
+    cp.push_back({ .Position = c23 });
+    cp.push_back({ .Position = c24 });
+    cp.push_back({ .Position = v3 });
+    cp.push_back({ .Position = c31 });
+    cp.push_back({ .Position = c32 });
+    cp.push_back({ .Position = (v1 + v2 + v3 + twist1 + twist2 + twist3) / 6.0f });
 
     renderer.SetVertices(cp);
 }
 
-
 void GregoryPatch::Render()
 {
+    renderer.SetPatchParameters(10);
+
+    auto shader = ShaderManager::GetInstance().GetShader(ShaderName::GregoryPatch);
+
+    shader->Bind();
+    shader->SetUniformMat4f("u_viewMatrix", App::camera.GetViewMatrix());
+    shader->SetUniformMat4f("u_projectionMatrix", App::projectionMatrix);
+    shader->SetUniformInt("u_tessLevel", tessLevelU);
+
+    renderer.Render(GL_LINES);
+
+    shader->Unbind();
+
+    renderer.SetPatchParameters(4);
 }
 
 void GregoryPatch::ReplacePoint(std::shared_ptr<Point> oldPoint, std::shared_ptr<Point> newPoint)
@@ -66,4 +78,9 @@ void GregoryPatch::ReplacePoint(std::shared_ptr<Point> oldPoint, std::shared_ptr
 
 void GregoryPatch::RenderUI()
 {
+}
+
+json GregoryPatch::Serialize() const
+{
+    return json();
 }

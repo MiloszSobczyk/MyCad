@@ -10,6 +10,7 @@
 #include "InterpolatingCurve.h"
 #include "BezierSurfaceC0.h"
 #include "BezierSurfaceC2.h"
+#include "GregoryPatch.h"
 
 // AxisCursor
 #include "AxisCursor.h"

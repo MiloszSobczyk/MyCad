@@ -13,6 +13,7 @@ enum class ShaderName
 	BezierCurve = 3,
 	BezierSurface = 4,
 	BezierSurface2 = 5,
+	GregoryPatch = 6,
 };
 
 class ShaderManager

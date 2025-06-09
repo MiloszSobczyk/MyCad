@@ -62,6 +62,17 @@ ShaderManager::ShaderManager()
 		.AddShader(ShaderType::Fragment, "bezierSurface")
 		.Compile()
 	);
+
+	AddShader(
+		ShaderName::GregoryPatch,
+		ShaderBuilder()
+		.SetShaderDirectory("Resources/Shaders/")
+		.AddShader(ShaderType::Vertex, "gregoryPatch")
+		.AddShader(ShaderType::TessControl, "gregoryPatch")
+		.AddShader(ShaderType::TessEvaluation, "gregoryPatch")
+		.AddShader(ShaderType::Fragment, "gregoryPatch")
+		.Compile()
+	);
 }
 
 ShaderManager& ShaderManager::GetInstance()

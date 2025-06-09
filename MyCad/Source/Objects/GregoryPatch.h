@@ -38,4 +38,7 @@ public:
 	void Init() {};
 
 	void RenderUI() override;
+
+	// Inherited via Shape
+	json Serialize() const override;
 };
