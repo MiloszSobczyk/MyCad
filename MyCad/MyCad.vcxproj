@@ -156,7 +156,11 @@
     <ClCompile Include="Libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="Libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Libs\stb_image\stb_image.cpp" />
+    <ClCompile Include="Source\App\App.cpp" />
+    <ClCompile Include="Source\Core\Init.cpp" />
+    <ClCompile Include="Source\Core\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Utils\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libs\imgui\imfilebrowser.h" />
@@ -170,6 +174,11 @@
     <ClInclude Include="Libs\imgui\imstb_textedit.h" />
     <ClInclude Include="Libs\imgui\imstb_truetype.h" />
     <ClInclude Include="Libs\stb_image\stb_image.h" />
+    <ClInclude Include="Source\App\App.h" />
+    <ClInclude Include="Source\Core\Config.h" />
+    <ClInclude Include="Source\Core\Init.h" />
+    <ClInclude Include="Source\Core\Window.h" />
+    <ClInclude Include="Source\Utils\Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Libs\imgui\imgui.natvis" />
