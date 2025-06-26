@@ -1,5 +1,3 @@
-#include "Core/App.h"
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -11,9 +9,6 @@ int main(void)
     {
         return -1;
     }
-
-    App app;
-    app.Run();
 
     return 0;
 } 
