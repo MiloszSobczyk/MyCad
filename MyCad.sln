@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyCad", "MyCad\MyCad.vcxproj", "{DE53C7C9-1F27-40B5-B9E8-FD2ABCB91C6E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyCadOld", "MyCadOld\MyCadOld.vcxproj", "{DE53C7C9-1F27-40B5-B9E8-FD2ABCB91C6E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Algebra", "Algebra\Algebra.vcxproj", "{013672F5-CD01-4156-87F7-BC91FC4E0E39}"
 EndProject
