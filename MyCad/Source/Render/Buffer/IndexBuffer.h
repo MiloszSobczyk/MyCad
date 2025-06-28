@@ -15,10 +15,10 @@ public:
     void Unbind() const;
     void SetIndices(const std::vector<unsigned int>& indices);
 
-    inline int GetCount() const { return id; }
-    inline GLuint GetID() const { return count; }
+    inline GLuint GetID() const { return id; }
+    inline unsigned int GetCount() const { return count; }
 
 private:
     GLuint id = 0;
-    int count = 0;
+    unsigned int count = 0;
 };

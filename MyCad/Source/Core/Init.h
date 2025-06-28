@@ -9,3 +9,4 @@
 
 bool InitImgui(GLFWwindow* window);
 bool InitGLEW();
+bool InitRender();

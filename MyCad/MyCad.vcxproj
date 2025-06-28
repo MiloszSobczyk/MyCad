@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -164,6 +164,9 @@
     <ClCompile Include="Source\Render\Buffer\VertexArray.cpp" />
     <ClCompile Include="Source\Render\Buffer\VertexBuffer.cpp" />
     <ClCompile Include="Source\Render\Camera.cpp" />
+    <ClCompile Include="Source\Render\Renderers\BaseRenderer.ipp" />
+    <ClCompile Include="Source\Render\VertexData\VertexLayout.cpp" />
+    <ClCompile Include="Source\Render\VertexData\VertexLayoutTypes.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,11 +185,16 @@
     <ClInclude Include="Source\Core\Config.h" />
     <ClInclude Include="Source\Core\Init.h" />
     <ClInclude Include="Source\Platform\Window.h" />
+    <ClInclude Include="Source\Render\BaseRenderer.h" />
     <ClInclude Include="Source\Render\Buffer\IndexBuffer.h" />
     <ClInclude Include="Source\Render\Buffer\VertexArray.h" />
     <ClInclude Include="Source\Render\Buffer\VertexBuffer.h" />
     <ClInclude Include="Source\Render\Camera.h" />
     <ClInclude Include="Source\Render\IRenderer.h" />
+    <ClInclude Include="Source\Render\Renderers\BaseRenderer.h" />
+    <ClInclude Include="Source\Render\Renderers\IRenderer.h" />
+    <ClInclude Include="Source\Render\VertexData\VertexLayout.h" />
+    <ClInclude Include="Source\Render\VertexData\VertexLayoutTypes.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
   </ItemGroup>
   <ItemGroup>

@@ -28,7 +28,7 @@ void IndexBuffer::Unbind() const
 
 void IndexBuffer::SetIndices(const std::vector<unsigned int>& indices) 
 {
-    count = static_cast<int>(indices.size());
+    count = static_cast<unsigned int>(indices.size());
     Bind();
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 }

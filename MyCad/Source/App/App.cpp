@@ -2,11 +2,13 @@
 
 #include "Core/Config.h"
 #include "Core/Init.h"
+#include "Render/Renderers/BaseRenderer.h"
 
 App::App()
 	: window(Config::WindowWidth + Config::RightInterfaceWidth, Config::WindowHeight, "Pierce the Heavens")
 {
 	InitImgui(window.GetNativeWindow());
+	InitRender();
 }
 
 App::~App()
