@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Core/Window.h"
-#include "Core/Config.h"
+#include "Platform/Window.h"
 
 class App
 {

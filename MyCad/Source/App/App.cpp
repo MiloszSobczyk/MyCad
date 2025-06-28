@@ -1,12 +1,12 @@
 #include "App.h"
 
 #include "Core/Config.h"
-
+#include "Core/Init.h"
 
 App::App()
 	: window(Config::WindowWidth + Config::RightInterfaceWidth, Config::WindowHeight, "Pierce the Heavens")
 {
-	InitImgui(window.GetWindowPointer());
+	InitImgui(window.GetNativeWindow());
 }
 
 App::~App()

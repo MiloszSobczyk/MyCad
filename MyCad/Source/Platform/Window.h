@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Config.h"
-#include "Init.h"
+#include "Core/Config.h"
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <string>
 
@@ -14,7 +16,7 @@ public:
     inline int GetViewportWidth() const { return this->width - Config::RightInterfaceWidth; }
     inline int GetHeight() const { return this->height; };
     inline std::string GetTitle() const { return this->title; }
-    inline GLFWwindow* GetWindowPointer() const { return this->nativeWindow; }
+    inline GLFWwindow* GetNativeWindow() const { return this->nativeWindow; }
 
     bool ShouldClose();
     void ProcessFrame();

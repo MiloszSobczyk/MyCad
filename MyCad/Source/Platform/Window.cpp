@@ -1,5 +1,7 @@
-#include "Utils/Logger.h"
 #include "Window.h"
+
+#include "Core/Init.h"
+#include "Utils/Logger.h"
 
 #include <stdexcept>
 

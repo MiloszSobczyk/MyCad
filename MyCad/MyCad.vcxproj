@@ -158,8 +158,9 @@
     <ClCompile Include="Libs\stb_image\stb_image.cpp" />
     <ClCompile Include="Source\App\App.cpp" />
     <ClCompile Include="Source\Core\Init.cpp" />
-    <ClCompile Include="Source\Core\Window.cpp" />
+    <ClCompile Include="Source\Platform\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Render\Camera.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,7 +178,8 @@
     <ClInclude Include="Source\App\App.h" />
     <ClInclude Include="Source\Core\Config.h" />
     <ClInclude Include="Source\Core\Init.h" />
-    <ClInclude Include="Source\Core\Window.h" />
+    <ClInclude Include="Source\Platform\Window.h" />
+    <ClInclude Include="Source\Render\Camera.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
   </ItemGroup>
   <ItemGroup>
