@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Render\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Libs\imgui\imgui.cpp" />
     <ClCompile Include="Libs\imgui\imgui_demo.cpp" />
     <ClCompile Include="Libs\imgui\imgui_draw.cpp" />
@@ -160,6 +161,8 @@
     <ClCompile Include="Source\Core\Init.cpp" />
     <ClCompile Include="Source\Platform\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Render\Buffer\VertexArray.cpp" />
+    <ClCompile Include="Source\Render\Buffer\VertexBuffer.cpp" />
     <ClCompile Include="Source\Render\Camera.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
   </ItemGroup>
@@ -179,7 +182,11 @@
     <ClInclude Include="Source\Core\Config.h" />
     <ClInclude Include="Source\Core\Init.h" />
     <ClInclude Include="Source\Platform\Window.h" />
+    <ClInclude Include="Source\Render\Buffer\IndexBuffer.h" />
+    <ClInclude Include="Source\Render\Buffer\VertexArray.h" />
+    <ClInclude Include="Source\Render\Buffer\VertexBuffer.h" />
     <ClInclude Include="Source\Render\Camera.h" />
+    <ClInclude Include="Source\Render\IRenderer.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
   </ItemGroup>
   <ItemGroup>
