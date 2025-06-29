@@ -165,6 +165,9 @@
     <ClCompile Include="Source\Render\Buffer\VertexBuffer.cpp" />
     <ClCompile Include="Source\Render\Camera.cpp" />
     <ClCompile Include="Source\Render\Renderers\BaseRenderer.ipp" />
+    <ClCompile Include="Source\Render\Shader\Shader.cpp" />
+    <ClCompile Include="Source\Render\Shader\ShaderBuilder.cpp" />
+    <ClCompile Include="Source\Render\Shader\ShaderManager.cpp" />
     <ClCompile Include="Source\Render\VertexData\VertexLayout.cpp" />
     <ClCompile Include="Source\Render\VertexData\VertexLayoutTypes.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
@@ -193,6 +196,9 @@
     <ClInclude Include="Source\Render\IRenderer.h" />
     <ClInclude Include="Source\Render\Renderers\BaseRenderer.h" />
     <ClInclude Include="Source\Render\Renderers\IRenderer.h" />
+    <ClInclude Include="Source\Render\Shader\Shader.h" />
+    <ClInclude Include="Source\Render\Shader\ShaderBuilder.h" />
+    <ClInclude Include="Source\Render\Shader\ShaderManager.h" />
     <ClInclude Include="Source\Render\VertexData\VertexLayout.h" />
     <ClInclude Include="Source\Render\VertexData\VertexLayoutTypes.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
