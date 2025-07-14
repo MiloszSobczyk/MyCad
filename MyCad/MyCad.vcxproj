@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ECS\Controller\CameraController.cpp" />
     <ClCompile Include="Source\Render\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Libs\imgui\imgui.cpp" />
     <ClCompile Include="Libs\imgui\imgui_demo.cpp" />
@@ -185,8 +186,10 @@
     <ClInclude Include="Libs\imgui\imstb_truetype.h" />
     <ClInclude Include="Libs\stb_image\stb_image.h" />
     <ClInclude Include="Source\App\App.h" />
+    <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\Core\Config.h" />
     <ClInclude Include="Source\Core\Init.h" />
+    <ClInclude Include="Source\ECS\Controller\CameraController.h" />
     <ClInclude Include="Source\Platform\Window.h" />
     <ClInclude Include="Source\Render\BaseRenderer.h" />
     <ClInclude Include="Source\Render\Buffer\IndexBuffer.h" />
