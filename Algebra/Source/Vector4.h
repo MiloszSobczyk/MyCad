@@ -1,7 +1,8 @@
 #pragma once
+
 #include <cstddef>
-#include <vector>
 #include <ostream>
+#include <vector>
 
 namespace Algebra
 {

@@ -148,7 +148,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\ECS\Controller\CameraController.cpp" />
+    <ClCompile Include="Source\ECS\Components\RotationComponent.h" />
+    <ClCompile Include="Source\ECS\Components\ScalingComponent.cpp" />
+    <ClCompile Include="Source\ECS\Logic\CameraLogic.cpp" />
     <ClCompile Include="Source\Render\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Libs\imgui\imgui.cpp" />
     <ClCompile Include="Libs\imgui\imgui_demo.cpp" />
@@ -189,7 +191,9 @@
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\Core\Config.h" />
     <ClInclude Include="Source\Core\Init.h" />
-    <ClInclude Include="Source\ECS\Controller\CameraController.h" />
+    <ClInclude Include="Source\ECS\Components\ScalingComponent.h" />
+    <ClInclude Include="Source\ECS\Components\TranslationComponent.h" />
+    <ClInclude Include="Source\ECS\Logic\CameraLogic.h" />
     <ClInclude Include="Source\Platform\Window.h" />
     <ClInclude Include="Source\Render\BaseRenderer.h" />
     <ClInclude Include="Source\Render\Buffer\IndexBuffer.h" />
@@ -204,6 +208,7 @@
     <ClInclude Include="Source\Render\Shader\ShaderManager.h" />
     <ClInclude Include="Source\Render\VertexData\VertexLayout.h" />
     <ClInclude Include="Source\Render\VertexData\VertexLayoutTypes.h" />
+    <ClInclude Include="Source\Shapes\Point.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
   </ItemGroup>
   <ItemGroup>

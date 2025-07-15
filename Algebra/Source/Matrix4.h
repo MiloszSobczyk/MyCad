@@ -39,6 +39,7 @@ namespace Algebra
 		static Matrix4 Translation(float x, float y, float z);
 		static Matrix4 Translation(Vector4 translation);
 
+		// Add rotation methods for Quaternions
 		static Matrix4 Rotation(float x, float y, float z);
 		static Matrix4 Rotation(Vector4 rotation);
 		static Matrix4 RotationX(float angle);
