@@ -192,6 +192,7 @@
     <ClInclude Include="Source\Core\Init.h" />
     <ClInclude Include="Source\ECS\Components\ScalingComponent.h" />
     <ClInclude Include="Source\ECS\Components\TranslationComponent.h" />
+    <ClInclude Include="Source\ECS\Entity.h" />
     <ClInclude Include="Source\ECS\Logic\CameraLogic.h" />
     <ClInclude Include="Source\Platform\Window.h" />
     <ClInclude Include="Source\Render\BaseRenderer.h" />
@@ -207,7 +208,6 @@
     <ClInclude Include="Source\Render\Shader\ShaderManager.h" />
     <ClInclude Include="Source\Render\VertexData\VertexLayout.h" />
     <ClInclude Include="Source\Render\VertexData\VertexLayoutTypes.h" />
-    <ClInclude Include="Source\Shapes\Point.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
   </ItemGroup>
   <ItemGroup>
