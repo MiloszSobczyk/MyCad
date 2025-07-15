@@ -9,7 +9,6 @@
 class Point 
 {
 public:
-    Point();
     void Render();
 
 private:
