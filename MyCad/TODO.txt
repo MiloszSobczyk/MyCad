@@ -2,3 +2,4 @@
 - Add a simple command line interface for commands.
 - Add InputSystem that updates the raw input state. That input state is later used by other systems.
 - If ever needed, Strategy could be used to implement different Controllers, eg. CameraController and FloatingCameraController type shit.
+- SystemManager, but I doubt it will be needed

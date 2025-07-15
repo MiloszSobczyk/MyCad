@@ -152,6 +152,8 @@
     <ClCompile Include="Source\Core\Scene\Scene.cpp" />
     <ClCompile Include="Source\ECS\Components\RotationComponent.h" />
     <ClCompile Include="Source\ECS\Logic\CameraLogic.cpp" />
+    <ClCompile Include="Source\ECS\Systems\CameraSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\MainSystem.cpp" />
     <ClCompile Include="Source\Render\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Libs\imgui\imgui.cpp" />
     <ClCompile Include="Libs\imgui\imgui_demo.cpp" />
@@ -177,6 +179,7 @@
     <ClCompile Include="Source\Utils\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Libs\entt\entt.hpp" />
     <ClInclude Include="Libs\imgui\imfilebrowser.h" />
     <ClInclude Include="Libs\imgui\imconfig.h" />
     <ClInclude Include="Libs\imgui\imgui.h" />
@@ -191,6 +194,9 @@
     <ClInclude Include="Source\App\App.h" />
     <ClInclude Include="Source\Core\Scene\Scene.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Components.h" />
+    <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\MainSystem.h" />
     <ClInclude Include="Source\Utils\Config.h" />
     <ClInclude Include="Source\Utils\Init.h" />
     <ClInclude Include="Source\ECS\Components\ScalingComponent.h" />

@@ -2,8 +2,6 @@
 
 #include "Scene.h"
 
-#include "entt/entt.hpp"
-
 #include <cstdint>
 #include <utility>
 
@@ -17,7 +15,7 @@ public:
     template<typename T, typename... Args>
     void EmplaceComponent(Args&&... args) 
     {
-        scene->registry->emplace<T>(entityHandle, std::forward<Args>(args)...);
+        scene->registry.emplace<T>(entityHandle, std::forward<Args>(args)...);
     }
 
     template<typename T, typename... Args>
@@ -35,13 +33,13 @@ public:
     template<typename T>
     T& GetComponent() 
     {
-        return scene->registry->get<T>(entityHandle);
+        return scene->registry.get<T>(entityHandle);
     }
 
     template<typename T>
     bool HasComponent() const 
     {
-        return scene->registry->all_of<T>(entityHandle);
+        return scene->registry.all_of<T>(entityHandle);
     }
 
 private:

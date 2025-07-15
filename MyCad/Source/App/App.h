@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Platform/Window.h"
+#include "ECS/Systems/MainSystem.h"
 
 class App
 {
@@ -12,4 +13,5 @@ public:
 
 private:
 	Window window;
+	MainSystem mainSystem;
 };

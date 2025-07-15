@@ -1,12 +1,14 @@
 #pragma once
 
-#include <entt/entt.hpp>
+#include "entt/entt.hpp"
 
 class Entity;
+class MainSystem;
 
 class Scene
 {
 friend Entity;
+friend MainSystem;
 
 public:
 	Scene() = default;
@@ -17,6 +19,12 @@ public:
 
 	Entity CreateEntity();
 	void DestroyEntity(Entity entity);
+
+	template<typename... Components>
+	auto GetAllEntitiesWith()
+	{
+		return registry.view<Components...>();
+	}
 
 private:
 	entt::registry registry;
