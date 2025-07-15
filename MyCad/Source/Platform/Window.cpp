@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include "Core/Init.h"
+#include "Utils/Init.h"
 #include "Utils/Logger.h"
 
 #include <stdexcept>

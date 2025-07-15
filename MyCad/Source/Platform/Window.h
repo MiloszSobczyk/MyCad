@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Config.h"
+#include "Utils/Config.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

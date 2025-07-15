@@ -148,6 +148,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Core\Scene\Entity.cpp" />
+    <ClCompile Include="Source\Core\Scene\Scene.cpp" />
     <ClCompile Include="Source\ECS\Components\RotationComponent.h" />
     <ClCompile Include="Source\ECS\Logic\CameraLogic.cpp" />
     <ClCompile Include="Source\Render\Buffer\IndexBuffer.cpp" />
@@ -160,7 +162,7 @@
     <ClCompile Include="Libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Libs\stb_image\stb_image.cpp" />
     <ClCompile Include="Source\App\App.cpp" />
-    <ClCompile Include="Source\Core\Init.cpp" />
+    <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Platform\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Render\Buffer\VertexArray.cpp" />
@@ -187,12 +189,13 @@
     <ClInclude Include="Libs\imgui\imstb_truetype.h" />
     <ClInclude Include="Libs\stb_image\stb_image.h" />
     <ClInclude Include="Source\App\App.h" />
+    <ClInclude Include="Source\Core\Scene\Scene.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
-    <ClInclude Include="Source\Core\Config.h" />
-    <ClInclude Include="Source\Core\Init.h" />
+    <ClInclude Include="Source\Utils\Config.h" />
+    <ClInclude Include="Source\Utils\Init.h" />
     <ClInclude Include="Source\ECS\Components\ScalingComponent.h" />
     <ClInclude Include="Source\ECS\Components\TranslationComponent.h" />
-    <ClInclude Include="Source\ECS\Entity.h" />
+    <ClInclude Include="Source\Core\Scene\Entity.h" />
     <ClInclude Include="Source\ECS\Logic\CameraLogic.h" />
     <ClInclude Include="Source\Platform\Window.h" />
     <ClInclude Include="Source\Render\BaseRenderer.h" />

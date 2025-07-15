@@ -1,8 +1,7 @@
 #include "App.h"
 
-#include "Core/Config.h"
-#include "Core/Init.h"
-#include "Render/Renderers/BaseRenderer.h"
+#include "Utils/Config.h"
+#include "Utils/Init.h"
 
 App::App()
 	: window(Config::WindowWidth + Config::RightInterfaceWidth, Config::WindowHeight, "Pierce the Heavens")
