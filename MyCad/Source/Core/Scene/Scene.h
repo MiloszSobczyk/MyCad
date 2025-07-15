@@ -19,5 +19,5 @@ public:
 	void DestroyEntity(Entity entity);
 
 private:
-	entt::registry m_Registry;
+	entt::registry registry;
 };
