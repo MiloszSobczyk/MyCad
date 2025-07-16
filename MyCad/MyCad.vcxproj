@@ -154,7 +154,8 @@
     <ClCompile Include="Source\ECS\Logic\CameraLogic.cpp" />
     <ClCompile Include="Source\ECS\Systems\CameraSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\MainSystem.cpp" />
-    <ClCompile Include="Source\Render\Buffer\IndexBuffer.cpp" />
+    <ClCompile Include="Source\Render\Buffer\BufferLayout.cpp" />
+    <ClCompile Include="Source\Render\Buffer\Old\IndexBuffer.cpp" />
     <ClCompile Include="Libs\imgui\imgui.cpp" />
     <ClCompile Include="Libs\imgui\imgui_demo.cpp" />
     <ClCompile Include="Libs\imgui\imgui_draw.cpp" />
@@ -167,8 +168,8 @@
     <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Platform\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\Render\Buffer\VertexArray.cpp" />
-    <ClCompile Include="Source\Render\Buffer\VertexBuffer.cpp" />
+    <ClCompile Include="Source\Render\Buffer\Old\VertexArray.cpp" />
+    <ClCompile Include="Source\Render\Buffer\Old\VertexBuffer.cpp" />
     <ClCompile Include="Source\Render\Camera.cpp" />
     <ClCompile Include="Source\Render\Renderers\BaseRenderer.ipp" />
     <ClCompile Include="Source\Render\Shader\Shader.cpp" />
@@ -197,6 +198,8 @@
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\MainSystem.h" />
+    <ClInclude Include="Source\Render\Buffer\BufferElement.h" />
+    <ClInclude Include="Source\Render\Buffer\BufferLayout.h" />
     <ClInclude Include="Source\Utils\Config.h" />
     <ClInclude Include="Source\Utils\Init.h" />
     <ClInclude Include="Source\ECS\Components\ScalingComponent.h" />
@@ -205,9 +208,9 @@
     <ClInclude Include="Source\ECS\Logic\CameraLogic.h" />
     <ClInclude Include="Source\Platform\Window.h" />
     <ClInclude Include="Source\Render\BaseRenderer.h" />
-    <ClInclude Include="Source\Render\Buffer\IndexBuffer.h" />
-    <ClInclude Include="Source\Render\Buffer\VertexArray.h" />
-    <ClInclude Include="Source\Render\Buffer\VertexBuffer.h" />
+    <ClInclude Include="Source\Render\Buffer\Old\IndexBuffer.h" />
+    <ClInclude Include="Source\Render\Buffer\Old\VertexArray.h" />
+    <ClInclude Include="Source\Render\Buffer\Old\VertexBuffer.h" />
     <ClInclude Include="Source\Render\Camera.h" />
     <ClInclude Include="Source\Render\IRenderer.h" />
     <ClInclude Include="Source\Render\Renderers\BaseRenderer.h" />
