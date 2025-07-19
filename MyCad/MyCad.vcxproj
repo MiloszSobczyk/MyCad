@@ -165,6 +165,7 @@
     <ClCompile Include="Libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Libs\stb_image\stb_image.cpp" />
     <ClCompile Include="Source\App\App.cpp" />
+    <ClCompile Include="Source\Render\Buffer\VertexArray.cpp" />
     <ClCompile Include="Source\Render\Buffer\VertexBuffer.cpp" />
     <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Platform\Window.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Source\Render\Buffer\BufferElement.h" />
     <ClInclude Include="Source\Render\Buffer\BufferLayout.h" />
     <ClInclude Include="Source\Render\Buffer\IndexBuffer.h" />
+    <ClInclude Include="Source\Render\Buffer\VertexArray.h" />
     <ClInclude Include="Source\Render\Buffer\VertexBuffer.h" />
     <ClInclude Include="Source\Utils\Base.h" />
     <ClInclude Include="Source\Utils\Config.h" />
