@@ -1,7 +1,5 @@
 #include "Init.h"
 
-#include "Render/VertexData/VertexLayoutTypes.h"
-
 #include <GL/glew.h>
 
 #include <iostream>
@@ -36,6 +34,5 @@ bool InitGLEW()
 
 bool InitRender()
 {
-    RegisterVertexLayouts();
     return true;
 }

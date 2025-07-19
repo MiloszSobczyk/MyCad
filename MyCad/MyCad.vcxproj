@@ -156,7 +156,6 @@
     <ClCompile Include="Source\ECS\Systems\MainSystem.cpp" />
     <ClCompile Include="Source\Render\Buffer\BufferLayout.cpp" />
     <ClCompile Include="Source\Render\Buffer\IndexBuffer.cpp" />
-    <ClCompile Include="Source\Render\Buffer\Old\IndexBuffer.cpp" />
     <ClCompile Include="Libs\imgui\imgui.cpp" />
     <ClCompile Include="Libs\imgui\imgui_demo.cpp" />
     <ClCompile Include="Libs\imgui\imgui_draw.cpp" />
@@ -170,15 +169,10 @@
     <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Platform\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\Render\Buffer\Old\VertexArray.cpp" />
-    <ClCompile Include="Source\Render\Buffer\Old\VertexBuffer.cpp" />
     <ClCompile Include="Source\Render\Camera.cpp" />
-    <ClCompile Include="Source\Render\Renderers\BaseRenderer.ipp" />
     <ClCompile Include="Source\Render\Shader\Shader.cpp" />
     <ClCompile Include="Source\Render\Shader\ShaderBuilder.cpp" />
     <ClCompile Include="Source\Render\Shader\ShaderManager.cpp" />
-    <ClCompile Include="Source\Render\VertexData\VertexLayout.cpp" />
-    <ClCompile Include="Source\Render\VertexData\VertexLayoutTypes.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -213,18 +207,11 @@
     <ClInclude Include="Source\ECS\Logic\CameraLogic.h" />
     <ClInclude Include="Source\Platform\Window.h" />
     <ClInclude Include="Source\Render\BaseRenderer.h" />
-    <ClInclude Include="Source\Render\Buffer\Old\IndexBuffer.h" />
-    <ClInclude Include="Source\Render\Buffer\Old\VertexArray.h" />
-    <ClInclude Include="Source\Render\Buffer\Old\VertexBuffer.h" />
     <ClInclude Include="Source\Render\Camera.h" />
     <ClInclude Include="Source\Render\IRenderer.h" />
-    <ClInclude Include="Source\Render\Renderers\BaseRenderer.h" />
-    <ClInclude Include="Source\Render\Renderers\IRenderer.h" />
     <ClInclude Include="Source\Render\Shader\Shader.h" />
     <ClInclude Include="Source\Render\Shader\ShaderBuilder.h" />
     <ClInclude Include="Source\Render\Shader\ShaderManager.h" />
-    <ClInclude Include="Source\Render\VertexData\VertexLayout.h" />
-    <ClInclude Include="Source\Render\VertexData\VertexLayoutTypes.h" />
     <ClInclude Include="Source\Utils\Logger.h" />
   </ItemGroup>
   <ItemGroup>
