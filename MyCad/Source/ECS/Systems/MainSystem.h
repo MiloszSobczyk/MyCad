@@ -2,6 +2,7 @@
 
 #include "Core/Scene/Scene.h"
 #include "CameraSystem.h"
+#include "Render/Buffer/VertexArray.h"
 
 // TODO:
 // Change name to SceneSystem. Consider if separation for SceneSystem and Scene is needed.
@@ -20,4 +21,5 @@ public:
 private:
 	Scene scene;
 	CameraSystem cameraSystem;
+	VertexArray vertexArray;
 };

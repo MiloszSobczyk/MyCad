@@ -4,7 +4,7 @@
 #include "Utils/Init.h"
 
 App::App()
-	: window(Config::WindowWidth + Config::RightInterfaceWidth, Config::WindowHeight, "Pierce the Heavens"),
+	: window(Config::WindowWidth, Config::WindowHeight, "Pierce the Heavens"),
 	mainSystem()
 {
 	InitImgui(window.GetNativeWindow());
@@ -23,13 +23,16 @@ void App::Run()
 {
 	while (!window.ShouldClose())
 	{
-		mainSystem.Update();
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		mainSystem.Update();
+		
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		
 		window.ProcessFrame();
 	}
 }

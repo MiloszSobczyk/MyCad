@@ -4,6 +4,7 @@
 #include "Utils/Logger.h"
 
 #include <stdexcept>
+#include <iostream>
 
 Window::Window(int width, int height, std::string title)
     : width(width), height(height), title(title)
