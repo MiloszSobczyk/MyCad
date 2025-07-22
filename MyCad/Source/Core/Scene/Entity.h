@@ -15,34 +15,34 @@ public:
     template<typename T, typename... Args>
     void EmplaceComponent(Args&&... args) 
     {
-        scene->registry.emplace<T>(entityHandle, std::forward<Args>(args)...);
+        m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
     }
 
     template<typename T, typename... Args>
     void EmplaceOrReplaceComponent(Args&&... args)
     {
-        T& component = scene->registry.emplace_or_replace<T>(entityHandle, std::forward<Args>(args)...);
+        T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
     }
 
     template<typename T>
     void RemoveComponent()
     {
-        scene->registry.remove<T>(entityHandle);
+        m_Scene->m_Registry.remove<T>(m_EntityHandle);
     }
 
     template<typename T>
     T& GetComponent() 
     {
-        return scene->registry.get<T>(entityHandle);
+        return m_Scene->m_Registry.get<T>(m_EntityHandle);
     }
 
     template<typename T>
     bool HasComponent() const 
     {
-        return scene->registry.all_of<T>(entityHandle);
+        return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
     }
 
 private:
-    entt::entity entityHandle;
-    Scene* scene;
+    entt::entity m_EntityHandle;
+    Scene* m_Scene;
 };

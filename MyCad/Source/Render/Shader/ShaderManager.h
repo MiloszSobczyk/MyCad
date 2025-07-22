@@ -25,11 +25,11 @@ public:
 	ShaderManager(ShaderManager&) = delete;
 	void operator=(const ShaderManager&) = delete;
 
-	void AddShader(ShaderName name, std::shared_ptr<Shader> shader);
-	inline std::shared_ptr<Shader> GetShader(ShaderName name) { return shaders[name]; }
+	void AddShader(ShaderName name, Ref<Shader> shader);
+	inline Ref<Shader> GetShader(ShaderName name) { return m_Shaders[name]; }
 
 private:
 	ShaderManager();
 
-	std::unordered_map<ShaderName, std::shared_ptr<Shader>> shaders;
+	std::unordered_map<ShaderName, Ref<Shader>> m_Shaders;
 };

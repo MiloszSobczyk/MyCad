@@ -7,18 +7,18 @@
 #include <iostream>
 
 Shader::Shader(unsigned int programID)
-    : programID(programID) 
+    : m_ProgramID{ programID }
 {
 }
 
 Shader::~Shader() 
 {
-    glDeleteProgram(programID);
+    GLCall(glDeleteProgram(m_ProgramID));
 }
 
 void Shader::Bind() const 
 {
-    GLCall(glUseProgram(programID));
+    GLCall(glUseProgram(m_ProgramID));
 }
 
 void Shader::Unbind() const 
@@ -43,17 +43,17 @@ void Shader::SetUniformInt(const std::string& name, int value)
 
 int Shader::GetUniformLocation(const std::string& name) 
 {
-    if (uniformLocationCache.find(name) != uniformLocationCache.end())
+    if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
     {
-        return uniformLocationCache[name];
+        return m_UniformLocationCache[name];
     }
 
-    GLCall(unsigned int location = glGetUniformLocation(programID, name.c_str()));
+    GLCall(unsigned int location = glGetUniformLocation(m_ProgramID, name.c_str()));
     if (location == -1)
     {
 		std::cerr << "Warning: uniform '" << name << "' doesn't exist in shader program!\n";
     }
 
-    uniformLocationCache[name] = location;
+    m_UniformLocationCache[name] = location;
     return location;
 }

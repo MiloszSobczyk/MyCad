@@ -7,8 +7,8 @@
 #include <iostream>
 #include "entt/entt.hpp"
 
-CameraSystem::CameraSystem(Scene* scene)
-	: scene{ scene }
+CameraSystem::CameraSystem(Ref<Scene> scene)
+	: m_Scene{ scene }
 {
 	Entity camera = scene->CreateEntity();
 	camera.EmplaceComponent<CameraComponent>();
@@ -18,18 +18,4 @@ CameraSystem::CameraSystem(Scene* scene)
 
 void CameraSystem::Update()
 {
-    std::cout << "CameraSystem Update\n";
-
-    auto view = scene->GetAllEntitiesWith<CameraComponent, TranslationComponent, RotationComponent>();
-
-	for (auto enttEntity : view)
-	{
-		Entity entity{ enttEntity, scene };
-
-		auto& camera = entity.GetComponent<CameraComponent>();
-		auto& translation = entity.GetComponent<TranslationComponent>();
-		auto& rotation = entity.GetComponent<RotationComponent>();
-
-		std::cout << camera.cameraLogic->GetViewMatrix(translation.translation, rotation.rotation) << '\n';
-	}
 }

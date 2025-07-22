@@ -19,8 +19,9 @@ public:
 	void SetUniformInt(const std::string& name, int value);
 
 private:
-    unsigned int programID;
-    mutable std::unordered_map<std::string, int> uniformLocationCache;
-
     int GetUniformLocation(const std::string& name);
+    
+private:
+    unsigned int m_ProgramID;
+    mutable std::unordered_map<std::string, int> m_UniformLocationCache;
 };

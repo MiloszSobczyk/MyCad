@@ -11,6 +11,6 @@ public:
 	void Run();
 
 private:
-	Window window;
-	MainSystem mainSystem;
+	Window m_Window;
+	MainSystem m_MainSystem;
 };

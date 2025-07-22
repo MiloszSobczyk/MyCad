@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Utils/Base.h"
+
 class Scene;
 
 class CameraSystem
 {
 public:
-	CameraSystem(Scene* scene);
+	CameraSystem(Ref<Scene> scene);
 	~CameraSystem() = default;
 
 	CameraSystem(const CameraSystem&) = delete;
@@ -14,5 +16,5 @@ public:
 	void Update();
 	
 private:
-	Scene* scene = nullptr;
+	Ref<Scene> m_Scene = nullptr;
 };

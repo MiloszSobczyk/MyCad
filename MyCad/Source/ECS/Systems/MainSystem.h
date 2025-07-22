@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/Scene/Scene.h"
 #include "CameraSystem.h"
+#include "Core/Scene/Scene.h"
 #include "Render/Buffer/VertexArray.h"
 
 // TODO:
@@ -19,7 +19,8 @@ public:
 	void Update();
 
 private:
-	Scene scene;
-	CameraSystem cameraSystem;
-	VertexArray vertexArray;
+	Ref<Scene> m_Scene;
+	Ref<VertexArray> m_VertexArray;
+	
+	CameraSystem m_CameraSystem;
 };

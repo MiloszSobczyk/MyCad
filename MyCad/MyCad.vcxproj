@@ -171,7 +171,6 @@
     <ClCompile Include="Source\Render\Buffer\VertexBuffer.cpp" />
     <ClCompile Include="Source\Platform\Window\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\Render\Camera.cpp" />
     <ClCompile Include="Source\Render\Shader\Shader.cpp" />
     <ClCompile Include="Source\Render\Shader\ShaderBuilder.cpp" />
     <ClCompile Include="Source\Render\Shader\ShaderManager.cpp" />
@@ -211,7 +210,6 @@
     <ClInclude Include="Source\ECS\Logic\CameraLogic.h" />
     <ClInclude Include="Source\Platform\Window\Window.h" />
     <ClInclude Include="Source\Render\BaseRenderer.h" />
-    <ClInclude Include="Source\Render\Camera.h" />
     <ClInclude Include="Source\Render\IRenderer.h" />
     <ClInclude Include="Source\Render\Shader\Shader.h" />
     <ClInclude Include="Source\Render\Shader\ShaderBuilder.h" />

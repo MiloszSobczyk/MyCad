@@ -83,13 +83,13 @@ ShaderManager& ShaderManager::GetInstance()
 	return instance;
 }
 
-void ShaderManager::AddShader(ShaderName name, std::shared_ptr<Shader> shader)
+void ShaderManager::AddShader(ShaderName name, Ref<Shader> shader)
 {
-	if (shaders.find(name) != shaders.end())
+	if (m_Shaders.find(name) != m_Shaders.end())
 	{
 		std::cerr << "Error: shader already exists: " << static_cast<int>(name) << '\n';
 		return;
 	}
 
-	shaders[name] = shader;
+	m_Shaders[name] = shader;
 }

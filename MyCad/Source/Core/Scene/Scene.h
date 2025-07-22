@@ -23,9 +23,9 @@ public:
 	template<typename... Components>
 	auto GetAllEntitiesWith()
 	{
-		return registry.view<Components...>();
+		return m_Registry.view<Components...>();
 	}
 
 private:
-	entt::registry registry;
+	entt::registry m_Registry;
 };

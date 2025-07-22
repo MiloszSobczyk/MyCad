@@ -3,7 +3,7 @@
 
 Entity Scene::CreateEntity()
 {
-	Entity entity(registry.create(), this);
+	Entity entity(m_Registry.create(), this);
 
 	// entt::entity is alias for uint32_t, so we can use it directly
 	return entity;
@@ -11,5 +11,5 @@ Entity Scene::CreateEntity()
 
 void Scene::DestroyEntity(Entity entity)
 {
-	registry.destroy(entity.entityHandle);
+	m_Registry.destroy(entity.m_EntityHandle);
 }

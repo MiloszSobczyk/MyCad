@@ -9,10 +9,10 @@
 
 ShaderBuilder& ShaderBuilder::SetShaderDirectory(const std::string& directory) 
 {
-    shaderDirectory = directory;
-    if (!shaderDirectory.empty() && shaderDirectory.back() != '/')
+    m_ShaderDirectory = directory;
+    if (!m_ShaderDirectory.empty() && m_ShaderDirectory.back() != '/')
     {
-        shaderDirectory += '/';
+        m_ShaderDirectory += '/';
     }
 
     return *this;
@@ -21,8 +21,8 @@ ShaderBuilder& ShaderBuilder::SetShaderDirectory(const std::string& directory)
 ShaderBuilder& ShaderBuilder::AddShader(ShaderType type, const std::string& name) 
 {
     const ShaderTypeInfo& info = ShaderTypeInfo::Get(type);
-    std::string fullPath = shaderDirectory + name + info.extension;
-    shaderSources[type] = LoadSourceFromFile(fullPath);
+    std::string fullPath = m_ShaderDirectory + name + info.extension;
+    m_ShaderSources[type] = LoadSourceFromFile(fullPath);
 
     return *this;
 }
@@ -76,7 +76,7 @@ std::shared_ptr<Shader> ShaderBuilder::Compile()
     unsigned int program = glCreateProgram();
     std::vector<unsigned int> shaderIDs;
 
-    for (const auto& [type, source] : shaderSources)
+    for (const auto& [type, source] : m_ShaderSources)
     {
         if (!source.empty())
         {

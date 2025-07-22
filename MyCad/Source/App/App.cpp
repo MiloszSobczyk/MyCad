@@ -4,22 +4,22 @@
 #include <Platform/Imgui/ImguiApi.h>
 
 App::App()
-	: window(Config::WindowWidth, Config::WindowHeight, "Pierce the Heavens"),
-	mainSystem()
+	: m_Window(Config::WindowWidth, Config::WindowHeight, "Pierce the Heavens"),
+	m_MainSystem()
 {
-	ImguiApi::InitImgui(window.GetNativeWindow());
+	ImguiApi::InitImgui(m_Window.GetNativeWindow());
 }
 
 void App::Run()
 {
-	while (!window.ShouldClose())
+	while (!m_Window.ShouldClose())
 	{
 		ImguiApi::NewFrame();
 
-		mainSystem.Update();
+		m_MainSystem.Update();
 		
 		ImguiApi::Render();
 		
-		window.ProcessFrame();
+		m_Window.ProcessFrame();
 	}
 }

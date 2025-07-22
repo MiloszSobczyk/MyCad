@@ -1,15 +1,17 @@
 #include "MainSystem.h"
 
-#include "Render/Shader/ShaderManager.h"
 #include "Algebra.h"
-#include "Render/Buffer/VertexBuffer.h"
+#include "Platform/OpenGL/OpenGLApi.h"
 #include "Render/Buffer/IndexBuffer.h"
-
-#include <iostream>
+#include "Render/Buffer/VertexBuffer.h"
+#include "Render/Shader/ShaderManager.h"
 #include <Utils/Logger.h>
 
+#include <iostream>
+
 MainSystem::MainSystem()
-	: scene(), cameraSystem(&scene), vertexArray()
+	: m_Scene{ CreateRef<Scene>() }, m_VertexArray{ CreateRef<VertexArray>() },
+    m_CameraSystem(m_Scene)
 {
     float vertices[] = {
         // x,    y,    z,    w
@@ -30,8 +32,8 @@ MainSystem::MainSystem()
 
     Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(indices, 3);
 
-    vertexArray.AddVertexBuffer(vb);
-    vertexArray.SetIndexBuffer(ib);
+    m_VertexArray->AddVertexBuffer(vb);
+    m_VertexArray->SetIndexBuffer(ib);
 }
 
 void MainSystem::Update()
@@ -49,10 +51,7 @@ void MainSystem::Update()
     shader->SetUniformMat4f("u_viewMatrix", viewMatrix);
     shader->SetUniformMat4f("u_modelMatrix", modelMatrix);
 
-    vertexArray.Bind();
+	OpenGLApi::DrawIndexed(m_VertexArray, 3);
 
-    GLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr));
-
-    vertexArray.Unbind();
     shader->Unbind();
 }

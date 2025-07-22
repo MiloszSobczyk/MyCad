@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utils/Base.h"
+
 #include <GL/glew.h>
 
 #include <string>
@@ -44,16 +46,16 @@ struct ShaderTypeInfo
 
 class ShaderBuilder
 {
-private:
-    std::string shaderDirectory = "Resources/Shaders/";
-    std::unordered_map<ShaderType, std::string> shaderSources;
-
-    std::string LoadSourceFromFile(const std::string& filepath);
-    unsigned int CompileShader(ShaderType type, const std::string& source);
-
 public:
     ShaderBuilder& SetShaderDirectory(const std::string& directory);
     ShaderBuilder& AddShader(ShaderType type, const std::string& name);
 
-    std::shared_ptr<Shader> Compile();
+    Ref<Shader> Compile();
+
+private:
+    std::string LoadSourceFromFile(const std::string& filepath);
+    unsigned int CompileShader(ShaderType type, const std::string& source);
+
+    std::string m_ShaderDirectory = "Resources/Shaders/";
+    std::unordered_map<ShaderType, std::string> m_ShaderSources;
 };
