@@ -24,17 +24,17 @@ static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 
 VertexArray::VertexArray()
 {
-	glGenVertexArrays(1, &m_RendererID);
+	glGenVertexArrays(1, &m_RendererId);
 }
 
 VertexArray::~VertexArray()
 {
-	glDeleteVertexArrays(1, &m_RendererID);
+	glDeleteVertexArrays(1, &m_RendererId);
 }
 
 void VertexArray::Bind() const
 {
-	glBindVertexArray(m_RendererID);
+	glBindVertexArray(m_RendererId);
 }
 
 void VertexArray::Unbind() const
@@ -44,7 +44,7 @@ void VertexArray::Unbind() const
 
 void VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 {
-	glBindVertexArray(m_RendererID);
+	glBindVertexArray(m_RendererId);
 	vertexBuffer->Bind();
 
 	const auto& layout = vertexBuffer->GetLayout();
@@ -108,7 +108,7 @@ void VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 
 void VertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 {
-	glBindVertexArray(m_RendererID);
+	glBindVertexArray(m_RendererId);
 	indexBuffer->Bind();
 
 	m_IndexBuffer = indexBuffer;

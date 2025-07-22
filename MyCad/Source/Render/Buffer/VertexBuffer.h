@@ -21,6 +21,6 @@ public:
 	void SetLayout(const BufferLayout& layout) { m_Layout = layout; }
 
 private:
-	uint32_t m_RendererID = 0;
+	uint32_t m_RendererId = 0;
 	BufferLayout m_Layout;
 };
