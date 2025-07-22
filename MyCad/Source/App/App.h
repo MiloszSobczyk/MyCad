@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Platform/Window.h"
+#include "Platform/Window/Window.h"
 #include "ECS/Systems/MainSystem.h"
 
 class App

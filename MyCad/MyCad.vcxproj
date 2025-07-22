@@ -154,6 +154,8 @@
     <ClCompile Include="Source\ECS\Logic\CameraLogic.cpp" />
     <ClCompile Include="Source\ECS\Systems\CameraSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\MainSystem.cpp" />
+    <ClCompile Include="Source\Platform\Imgui\ImguiApi.cpp" />
+    <ClCompile Include="Source\Platform\OpenGL\OpenGLApi.cpp" />
     <ClCompile Include="Source\Render\Buffer\BufferLayout.cpp" />
     <ClCompile Include="Source\Render\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Libs\imgui\imgui.cpp" />
@@ -168,7 +170,7 @@
     <ClCompile Include="Source\Render\Buffer\VertexArray.cpp" />
     <ClCompile Include="Source\Render\Buffer\VertexBuffer.cpp" />
     <ClCompile Include="Source\Utils\Init.cpp" />
-    <ClCompile Include="Source\Platform\Window.cpp" />
+    <ClCompile Include="Source\Platform\Window\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Render\Camera.cpp" />
     <ClCompile Include="Source\Render\Shader\Shader.cpp" />
@@ -195,6 +197,8 @@
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\MainSystem.h" />
+    <ClInclude Include="Source\Platform\Imgui\ImguiApi.h" />
+    <ClInclude Include="Source\Platform\OpenGL\OpenGLApi.h" />
     <ClInclude Include="Source\Render\Buffer\BufferElement.h" />
     <ClInclude Include="Source\Render\Buffer\BufferLayout.h" />
     <ClInclude Include="Source\Render\Buffer\IndexBuffer.h" />
@@ -207,7 +211,7 @@
     <ClInclude Include="Source\ECS\Components\TranslationComponent.h" />
     <ClInclude Include="Source\Core\Scene\Entity.h" />
     <ClInclude Include="Source\ECS\Logic\CameraLogic.h" />
-    <ClInclude Include="Source\Platform\Window.h" />
+    <ClInclude Include="Source\Platform\Window\Window.h" />
     <ClInclude Include="Source\Render\BaseRenderer.h" />
     <ClInclude Include="Source\Render\Camera.h" />
     <ClInclude Include="Source\Render\IRenderer.h" />
