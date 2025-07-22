@@ -1,7 +1,6 @@
 #include "Window.h"
 
-#include "Utils/Init.h"
-#include "Utils/Logger.h"
+#include "Platform/OpenGL/OpenGLApi.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -29,12 +28,7 @@ Window::Window(int width, int height, std::string title)
         static_cast<Window*>(glfwGetWindowUserPointer(window))->HandleResize(width, height);
         });
 
-    if (!InitGLEW())
-    {
-        throw std::runtime_error("Cannot inititate glew");
-    }
-
-    SetupGLFWFunctions();
+    OpenGLApi::InitGLEW();
 }
 
 bool Window::ShouldClose()
@@ -52,12 +46,5 @@ void Window::HandleResize(int width, int height)
 {
     this->width = width;
     this->height = height;
-    GLCall(glViewport(0, 0, std::max(width, 0), height));
-}
-
-void Window::SetupGLFWFunctions()
-{
-    GLCall(glEnable(GL_BLEND));
-    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    GLCall(glPatchParameteri(GL_PATCH_VERTICES, 4));
+	OpenGLApi::SetViewport(0, 0, width, height);
 }

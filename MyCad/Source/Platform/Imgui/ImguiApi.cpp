@@ -26,7 +26,7 @@ void ImguiApi::DeinitImgui()
 	ImGui::DestroyContext();
 }
 
-void ImguiApi::ImguiNewFrame()
+void ImguiApi::NewFrame()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();

@@ -12,6 +12,6 @@ public:
 
 // Frame management
 public:
-	static void ImguiNewFrame();
+	static void NewFrame();
 	static void Render();
 };

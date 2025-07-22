@@ -169,7 +169,6 @@
     <ClCompile Include="Source\App\App.cpp" />
     <ClCompile Include="Source\Render\Buffer\VertexArray.cpp" />
     <ClCompile Include="Source\Render\Buffer\VertexBuffer.cpp" />
-    <ClCompile Include="Source\Utils\Init.cpp" />
     <ClCompile Include="Source\Platform\Window\Window.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Render\Camera.cpp" />
@@ -206,7 +205,6 @@
     <ClInclude Include="Source\Render\Buffer\VertexBuffer.h" />
     <ClInclude Include="Source\Utils\Base.h" />
     <ClInclude Include="Source\Utils\Config.h" />
-    <ClInclude Include="Source\Utils\Init.h" />
     <ClInclude Include="Source\ECS\Components\ScalingComponent.h" />
     <ClInclude Include="Source\ECS\Components\TranslationComponent.h" />
     <ClInclude Include="Source\Core\Scene\Entity.h" />
