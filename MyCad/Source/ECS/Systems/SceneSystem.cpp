@@ -1,4 +1,4 @@
-#include "MainSystem.h"
+#include "SceneSystem.h"
 
 #include "Algebra.h"
 #include "Platform/OpenGL/OpenGLApi.h"
@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-MainSystem::MainSystem()
+SceneSystem::SceneSystem()
 	: m_Scene{ CreateRef<Scene>() }, m_VertexArray{ CreateRef<VertexArray>() },
     m_CameraSystem(m_Scene)
 {
@@ -36,7 +36,7 @@ MainSystem::MainSystem()
     m_VertexArray->SetIndexBuffer(ib);
 }
 
-void MainSystem::Update()
+void SceneSystem::Update()
 {
     // Prepare matrices
     auto viewMatrix = Algebra::Matrix4::Identity();

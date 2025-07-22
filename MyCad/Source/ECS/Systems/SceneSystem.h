@@ -7,14 +7,14 @@
 // TODO:
 // Change name to SceneSystem. Consider if separation for SceneSystem and Scene is needed.
 
-class MainSystem
+class SceneSystem
 {
 public:
-	MainSystem();
-	~MainSystem() = default;
+	SceneSystem();
+	~SceneSystem() = default;
 
-	MainSystem(const MainSystem&) = delete;
-	MainSystem& operator=(const MainSystem&) = delete;
+	SceneSystem(const SceneSystem&) = delete;
+	SceneSystem& operator=(const SceneSystem&) = delete;
 
 	void Update();
 

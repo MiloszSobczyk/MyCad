@@ -153,7 +153,7 @@
     <ClCompile Include="Source\ECS\Components\RotationComponent.h" />
     <ClCompile Include="Source\ECS\Logic\CameraLogic.cpp" />
     <ClCompile Include="Source\ECS\Systems\CameraSystem.cpp" />
-    <ClCompile Include="Source\ECS\Systems\MainSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\SceneSystem.cpp" />
     <ClCompile Include="Source\Platform\Imgui\ImguiApi.cpp" />
     <ClCompile Include="Source\Platform\OpenGL\OpenGLApi.cpp" />
     <ClCompile Include="Source\Render\Buffer\BufferLayout.cpp" />
@@ -194,7 +194,7 @@
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />
-    <ClInclude Include="Source\ECS\Systems\MainSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\SceneSystem.h" />
     <ClInclude Include="Source\Platform\Imgui\ImguiApi.h" />
     <ClInclude Include="Source\Platform\OpenGL\OpenGLApi.h" />
     <ClInclude Include="Source\Render\Buffer\BufferElement.h" />

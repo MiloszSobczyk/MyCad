@@ -5,7 +5,7 @@
 
 App::App()
 	: m_Window(Config::WindowWidth, Config::WindowHeight, "Pierce the Heavens"),
-	m_MainSystem()
+	m_SceneSystem()
 {
 	ImguiApi::InitImgui(m_Window.GetNativeWindow());
 }
@@ -16,7 +16,7 @@ void App::Run()
 	{
 		ImguiApi::NewFrame();
 
-		m_MainSystem.Update();
+		m_SceneSystem.Update();
 		
 		ImguiApi::Render();
 		

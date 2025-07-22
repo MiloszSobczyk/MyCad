@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Platform/Window/Window.h"
-#include "ECS/Systems/MainSystem.h"
+#include "ECS/Systems/SceneSystem.h"
 
 class App
 {
@@ -12,5 +12,5 @@ public:
 
 private:
 	Window m_Window;
-	MainSystem m_MainSystem;
+	SceneSystem m_SceneSystem;
 };
