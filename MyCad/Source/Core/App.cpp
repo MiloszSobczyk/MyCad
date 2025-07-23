@@ -1,7 +1,7 @@
 #include "App.h"
 
 #include "Utils/Config.h"
-#include <Platform/Imgui/ImguiApi.h>
+#include "Platform/Imgui/ImguiApi.h"
 
 App::App()
 	: m_Window(Config::WindowWidth, Config::WindowHeight, "Pierce the Heavens"),

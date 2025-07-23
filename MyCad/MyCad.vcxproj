@@ -166,7 +166,7 @@
     <ClCompile Include="Libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="Libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Libs\stb_image\stb_image.cpp" />
-    <ClCompile Include="Source\App\App.cpp" />
+    <ClCompile Include="Source\Core\App.cpp" />
     <ClCompile Include="Source\Render\Buffer\VertexArray.cpp" />
     <ClCompile Include="Source\Render\Buffer\VertexBuffer.cpp" />
     <ClCompile Include="Source\Platform\Window\Window.cpp" />
@@ -189,7 +189,7 @@
     <ClInclude Include="Libs\imgui\imstb_textedit.h" />
     <ClInclude Include="Libs\imgui\imstb_truetype.h" />
     <ClInclude Include="Libs\stb_image\stb_image.h" />
-    <ClInclude Include="Source\App\App.h" />
+    <ClInclude Include="Source\Core\App.h" />
     <ClInclude Include="Source\Core\Scene\Scene.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
