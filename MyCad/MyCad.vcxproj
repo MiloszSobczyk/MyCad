@@ -195,6 +195,8 @@
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SceneSystem.h" />
+    <ClInclude Include="Source\Input\Input.h" />
+    <ClInclude Include="Source\Input\MouseButton.h" />
     <ClInclude Include="Source\Platform\Imgui\ImguiApi.h" />
     <ClInclude Include="Source\Platform\OpenGL\OpenGLApi.h" />
     <ClInclude Include="Source\Render\Buffer\BufferElement.h" />

@@ -3,8 +3,9 @@
 #include "Algebra.h"
 
 #include "ECS/Logic/CameraLogic.h"
+#include "Utils/Base.h"
 
 struct CameraComponent 
 {
-	std::unique_ptr<CameraLogic> cameraLogic = std::make_unique<CameraLogic>();
+	Scope<CameraLogic> cameraLogic = CreateScope<CameraLogic>();
 };
