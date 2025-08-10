@@ -4,9 +4,6 @@
 #include "Core/Scene/Scene.h"
 #include "Render/Buffer/VertexArray.h"
 
-// TODO:
-// Change name to SceneSystem. Consider if separation for SceneSystem and Scene is needed.
-
 class SceneSystem
 {
 public:

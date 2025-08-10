@@ -204,6 +204,9 @@
     <ClInclude Include="Source\Render\Buffer\IndexBuffer.h" />
     <ClInclude Include="Source\Render\Buffer\VertexArray.h" />
     <ClInclude Include="Source\Render\Buffer\VertexBuffer.h" />
+    <ClInclude Include="Source\Render\Uniform\Uniform.h" />
+    <ClInclude Include="Source\Render\Uniform\UniformManager.h" />
+    <ClInclude Include="Source\Render\Uniform\UniformManager.ipp" />
     <ClInclude Include="Source\Utils\Base.h" />
     <ClInclude Include="Source\Utils\Config.h" />
     <ClInclude Include="Source\ECS\Components\ScalingComponent.h" />

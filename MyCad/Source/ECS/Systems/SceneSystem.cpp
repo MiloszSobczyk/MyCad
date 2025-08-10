@@ -5,7 +5,8 @@
 #include "Render/Buffer/IndexBuffer.h"
 #include "Render/Buffer/VertexBuffer.h"
 #include "Render/Shader/ShaderManager.h"
-#include <Utils/Logger.h>
+#include "Render/Uniform/UniformManager.h"
+#include "Utils/Logger.h"
 
 #include <iostream>
 
@@ -54,8 +55,11 @@ void SceneSystem::Update()
     auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
     shader->Bind();
 
-    shader->SetUniformMat4f("u_projectionMatrix", projectionMatrix);
-    shader->SetUniformMat4f("u_viewMatrix", viewMatrix);
+	auto projectionMatrix2 = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
+	auto viewMatrix2 = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
+
+    shader->SetUniformMat4f("u_projectionMatrix", *projectionMatrix2);
+    shader->SetUniformMat4f("u_viewMatrix", *viewMatrix2);
     shader->SetUniformMat4f("u_modelMatrix", modelMatrix);
 
 	OpenGLApi::DrawIndexed(m_VertexArray, 3);
