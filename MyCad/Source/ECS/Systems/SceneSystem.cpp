@@ -39,9 +39,16 @@ SceneSystem::SceneSystem()
 void SceneSystem::Update()
 {
     // Prepare matrices
-    auto viewMatrix = Algebra::Matrix4::Identity();
-    viewMatrix[2][2] = 1;
-    auto projectionMatrix = Algebra::Matrix4::Identity();
+	Algebra::Vector4 translation(2.0f, 0.0f, -5.0f, 1.0f);
+	Algebra::Quaternion rotation(1.0f, 0.0f, 0.0f, 0.0f);
+
+    auto viewMatrix = rotation.ToMatrix() * Algebra::Matrix4::Translation(-translation);
+    auto projectionMatrix = Algebra::Matrix4::Projection(
+        1650.0f / 960.0f, // Aspect ratio
+        100.0f,         // Far plane
+        0.1f,         // Near plane
+        45.0f         // Field of view in degrees
+	);
     auto modelMatrix = Algebra::Matrix4::Identity();
 
     auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);

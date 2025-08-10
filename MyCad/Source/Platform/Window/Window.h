@@ -15,6 +15,7 @@ public:
     inline int GetWidth() const { return this->width; }
     inline int GetViewportWidth() const { return this->width - Config::RightInterfaceWidth; }
     inline int GetHeight() const { return this->height; };
+	inline float GetAspectRatio() const { return static_cast<float>(this->width) / static_cast<float>(this->height); }
     inline std::string GetTitle() const { return this->title; }
     inline GLFWwindow* GetNativeWindow() const { return this->nativeWindow; }
 

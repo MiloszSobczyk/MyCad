@@ -14,7 +14,6 @@ public:
 	CameraSystem& operator=(const CameraSystem&) = delete;
 
 	void Update();
-	
 private:
 	Ref<Scene> m_Scene = nullptr;
 };

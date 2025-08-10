@@ -2,13 +2,15 @@
 
 #include "Algebra.h"
 
-Algebra::Matrix4 CameraLogic::GetViewMatrix(const Algebra::Vector4& translation, const Algebra::Quaternion& rotation) const
+Algebra::Matrix4 CameraLogic::GetViewMatrix(const Algebra::Vector4& translation,
+    const Algebra::Quaternion& rotation) const
 {
-    Algebra::Matrix4 mirrorZ = Algebra::Matrix4::Scale(1.0f, 1.0f, -1.0f);
+    return rotation.ToMatrix() * Algebra::Matrix4::Translation(-translation);
+}
 
-    return mirrorZ 
-        * rotation.ToMatrix()
-        * Algebra::Matrix4::Translation(-translation);
+Algebra::Matrix4 CameraLogic::GetProjectionMatrix(float aspect, float f, float n, float fov) const
+{
+    return Algebra::Matrix4::Projection(aspect, f, n, fov);
 }
 
 Algebra::Vector4 CameraLogic::GetUpVector(const Algebra::Quaternion& rotation) const
