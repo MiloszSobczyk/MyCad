@@ -14,6 +14,7 @@ SceneSystem::SceneSystem()
 	: m_Scene{ CreateRef<Scene>() }, m_VertexArray{ CreateRef<VertexArray>() },
     m_CameraSystem(m_Scene)
 {
+
     float vertices[] = {
         // x,    y,    z,    w
         -0.5f, -.5f, 0.0f, 1.0f,
@@ -39,28 +40,16 @@ SceneSystem::SceneSystem()
 
 void SceneSystem::Update()
 {
-    // Prepare matrices
-	Algebra::Vector4 translation(2.0f, 0.0f, -5.0f, 1.0f);
-	Algebra::Quaternion rotation(1.0f, 0.0f, 0.0f, 0.0f);
-
-    auto viewMatrix = rotation.ToMatrix() * Algebra::Matrix4::Translation(-translation);
-    auto projectionMatrix = Algebra::Matrix4::Projection(
-        1650.0f / 960.0f, // Aspect ratio
-        100.0f,         // Far plane
-        0.1f,         // Near plane
-        45.0f         // Field of view in degrees
-	);
     auto modelMatrix = Algebra::Matrix4::Identity();
+	auto* viewMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
+	auto* projectionMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
 
     auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
     shader->Bind();
 
-	auto projectionMatrix2 = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
-	auto viewMatrix2 = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
-
-    shader->SetUniformMat4f("u_projectionMatrix", *projectionMatrix2);
-    shader->SetUniformMat4f("u_viewMatrix", *viewMatrix2);
     shader->SetUniformMat4f("u_modelMatrix", modelMatrix);
+    shader->SetUniformMat4f("u_viewMatrix", *viewMatrix);
+    shader->SetUniformMat4f("u_projectionMatrix", *projectionMatrix);
 
 	OpenGLApi::DrawIndexed(m_VertexArray, 3);
 

@@ -13,15 +13,15 @@ public:
     Entity(entt::entity entity, Scene* scene);
 
     template<typename T, typename... Args>
-    void EmplaceComponent(Args&&... args) 
+    T& EmplaceComponent(Args&&... args) 
     {
-        m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        return m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
     }
 
     template<typename T, typename... Args>
-    void EmplaceOrReplaceComponent(Args&&... args)
+    T& EmplaceOrReplaceComponent(Args&&... args)
     {
-        T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
+        return m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
     }
 
     template<typename T>

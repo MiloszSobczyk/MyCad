@@ -15,5 +15,7 @@ public:
 
 	void Update();
 private:
+	void UpdateCameraUniforms();
+
 	Ref<Scene> m_Scene = nullptr;
 };

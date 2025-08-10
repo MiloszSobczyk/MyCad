@@ -15,9 +15,6 @@ public:
     }
 
     template<typename T>
-    void RegisterUniform(const std::string& name, const T& value);
-
-    template<typename T>
     void SetUniformValue(const std::string& name, const T& value);
 
     template<typename T>
