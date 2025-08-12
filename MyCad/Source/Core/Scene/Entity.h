@@ -19,6 +19,12 @@ public:
     }
 
     template<typename T, typename... Args>
+    void EmplaceTag(Args&&... args)
+    {
+        m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+    }
+
+    template<typename T, typename... Args>
     T& EmplaceOrReplaceComponent(Args&&... args)
     {
         return m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);

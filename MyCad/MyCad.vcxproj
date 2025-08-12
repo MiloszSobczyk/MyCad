@@ -153,6 +153,7 @@
     <ClCompile Include="Source\ECS\Components\RotationComponent.h" />
     <ClCompile Include="Source\ECS\Logic\CameraLogic.cpp" />
     <ClCompile Include="Source\ECS\Systems\CameraSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\MeshGenerationSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SceneSystem.cpp" />
     <ClCompile Include="Source\Platform\Imgui\ImguiApi.cpp" />
     <ClCompile Include="Source\Platform\OpenGL\OpenGLApi.cpp" />
@@ -194,8 +195,12 @@
     <ClInclude Include="Source\Core\Scene\Scene.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
+    <ClInclude Include="Source\ECS\Components\MeshComponent.h" />
+    <ClInclude Include="Source\ECS\Components\TorusComponent.h" />
     <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\MeshGenerationSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SceneSystem.h" />
+    <ClInclude Include="Source\ECS\Tags\IsDirtyTag.h" />
     <ClInclude Include="Source\Input\Input.h" />
     <ClInclude Include="Source\Input\MouseButton.h" />
     <ClInclude Include="Source\Platform\Imgui\ImguiApi.h" />

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CameraSystem.h"
+#include "MeshGenerationSystem.h"
 #include "Core/Scene/Scene.h"
 #include "Render/Buffer/VertexArray.h"
 
@@ -17,7 +18,7 @@ public:
 
 private:
 	Ref<Scene> m_Scene;
-	Ref<VertexArray> m_VertexArray;
 	
 	CameraSystem m_CameraSystem;
+	MeshGenerationSystem m_MeshGenerationSystem;
 };
