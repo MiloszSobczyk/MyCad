@@ -53,21 +53,9 @@ void OpenGLApi::Clear()
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
-// not passing drawing style is bad, need to fix it
-void OpenGLApi::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
-{
-	if (indexCount == 0)
-	{
-		indexCount = vertexArray->GetIndexBuffer()->GetCount();
-	}
-	vertexArray->Bind();
-	GLCall(glDrawElements(GL_LINES, indexCount, GL_UNSIGNED_INT, nullptr));
-	vertexArray->Unbind();
-}
-
-void OpenGLApi::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+void OpenGLApi::Draw(const Ref<VertexArray>& vertexArray, int renderingMode)
 {
 	vertexArray->Bind();
-	GLCall(glDrawArrays(GL_LINES, 0, vertexCount));
+	GLCall(glDrawElements(GL_LINES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr));
 	vertexArray->Unbind();
 }

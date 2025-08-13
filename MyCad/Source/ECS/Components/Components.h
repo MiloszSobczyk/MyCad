@@ -7,3 +7,7 @@
 
 // Camera
 #include "CameraComponent.h"
+
+// Meshes
+#include "MeshComponent.h"
+#include "TorusComponent.h"

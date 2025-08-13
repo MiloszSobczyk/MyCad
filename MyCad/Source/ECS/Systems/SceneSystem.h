@@ -2,6 +2,7 @@
 
 #include "CameraSystem.h"
 #include "MeshGenerationSystem.h"
+#include "RenderingSystem.h"
 #include "Core/Scene/Scene.h"
 #include "Render/Buffer/VertexArray.h"
 
@@ -21,4 +22,5 @@ private:
 	
 	CameraSystem m_CameraSystem;
 	MeshGenerationSystem m_MeshGenerationSystem;
+	RenderingSystem m_RenderingSystem;
 };
