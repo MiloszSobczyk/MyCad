@@ -45,7 +45,7 @@ void MeshGenerationSystem::GenerateTorusMesh()
 			{
 				Algebra::Vector4 vertex;
 				vertex = GetPoint2(2 * std::numbers::pi_v<float> * j / tc.minorSegments,
-					2 * std::numbers::pi_v<float> * i / tc.majorSegments, tc.minorRadius, tc.majorRadius);
+					2 * std::numbers::pi_v<float> * i / tc.majorSegments, tc.majorRadius, tc.minorRadius);
 				vertices.push_back(vertex);
 			}
 		}
