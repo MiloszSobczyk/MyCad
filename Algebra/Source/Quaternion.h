@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Matrix4.h"
 #include "Vector4.h"
 

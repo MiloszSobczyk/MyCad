@@ -15,13 +15,32 @@ void RenderingSystem::Update()
 {
     for (auto entity : m_Scene->GetAllEntitiesWith<MeshComponent>())
     {
-        auto modelMatrix = Algebra::Matrix4::Identity();
+		Entity e{ entity, m_Scene.get() };
+
+		auto modelMatrix = Algebra::Matrix4::Identity();
+
+        if (e.HasComponent<ScalingComponent>())
+        {
+            const auto& scaling = e.GetComponent<ScalingComponent>();
+            modelMatrix = Algebra::Matrix4::Scale(scaling.scaling) * modelMatrix;
+        }
+
+        if (e.HasComponent<RotationComponent>())
+        {
+            const auto& rotation = e.GetComponent<RotationComponent>();
+            modelMatrix = Algebra::Matrix4::Rotation(rotation.rotation) * modelMatrix;
+		}
+
+        if (e.HasComponent<TranslationComponent>())
+        {
+            const auto& translation = e.GetComponent<TranslationComponent>();
+            modelMatrix = Algebra::Matrix4::Translation(translation.translation) * modelMatrix;
+		}
+
         auto* viewMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
         auto* projectionMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
 
         auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
-
-        Entity e{ entity, m_Scene.get() };
 
         const auto& mc = e.GetComponent<MeshComponent>();
     

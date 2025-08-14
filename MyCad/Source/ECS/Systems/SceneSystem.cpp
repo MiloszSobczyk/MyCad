@@ -22,8 +22,8 @@ SceneSystem::SceneSystem()
     Entity entity = m_Scene->CreateEntity();
 
     entity.EmplaceComponent<TorusComponent>();
-	entity.EmplaceComponent<TranslationComponent>();
-	entity.EmplaceComponent<RotationComponent>();
+	entity.EmplaceComponent<TranslationComponent>(Algebra::Vector4(2.f, 0.f, 0.f));
+	entity.EmplaceComponent<RotationComponent>(Algebra::Quaternion(1.f, 0.5f, 0.5f, 0.f));
 	entity.EmplaceComponent<ScalingComponent>();
     entity.EmplaceTag<IsDirtyTag>();
 

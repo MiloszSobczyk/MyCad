@@ -1,5 +1,7 @@
 #include "Matrix4.h"
 
+#include "Quaternion.h"
+
 #include <stdexcept>
 #include "Utils.h"
 
@@ -208,6 +210,11 @@ Matrix4 Algebra::Matrix4::RotationYDegree(float angle)
 Matrix4 Algebra::Matrix4::RotationZDegree(float angle)
 {
 	return RotationZ(DegreeToRadians(angle));
+}
+
+Matrix4 Algebra::Matrix4::Rotation(const Quaternion& quaternion)
+{
+	return quaternion.ToMatrix();
 }
 
 Matrix4 Algebra::Matrix4::Scale(float x, float y, float z)

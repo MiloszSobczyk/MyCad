@@ -5,6 +5,7 @@
 namespace Algebra
 {
 	struct StereoscopicMatrices;
+	class Quaternion;
 
 	class Matrix4
 	{
@@ -50,6 +51,7 @@ namespace Algebra
 		static Matrix4 RotationXByDegree(float angle);
 		static Matrix4 RotationYDegree(float angle);
 		static Matrix4 RotationZDegree(float angle);
+		static Matrix4 Rotation(const Quaternion& quaternion);
 
 		static Matrix4 Scale(float x, float y, float z);
 		static Matrix4 Scale(Vector4 scale);
