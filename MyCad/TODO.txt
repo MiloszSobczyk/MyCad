@@ -1,9 +1,10 @@
 - Add interface layer for initialization, viewports etc.
 - Add a simple command line interface for commands.
 - Add InputSystem that updates the raw input state. That input state is later used by other systems.
-- Add IConfigManager
+- Add IConfigManager.
 - Add ChangedComponent that can be used to track changes in components.
-- Add possibility to assign uniform and buffer to renderer in some better way
+- Add possibility to assign uniform and buffer to renderer in some better way.
+- Add a system that allows for creating only one vertex array object per e.g. PointMesh, so it can be reused.
 
 
 InputSystem handles the input state we receive and can be used by other systems.

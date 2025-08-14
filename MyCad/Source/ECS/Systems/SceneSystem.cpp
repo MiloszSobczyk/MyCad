@@ -4,11 +4,6 @@
 #include "Core/Scene/Entity.h"
 #include "ECS/Components/Components.h"
 #include "ECS/Tags/IsDirtyTag.h"
-#include "Platform/OpenGL/OpenGLApi.h"
-#include "Render/Buffer/IndexBuffer.h"
-#include "Render/Buffer/VertexBuffer.h"
-#include "Render/Shader/ShaderManager.h"
-#include "Render/Uniform/UniformManager.h"
 #include "Utils/Logger.h"
 
 #include <iostream>
@@ -21,13 +16,17 @@ SceneSystem::SceneSystem()
 {
     Entity entity = m_Scene->CreateEntity();
 
-    entity.EmplaceComponent<TorusComponent>();
-	entity.EmplaceComponent<TranslationComponent>(Algebra::Vector4(2.f, 0.f, 0.f));
-	entity.EmplaceComponent<RotationComponent>(Algebra::Quaternion(1.f, 0.5f, 0.5f, 0.f));
-	entity.EmplaceComponent<ScalingComponent>();
+    entity.EmplaceComponent<PointComponent>();
+    entity.EmplaceComponent<TranslationComponent>();
     entity.EmplaceTag<IsDirtyTag>();
 
-    m_MeshGenerationSystem.Update();
+    entity = m_Scene->CreateEntity();
+
+    entity.EmplaceComponent<TorusComponent>();
+	entity.EmplaceComponent<TranslationComponent>();
+	entity.EmplaceComponent<RotationComponent>();
+	entity.EmplaceComponent<ScalingComponent>();
+    entity.EmplaceTag<IsDirtyTag>();
 }
 
 void SceneSystem::Update()

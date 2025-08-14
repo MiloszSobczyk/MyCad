@@ -13,5 +13,6 @@ public:
 private:
 	Ref<Scene> m_Scene;
 
-	void GenerateTorusMesh();
+	void UpdateTorusMeshes();
+	void UpdatePointMeshes();
 };

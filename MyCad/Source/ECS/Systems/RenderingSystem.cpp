@@ -50,6 +50,6 @@ void RenderingSystem::Update()
 		m_Renderer->SetProjectionMatrix(*projectionMatrix);
 		m_Renderer->SetVertexArray(mc.vertexArray);
 
-		m_Renderer->Render(RenderingMode::Lines);
+		m_Renderer->Render(mc.renderingMode);
     }
 }

@@ -197,6 +197,7 @@
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\MeshComponent.h" />
+    <ClInclude Include="Source\ECS\Components\PointComponent.h" />
     <ClInclude Include="Source\ECS\Components\TorusComponent.h" />
     <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\MeshGenerationSystem.h" />

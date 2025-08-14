@@ -11,3 +11,4 @@
 // Meshes
 #include "MeshComponent.h"
 #include "TorusComponent.h"
+#include "PointComponent.h"

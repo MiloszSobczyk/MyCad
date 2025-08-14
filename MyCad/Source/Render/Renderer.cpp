@@ -7,6 +7,9 @@ void Renderer::Render(RenderingMode renderingMode)
 	if (!m_Shader || !m_VertexArray)
 		return;
 
+	GLint currentVAO;
+	glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
+
 	m_Shader->Bind();
 	m_Shader->SetUniformMat4f("u_modelMatrix", m_ModelMatrix);
 	m_Shader->SetUniformMat4f("u_viewMatrix", m_ViewMatrix);
