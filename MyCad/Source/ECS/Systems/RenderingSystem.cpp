@@ -2,7 +2,7 @@
 
 #include "Core/Scene/Entity.h"
 #include "ECS/Components/Components.h"
-#include "Render/Shader/ShaderManager.h"
+#include "Managers/ShaderManager.h"
 #include "Render/Uniform/UniformManager.h"
 
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Shader.h"
-#include "ShaderBuilder.h"
+#include "Render/Shader/Shader.h"
+#include "Render/Shader/ShaderBuilder.h"
 
 #include <string>
 #include <unordered_map>
