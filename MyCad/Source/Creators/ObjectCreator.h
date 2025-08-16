@@ -4,7 +4,7 @@
 #include "Core/Scene/Entity.h"
 #include "ECS/Components/Components.h"
 
-namespace ShapeCreator
+namespace ObjectCreator
 {
 	inline Entity CreateTorus(Ref<Scene> scene)
 	{

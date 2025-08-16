@@ -1,7 +1,7 @@
 #include "SceneSystem.h"
 
 #include "Algebra.h"
-#include "Creators/ShapeCreator.h"
+#include "Creators/ObjectCreator.h"
 #include "Utils/Logger.h"
 
 #include <iostream>
@@ -12,8 +12,8 @@ SceneSystem::SceneSystem()
     m_MeshGenerationSystem(m_Scene),
     m_RenderingSystem(m_Scene)
 {
-	ShapeCreator::CreatePoint(m_Scene);
-	ShapeCreator::CreateTorus(m_Scene);
+	ObjectCreator::CreatePoint(m_Scene);
+	ObjectCreator::CreateTorus(m_Scene);
 }
 
 void SceneSystem::Update()

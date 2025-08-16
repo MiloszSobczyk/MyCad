@@ -195,7 +195,7 @@
     <ClInclude Include="Libs\stb_image\stb_image.h" />
     <ClInclude Include="Source\Core\App.h" />
     <ClInclude Include="Source\Core\Scene\Scene.h" />
-    <ClInclude Include="Source\Creators\ShapeCreator.h" />
+    <ClInclude Include="Source\Creators\ObjectCreator.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\IdComponent.h" />
