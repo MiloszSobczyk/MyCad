@@ -14,6 +14,8 @@ void App::Run()
 {
 	while (!m_Window.ShouldClose())
 	{
+		m_Window.NewFrame();
+
 		ImguiApi::NewFrame();
 
 		m_SceneSystem.Update();

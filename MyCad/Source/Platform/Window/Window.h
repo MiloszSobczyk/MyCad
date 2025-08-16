@@ -21,6 +21,7 @@ public:
 
     bool ShouldClose();
     void ProcessFrame();
+    void NewFrame();
     void HandleResize(int width, int height);
 
 private:

@@ -224,6 +224,8 @@
     <ClInclude Include="Source\Render\Uniform\UniformManager.ipp" />
     <ClInclude Include="Source\UI\ShapeCreator.h" />
     <ClInclude Include="Source\UI\ShapeList.h" />
+    <ClInclude Include="Source\UI\UI.h" />
+    <ClInclude Include="Source\UI\Utils.h" />
     <ClInclude Include="Source\Utils\Base.h" />
     <ClInclude Include="Source\Utils\Config.h" />
     <ClInclude Include="Source\ECS\Components\ScalingComponent.h" />

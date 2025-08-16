@@ -3,8 +3,7 @@
 #include "Algebra.h"
 #include "Creators/ObjectCreator.h"
 #include "Utils/Logger.h"
-#include "UI/ShapeCreator.h"
-#include "UI/ShapeList.h"
+#include "UI/UI.h"
 
 #include <iostream>
 

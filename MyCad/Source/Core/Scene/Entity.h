@@ -48,6 +48,11 @@ public:
         return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
     }
 
+    uint32_t GetId() const
+    {
+        return static_cast<uint32_t>(m_EntityHandle);
+    }
+
 private:
     entt::entity m_EntityHandle;
     Scene* m_Scene;
