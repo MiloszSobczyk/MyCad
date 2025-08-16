@@ -195,9 +195,12 @@
     <ClInclude Include="Libs\stb_image\stb_image.h" />
     <ClInclude Include="Source\Core\App.h" />
     <ClInclude Include="Source\Core\Scene\Scene.h" />
+    <ClInclude Include="Source\Creators\ShapeCreator.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
+    <ClInclude Include="Source\ECS\Components\IdComponent.h" />
     <ClInclude Include="Source\ECS\Components\MeshComponent.h" />
+    <ClInclude Include="Source\ECS\Components\NameComponent.h" />
     <ClInclude Include="Source\ECS\Components\PointComponent.h" />
     <ClInclude Include="Source\ECS\Components\TorusComponent.h" />
     <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />

@@ -13,5 +13,5 @@ private:
 	IdManager(const IdManager&) = delete;
 	void operator=(const IdManager&) = delete;
 
-	unsigned int m_CurrentId;
+	unsigned int m_CurrentId = 0;
 };

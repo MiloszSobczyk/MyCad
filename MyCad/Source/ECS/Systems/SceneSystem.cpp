@@ -1,9 +1,7 @@
 #include "SceneSystem.h"
 
 #include "Algebra.h"
-#include "Core/Scene/Entity.h"
-#include "ECS/Components/Components.h"
-#include "ECS/Tags/IsDirtyTag.h"
+#include "Creators/ShapeCreator.h"
 #include "Utils/Logger.h"
 
 #include <iostream>
@@ -14,19 +12,8 @@ SceneSystem::SceneSystem()
     m_MeshGenerationSystem(m_Scene),
     m_RenderingSystem(m_Scene)
 {
-    Entity entity = m_Scene->CreateEntity();
-
-    entity.EmplaceComponent<PointComponent>();
-    entity.EmplaceComponent<TranslationComponent>();
-    entity.EmplaceTag<IsDirtyTag>();
-
-    entity = m_Scene->CreateEntity();
-
-    entity.EmplaceComponent<TorusComponent>();
-	entity.EmplaceComponent<TranslationComponent>();
-	entity.EmplaceComponent<RotationComponent>();
-	entity.EmplaceComponent<ScalingComponent>();
-    entity.EmplaceTag<IsDirtyTag>();
+	ShapeCreator::CreatePoint(m_Scene);
+	ShapeCreator::CreateTorus(m_Scene);
 }
 
 void SceneSystem::Update()

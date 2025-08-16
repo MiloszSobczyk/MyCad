@@ -12,3 +12,10 @@
 #include "MeshComponent.h"
 #include "TorusComponent.h"
 #include "PointComponent.h"
+
+// Metadata
+#include "IdComponent.h"
+#include "NameComponent.h"
+
+// Tags
+#include "../Tags/IsDirtyTag.h"
