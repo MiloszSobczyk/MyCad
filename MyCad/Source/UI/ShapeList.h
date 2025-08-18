@@ -15,7 +15,7 @@ namespace UI
 
 		if (shapes.empty())
 		{
-			ImGui::Text("No shapes available.##shape_list");
+			ImGui::Text("No shapes available##shape_list");
 			ImGui::End();
 			return;
 		}
@@ -24,8 +24,18 @@ namespace UI
 		{
 			Entity e{ entity, scene.get() };
 
-			if (ImGui::Selectable(GenerateLabel(e, e.GetComponent<NameComponent>().name).c_str(), false))
+			bool isSelected = e.HasComponent<IsSelectedTag>();
+
+			if (ImGui::Selectable(GenerateLabel(e, e.GetComponent<NameComponent>().name).c_str(), isSelected))
 			{
+				if (isSelected)
+				{
+					e.RemoveComponent<IsSelectedTag>();
+				}
+				else
+				{
+					e.EmplaceTag<IsSelectedTag>();
+				}
 			}
 		}
 

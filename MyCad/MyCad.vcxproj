@@ -202,12 +202,12 @@
     <ClInclude Include="Source\ECS\Components\MeshComponent.h" />
     <ClInclude Include="Source\ECS\Components\NameComponent.h" />
     <ClInclude Include="Source\ECS\Components\PointComponent.h" />
+    <ClInclude Include="Source\ECS\Components\Tags.h" />
     <ClInclude Include="Source\ECS\Components\TorusComponent.h" />
     <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\MeshGenerationSystem.h" />
     <ClInclude Include="Source\ECS\Systems\RenderingSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SceneSystem.h" />
-    <ClInclude Include="Source\ECS\Tags\IsDirtyTag.h" />
     <ClInclude Include="Source\Input\Input.h" />
     <ClInclude Include="Source\Input\MouseButton.h" />
     <ClInclude Include="Source\Managers\IdManager.h" />
@@ -224,6 +224,7 @@
     <ClInclude Include="Source\Render\Uniform\UniformManager.ipp" />
     <ClInclude Include="Source\UI\ShapeCreator.h" />
     <ClInclude Include="Source\UI\ShapeList.h" />
+    <ClInclude Include="Source\UI\ShapeProperties.h" />
     <ClInclude Include="Source\UI\UI.h" />
     <ClInclude Include="Source\UI\Utils.h" />
     <ClInclude Include="Source\Utils\Base.h" />

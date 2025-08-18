@@ -18,4 +18,4 @@
 #include "NameComponent.h"
 
 // Tags
-#include "../Tags/IsDirtyTag.h"
+#include "Tags.h"

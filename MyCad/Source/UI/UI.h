@@ -2,3 +2,4 @@
 
 #include "ShapeCreator.h"
 #include "ShapeList.h"
+#include "ShapeProperties.h"

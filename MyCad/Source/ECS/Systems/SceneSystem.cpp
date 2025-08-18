@@ -21,6 +21,7 @@ void SceneSystem::Update()
 {
 	UI::DisplayShapeCreator(m_Scene);
 	UI::DisplayShapeList(m_Scene);
+	UI::DisplaySelectedShapes(m_Scene);
 
 	m_MeshGenerationSystem.Update();
 	m_CameraSystem.Update();

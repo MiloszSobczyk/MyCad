@@ -2,7 +2,6 @@
 
 #include "Core/Scene/Entity.h"
 #include "ECS/Components/Components.h"
-#include "ECS/Tags/IsDirtyTag.h"
 
 #include "Algebra.h"
 
