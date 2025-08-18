@@ -20,11 +20,24 @@ namespace UI
 			return;
 		}
 
-		for (auto entity : selectedShapes)
-		{
-			Entity e{ entity, scene.get() };
-			ImGui::Text("%s", GenerateLabel(e, e.GetComponent<NameComponent>().name).c_str());
-		}
+        for (auto entity : selectedShapes)
+        {
+            Entity e{ entity, scene.get() };
+
+            ImGui::Text("%s", GenerateLabel(e, e.GetComponent<NameComponent>().name).c_str());
+
+            if (e.HasComponent<TranslationComponent>())
+            {
+                auto& tc = e.GetComponent<TranslationComponent>();
+                ImGui::DragFloat3(
+                    GenerateLabel(e, std::string("Translation")).c_str(),
+                    reinterpret_cast<float*>(&tc.translation),
+                    0.02f
+                );
+            }
+
+            ImGui::Separator();
+        }
 
 		ImGui::End();
 	}

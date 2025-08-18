@@ -15,6 +15,10 @@ namespace UI
 		{
 			ObjectCreator::CreateTorus(scene);
 		}
+		if (ImGui::Button("Create Point##shape_creation"))
+		{
+			ObjectCreator::CreatePoint(scene);
+		}
 
 		ImGui::End();
 	}
