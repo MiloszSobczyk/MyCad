@@ -29,12 +29,20 @@ namespace UI
             if (e.HasComponent<TranslationComponent>())
             {
                 auto& tc = e.GetComponent<TranslationComponent>();
-                ImGui::DragFloat3(
+
+                Algebra::Vector4 translation = tc.translation;
+                float temp[3] = { translation.x, translation.y, translation.z };
+
+                if (ImGui::DragFloat3(
                     GenerateLabel(e, std::string("Translation")).c_str(),
-                    reinterpret_cast<float*>(&tc.translation),
+                    temp,
                     0.02f
-                );
+                ))
+                {
+                    tc.SetTranslation({ temp[0], temp[1], temp[2] });
+                }
             }
+
 
             ImGui::Separator();
         }
