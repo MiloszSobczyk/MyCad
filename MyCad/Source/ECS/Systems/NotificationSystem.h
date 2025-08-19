@@ -7,6 +7,10 @@ class  NotificationSystem
 {
 public:
 	NotificationSystem(Ref<Scene> scene);
+	~NotificationSystem() = default;
+
+	NotificationSystem(const NotificationSystem&) = delete;
+	NotificationSystem& operator=(const NotificationSystem&) = delete;
 
 	void Update();
 

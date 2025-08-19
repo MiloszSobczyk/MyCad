@@ -30,7 +30,14 @@ namespace UI
 			}
 			if (!pointHandles.empty())
 			{
-				ObjectCreator::CreatePolyline(scene, pointHandles);
+				auto polyline = ObjectCreator::CreatePolyline(scene, pointHandles);
+
+				for (auto pointHandle : pointHandles)
+				{
+					Entity pointEntity{ pointHandle, scene.get() };
+					auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
+					nc.AddToNotify(polyline.GetHandle());
+				}
 			}
 			else
 			{

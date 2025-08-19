@@ -18,5 +18,8 @@
 #include "IdComponent.h"
 #include "NameComponent.h"
 
+// Logic
+#include "NotificationComponent.h"
+
 // Tags
 #include "Tags.h"

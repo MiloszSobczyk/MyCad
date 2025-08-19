@@ -1,10 +1,12 @@
 #pragma once
 
 #include "CameraSystem.h"
-#include "MeshGenerationSystem.h"
-#include "RenderingSystem.h"
 #include "Core/Scene/Scene.h"
+#include "MeshGenerationSystem.h"
+#include "NotificationSystem.h"
 #include "Render/Buffer/VertexArray.h"
+#include "RenderingSystem.h"
+
 
 class SceneSystem
 {
@@ -23,4 +25,5 @@ private:
 	CameraSystem m_CameraSystem;
 	MeshGenerationSystem m_MeshGenerationSystem;
 	RenderingSystem m_RenderingSystem;
+	NotificationSystem m_NotificationSystem;
 };
