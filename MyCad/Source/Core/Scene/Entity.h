@@ -10,6 +10,7 @@ class Entity
 friend Scene;
 
 public:
+    Entity() = default;
     Entity(entt::entity entity, Scene* scene);
 
     template<typename T, typename... Args>
@@ -21,6 +22,10 @@ public:
     template<typename T, typename... Args>
     void EmplaceTag(Args&&... args)
     {
+        if(m_Scene->m_Registry.all_of<T>(m_EntityHandle))
+        {
+            return;
+		}
         m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
     }
 

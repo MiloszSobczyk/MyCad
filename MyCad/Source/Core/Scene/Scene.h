@@ -11,8 +11,8 @@ friend Entity;
 friend MainSystem;
 
 public:
-	Scene() = default;
-	~Scene() = default;
+	Scene();
+	~Scene();
 
 	Scene(const Scene&) = delete;
 	Scene& operator=(const Scene&) = delete;
@@ -25,6 +25,8 @@ public:
 	{
 		return m_Registry.view<Components...>();
 	}
+
+	void OnPositionCreated(entt::registry& registry, entt::entity entity);
 
 private:
 	entt::registry m_Registry;

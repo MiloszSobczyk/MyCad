@@ -14,7 +14,8 @@ CameraSystem::CameraSystem(Ref<Scene> scene)
 {
 	Entity camera = scene->CreateEntity();
 	camera.EmplaceComponent<CameraComponent>();
-	camera.EmplaceComponent<TranslationComponent>(Config::InitialCameraPosition);
+	auto& tc = camera.EmplaceComponent<TranslationComponent>();
+	tc.SetTranslation(Config::InitialCameraPosition);
 	camera.EmplaceComponent<RotationComponent>();
 
 	UpdateCameraUniforms();

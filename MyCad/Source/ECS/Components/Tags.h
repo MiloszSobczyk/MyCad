@@ -2,3 +2,4 @@
 
 struct IsDirtyTag {};
 struct IsSelectedTag {};
+struct IsNotifiedTag {};

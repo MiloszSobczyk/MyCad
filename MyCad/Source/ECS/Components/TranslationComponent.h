@@ -1,16 +1,23 @@
 #pragma once
 
+#include "Core/Observable.h"
+
 #include "Algebra.h"
 
 struct TranslationComponent
 {
-	Algebra::Vector4 translation;
+	Observable<Algebra::Vector4> translation;
 
-	TranslationComponent(Algebra::Vector4 initialTranslation = Algebra::Vector4(0.f, 0.f, 0.f, 0.f))
-		: translation(initialTranslation) { }
+	TranslationComponent() = default;
+	TranslationComponent(const TranslationComponent&) = default;
 
 	void AddTranslation(const Algebra::Vector4& newTranslation)
 	{
-		translation += newTranslation;
+		translation.Set(translation.value + newTranslation);
+	}
+
+	void SetTranslation(const Algebra::Vector4& newTranslation)
+	{
+		translation.Set(newTranslation);
 	}
 };

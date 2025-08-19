@@ -194,6 +194,7 @@
     <ClInclude Include="Libs\imgui\imstb_truetype.h" />
     <ClInclude Include="Libs\stb_image\stb_image.h" />
     <ClInclude Include="Source\Core\App.h" />
+    <ClInclude Include="Source\Core\Observable.h" />
     <ClInclude Include="Source\Core\Scene\Scene.h" />
     <ClInclude Include="Source\Creators\ObjectCreator.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
