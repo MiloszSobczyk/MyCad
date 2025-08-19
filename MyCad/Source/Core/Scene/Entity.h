@@ -16,6 +16,10 @@ public:
     template<typename T, typename... Args>
     T& EmplaceComponent(Args&&... args) 
     {
+        if(m_Scene->m_Registry.all_of<T>(m_EntityHandle))
+        {
+            return m_Scene->m_Registry.get<T>(m_EntityHandle);
+		}
         return m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
     }
 
@@ -53,11 +57,15 @@ public:
         return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
     }
 
+    entt::entity GetHandle() const
+    {
+        return m_EntityHandle;
+	}
+
     uint32_t GetId() const
     {
         return static_cast<uint32_t>(m_EntityHandle);
     }
-
 private:
     entt::entity m_EntityHandle;
     Scene* m_Scene;

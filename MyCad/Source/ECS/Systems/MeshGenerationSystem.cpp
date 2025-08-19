@@ -17,6 +17,7 @@ void MeshGenerationSystem::Update()
 {
 	UpdateTorusMeshes();
 	UpdatePointMeshes();
+	UpdatePolylineMeshes();
 }
 
 Algebra::Vector4 GetPoint(float angleTube, float angleRadius, float radius, float tubeRadius)
@@ -145,5 +146,70 @@ void MeshGenerationSystem::UpdatePointMeshes()
 		mc->renderingMode = RenderingMode::Triangles;
 
 		va->Unbind();
+	}
+}
+
+void MeshGenerationSystem::UpdatePolylineMeshes()
+{
+	for (auto entity : m_Scene->GetAllEntitiesWith<IsDirtyTag, PolylineComponent>())
+	{
+		Entity e{ entity, m_Scene.get() };
+
+		e.RemoveComponent<IsDirtyTag>();
+
+		const auto& pc = e.GetComponent<PolylineComponent>();
+
+		std::vector<Algebra::Vector4> vertices;
+		std::vector<uint32_t> indices;
+
+		for (auto point : pc.pointHandles)
+		{
+			Entity pointEntity{ point, m_Scene.get() };
+
+			if (pointEntity.HasComponent<TranslationComponent>())
+			{
+				Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
+				vertex.w = 1.0f;
+				vertices.push_back(vertex);
+			}
+		}
+
+		for (int i = 0; i < pc.pointHandles.size() - 1; ++i)
+		{
+			indices.push_back(i);
+			indices.push_back(i + 1);
+		}
+
+		BufferLayout layout = {
+			{ ShaderDataType::Float4, "position" }
+		};
+
+		if (!e.HasComponent<MeshComponent>())
+		{
+			Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices.data(),
+				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
+			vb->SetLayout(layout);
+
+			Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(indices.data(), indices.size());
+
+			auto va = CreateRef<VertexArray>();
+			va->AddVertexBuffer(vb);
+			va->SetIndexBuffer(ib);
+
+			auto mc = &e.EmplaceComponent<MeshComponent>();
+			mc->vertexArray = va;
+			mc->renderingMode = RenderingMode::Lines;
+
+			va->Unbind();
+		}
+		else
+		{
+			// possible source of bugs but have no way of testing it right now
+			auto mc = &e.GetComponent<MeshComponent>();
+			mc->vertexArray->GetVertexBuffers()[0]->SetData(vertices.data(),
+				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
+			mc->vertexArray->GetVertexBuffers()[0]->SetLayout(layout);
+			mc->vertexArray->SetIndexBuffer(CreateRef<IndexBuffer>(indices.data(), indices.size()));
+		}
 	}
 }

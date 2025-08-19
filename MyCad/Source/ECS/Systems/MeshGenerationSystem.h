@@ -15,4 +15,5 @@ private:
 
 	void UpdateTorusMeshes();
 	void UpdatePointMeshes();
+	void UpdatePolylineMeshes();
 };

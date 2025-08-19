@@ -37,4 +37,19 @@ namespace ObjectCreator
 
 		return point;
 	}
+
+	inline Entity CreatePolyline(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
+	{
+		auto polyline = scene->CreateEntity();
+
+		auto id = polyline.EmplaceComponent<IdComponent>().id;
+		polyline.EmplaceComponent<NameComponent>().name = "Polyline" + std::to_string(id);
+
+		auto& pc = polyline.EmplaceComponent<PolylineComponent>();
+		pc.pointHandles = pointHandles;
+		
+		polyline.EmplaceTag<IsDirtyTag>();
+
+		return polyline;
+	}
 }

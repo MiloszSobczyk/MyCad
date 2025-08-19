@@ -154,6 +154,7 @@
     <ClCompile Include="Source\ECS\Logic\CameraLogic.cpp" />
     <ClCompile Include="Source\ECS\Systems\CameraSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\MeshGenerationSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\NotificationSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\RenderingSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SceneSystem.cpp" />
     <ClCompile Include="Source\Managers\IdManager.cpp" />
@@ -202,11 +203,14 @@
     <ClInclude Include="Source\ECS\Components\IdComponent.h" />
     <ClInclude Include="Source\ECS\Components\MeshComponent.h" />
     <ClInclude Include="Source\ECS\Components\NameComponent.h" />
+    <ClInclude Include="Source\ECS\Components\NotificationComponent.h" />
     <ClInclude Include="Source\ECS\Components\PointComponent.h" />
+    <ClInclude Include="Source\ECS\Components\PolylineComponent.h" />
     <ClInclude Include="Source\ECS\Components\Tags.h" />
     <ClInclude Include="Source\ECS\Components\TorusComponent.h" />
     <ClInclude Include="Source\ECS\Systems\CameraSystem.h" />
     <ClInclude Include="Source\ECS\Systems\MeshGenerationSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\NotificationSystem.h" />
     <ClInclude Include="Source\ECS\Systems\RenderingSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SceneSystem.h" />
     <ClInclude Include="Source\Input\Input.h" />

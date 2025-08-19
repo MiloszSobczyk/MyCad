@@ -20,6 +20,15 @@ namespace UI
 			return;
 		}
 
+        if (ImGui::Button("Refresh polyline"))
+        {
+            for(auto entity : scene->GetAllEntitiesWith<PolylineComponent>())
+            {
+                Entity e{ entity, scene.get() };
+                e.EmplaceTag<IsDirtyTag>();
+			}
+        }
+
         for (auto entity : selectedShapes)
         {
             Entity e{ entity, scene.get() };

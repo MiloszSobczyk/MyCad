@@ -19,6 +19,24 @@ namespace UI
 		{
 			ObjectCreator::CreatePoint(scene);
 		}
+		if (ImGui::Button("Create Polyline##shape_creation"))
+		{
+			std::vector<entt::entity> pointHandles;
+			for (auto entity : scene->GetAllEntitiesWith<IsSelectedTag, TranslationComponent>())
+			{
+				Entity e{ entity, scene.get() };
+				auto& tc = e.GetComponent<TranslationComponent>();
+				pointHandles.push_back(tc.translation.entity.GetHandle());
+			}
+			if (!pointHandles.empty())
+			{
+				ObjectCreator::CreatePolyline(scene, pointHandles);
+			}
+			else
+			{
+				ImGui::Text("No points selected to create a polyline.");
+			}
+		}
 
 		ImGui::End();
 	}

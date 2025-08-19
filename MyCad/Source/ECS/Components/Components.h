@@ -12,6 +12,7 @@
 #include "MeshComponent.h"
 #include "TorusComponent.h"
 #include "PointComponent.h"
+#include "PolylineComponent.h"
 
 // Metadata
 #include "IdComponent.h"
