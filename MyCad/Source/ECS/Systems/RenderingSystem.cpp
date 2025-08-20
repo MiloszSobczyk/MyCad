@@ -13,10 +13,8 @@ RenderingSystem::RenderingSystem(Ref<Scene> scene)
 
 void RenderingSystem::Update()
 {
-    for (auto entity : m_Scene->GetAllEntitiesWith<MeshComponent>())
+    for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>())
     {
-		Entity e{ entity, m_Scene.get() };
-
 		auto modelMatrix = Algebra::Matrix4::Identity();
 
         if (e.HasComponent<ScalingComponent>())

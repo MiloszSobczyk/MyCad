@@ -22,17 +22,14 @@ namespace UI
 
         if (ImGui::Button("Refresh polyline"))
         {
-            for(auto entity : scene->GetAllEntitiesWith<PolylineComponent>())
+            for(auto e : scene->GetAllEntitiesWith<PolylineComponent>())
             {
-                Entity e{ entity, scene.get() };
                 e.EmplaceTag<IsDirtyTag>();
 			}
         }
 
-        for (auto entity : selectedShapes)
+        for (auto e : selectedShapes)
         {
-            Entity e{ entity, scene.get() };
-
             ImGui::Text("%s", GenerateLabel(e, e.GetComponent<NameComponent>().name).c_str());
 
             if (e.HasComponent<TranslationComponent>())

@@ -20,17 +20,29 @@ public:
 	Entity CreateEntity();
 	void DestroyEntity(Entity entity);
 
-	template<typename... Include>
-	auto GetAllEntitiesWith()
-	{
-		return m_Registry.view<Include...>();
-	}
+    template<typename... Include>
+    std::vector<Entity> GetAllEntitiesWith()
+    {
+        std::vector<Entity> entities;
+        auto view = m_Registry.view<Include...>();
 
-	template<typename... Include, typename... Exclude>
-	auto GetAllEntitiesWith(entt::exclude_t<Exclude...> exclude)
-	{
-		return m_Registry.view<Include...>(exclude);
-	}
+        for (auto entity : view)
+            entities.emplace_back(entity, this);
+
+        return entities;
+    }
+
+    template<typename... Include, typename... Exclude>
+    std::vector<Entity> GetAllEntitiesWith(entt::exclude_t<Exclude...> exclude)
+    {
+        std::vector<Entity> entities;
+        auto view = m_Registry.view<Include...>(exclude);
+
+        for (auto entity : view)
+            entities.emplace_back(entity, this);
+
+        return entities;
+    }
 
 	void OnPositionCreated(entt::registry& registry, entt::entity entity);
 

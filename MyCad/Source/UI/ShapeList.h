@@ -20,10 +20,8 @@ namespace UI
 			return;
 		}
 
-		for (auto entity : shapes)
+		for (auto e : shapes)
 		{
-			Entity e{ entity, scene.get() };
-
 			bool isSelected = e.HasComponent<IsSelectedTag>();
 
 			if (ImGui::Selectable(GenerateLabel(e, e.GetComponent<NameComponent>().name).c_str(), isSelected))

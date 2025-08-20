@@ -22,9 +22,8 @@ namespace UI
 		if (ImGui::Button("Create Polyline##shape_creation"))
 		{
 			std::vector<entt::entity> pointHandles;
-			for (auto entity : scene->GetAllEntitiesWith<IsSelectedTag, TranslationComponent>())
+			for (auto e : scene->GetAllEntitiesWith<IsSelectedTag, TranslationComponent>())
 			{
-				Entity e{ entity, scene.get() };
 				auto& tc = e.GetComponent<TranslationComponent>();
 				pointHandles.push_back(tc.translation.entity.GetHandle());
 			}

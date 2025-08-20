@@ -28,13 +28,11 @@ void CameraSystem::Update()
 
 void CameraSystem::UpdateCameraUniforms()
 {
-	auto view = m_Scene->GetAllEntitiesWith<CameraComponent, RotationComponent, TranslationComponent>();
-
-	for (auto entity : view) 
+	for (auto entity : m_Scene->GetAllEntitiesWith<CameraComponent, RotationComponent, TranslationComponent>())
 	{
-		auto& camera = view.get<CameraComponent>(entity);
-		auto& rotation = view.get<RotationComponent>(entity);
-		auto& translation = view.get<TranslationComponent>(entity);
+		auto& camera = entity.GetComponent<CameraComponent>();
+		auto& rotation = entity.GetComponent<RotationComponent>();
+		auto& translation = entity.GetComponent<TranslationComponent>();
 
 		auto viewMatrix = camera.cameraLogic->GetViewMatrix(translation.translation, rotation.rotation);
 		auto projectionMatrix = camera.cameraLogic->GetProjectionMatrix(

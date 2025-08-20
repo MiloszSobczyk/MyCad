@@ -29,10 +29,8 @@ Algebra::Vector4 GetPoint(float angleTube, float angleRadius, float radius, floa
 
 void MeshGenerationSystem::UpdateTorusMeshes()
 {
-	for (auto entity : m_Scene->GetAllEntitiesWith<IsDirtyTag, TorusComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, TorusComponent>())
 	{
-		Entity e{ entity, m_Scene.get() };
-
 		e.RemoveComponent<IsDirtyTag>();
 
 		const auto& tc = e.GetComponent<TorusComponent>();
@@ -121,9 +119,8 @@ void MeshGenerationSystem::UpdatePointMeshes()
 		3, 2, 6,  6, 7, 3
 	};
 
-	for (auto entity : m_Scene->GetAllEntitiesWith<IsDirtyTag, PointComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PointComponent>())
 	{
-		Entity e{ entity, m_Scene.get() };
 		e.RemoveComponent<IsDirtyTag>();
 
 		if (e.HasComponent<MeshComponent>())
@@ -154,10 +151,8 @@ void MeshGenerationSystem::UpdatePointMeshes()
 
 void MeshGenerationSystem::UpdatePolylineMeshes()
 {
-	for (auto entity : m_Scene->GetAllEntitiesWith<IsDirtyTag, PolylineComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PolylineComponent>())
 	{
-		Entity e{ entity, m_Scene.get() };
-
 		e.RemoveComponent<IsDirtyTag>();
 
 		const auto& pc = e.GetComponent<PolylineComponent>();

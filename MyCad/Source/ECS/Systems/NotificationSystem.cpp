@@ -9,9 +9,8 @@ NotificationSystem::NotificationSystem(Ref<Scene> scene)
 
 void NotificationSystem::Update()
 {
-	for (auto entity : m_Scene->GetAllEntitiesWith<IsNotifiedTag>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsNotifiedTag>())
 	{
-		Entity e{ entity, m_Scene.get() };
 		if (e.HasComponent<NotificationComponent>())
 		{
 			auto& nc = e.GetComponent<NotificationComponent>();
