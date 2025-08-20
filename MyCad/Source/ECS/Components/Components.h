@@ -12,7 +12,7 @@
 #include "MeshComponent.h"
 #include "TorusComponent.h"
 #include "PointComponent.h"
-#include "PolylineComponent.h"
+#include "LineComponent.h"
 
 // Metadata
 #include "IdComponent.h"

@@ -4,7 +4,7 @@
 #include <vector>
 
 
-struct PolylineComponent
+struct LineComponent
 {
 	std::vector<entt::entity> pointHandles;
 };

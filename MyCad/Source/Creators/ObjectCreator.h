@@ -45,7 +45,7 @@ namespace ObjectCreator
 		auto id = polyline.EmplaceComponent<IdComponent>().id;
 		polyline.EmplaceComponent<NameComponent>().name = "Polyline" + std::to_string(id);
 
-		auto& pc = polyline.EmplaceComponent<PolylineComponent>();
+		auto& pc = polyline.EmplaceComponent<LineComponent>();
 		pc.pointHandles = pointHandles;
 		
 		polyline.EmplaceTag<IsDirtyTag>();

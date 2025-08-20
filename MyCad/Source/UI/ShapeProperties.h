@@ -22,7 +22,7 @@ namespace UI
 
         if (ImGui::Button("Refresh polyline"))
         {
-            for(auto e : scene->GetAllEntitiesWith<PolylineComponent>())
+            for(auto e : scene->GetAllEntitiesWith<LineComponent>())
             {
                 e.EmplaceTag<IsDirtyTag>();
 			}

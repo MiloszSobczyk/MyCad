@@ -18,7 +18,7 @@ void MeshGenerationSystem::Update()
 {
 	UpdateTorusMeshes();
 	UpdatePointMeshes();
-	UpdatePolylineMeshes();
+	UpdateLineMeshes();
 }
 
 Algebra::Vector4 GetPoint(float angleTube, float angleRadius, float radius, float tubeRadius)
@@ -149,13 +149,13 @@ void MeshGenerationSystem::UpdatePointMeshes()
 	}
 }
 
-void MeshGenerationSystem::UpdatePolylineMeshes()
+void MeshGenerationSystem::UpdateLineMeshes()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PolylineComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>())
 	{
 		e.RemoveComponent<IsDirtyTag>();
 
-		const auto& pc = e.GetComponent<PolylineComponent>();
+		const auto& pc = e.GetComponent<LineComponent>();
 
 		std::vector<Algebra::Vector4> vertices;
 		std::vector<uint32_t> indices;
