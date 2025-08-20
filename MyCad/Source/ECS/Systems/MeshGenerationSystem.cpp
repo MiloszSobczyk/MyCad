@@ -149,9 +149,11 @@ void MeshGenerationSystem::UpdatePointMeshes()
 	}
 }
 
+// Removing point from mesh should also remove mesh's reference from point
 void MeshGenerationSystem::UpdateLineMeshes()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>())
+	// Polylines
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>(entt::exclude<IsBezierCurveC0Tag>))
 	{
 		e.RemoveComponent<IsDirtyTag>();
 
@@ -211,4 +213,89 @@ void MeshGenerationSystem::UpdateLineMeshes()
 			mc->vertexArray->SetIndexBuffer(CreateRef<IndexBuffer>(indices.data(), indices.size()));
 		}
 	}
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent, IsBezierCurveC0Tag>())
+	{
+		e.RemoveComponent<IsDirtyTag>();
+
+		const auto& pc = e.GetComponent<LineComponent>();
+
+		std::vector<Algebra::Vector4> vertices;
+		std::vector<uint32_t> indices;
+
+		for (auto point : pc.pointHandles)
+		{
+			Entity pointEntity{ point, m_Scene.get() };
+
+			if (pointEntity.HasComponent<TranslationComponent>())
+			{
+				Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
+				vertex.w = 1.0f;
+				vertices.push_back(vertex);
+			}
+		}
+
+		int rest = vertices.size() % 4;
+
+		if (rest == 1)
+		{
+			auto p = vertices[vertices.size() - 1];
+			vertices.push_back(p);
+			vertices.push_back(p);
+			vertices.push_back(p);
+		}
+		else if (rest == 2)
+		{
+			auto p0 = vertices[vertices.size() - 2];
+			auto p1 = vertices[vertices.size() - 1];
+			vertices.pop_back();
+			vertices.pop_back();
+			vertices.push_back(p0);
+			vertices.push_back(p0);
+			vertices.push_back(p1);
+			vertices.push_back(p1);
+		}
+		else if (rest == 3)
+		{
+			auto p0 = vertices[vertices.size() - 3];
+			auto p1 = vertices[vertices.size() - 2];
+			auto p2 = vertices[vertices.size() - 1];
+			vertices.pop_back();
+			vertices.pop_back();
+			vertices.pop_back();
+			vertices.push_back(p0);
+			vertices.push_back(Algebra::Vector4{ 1.f / 3.f * p0 + 2.f / 3.f * p1 });
+			vertices.push_back(Algebra::Vector4{ 2.f / 3.f * p1 + 1.f / 3.f * p2 });
+			vertices.push_back(p2);
+		}
+
+		BufferLayout layout = {
+			{ ShaderDataType::Float4, "position" }
+		};
+
+		if (!e.HasComponent<MeshComponent>())
+		{
+			Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices.data(),
+				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
+			vb->SetLayout(layout);
+
+			auto va = CreateRef<VertexArray>();
+			va->AddVertexBuffer(vb);
+
+			auto mc = &e.EmplaceComponent<MeshComponent>();
+			mc->vertexArray = va;
+			mc->renderingMode = RenderingMode::Patches;
+			mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
+
+			va->Unbind();
+		}
+		else
+		{
+			// possible source of bugs but have no way of testing it right now
+			auto mc = &e.GetComponent<MeshComponent>();
+			mc->vertexArray->GetVertexBuffers()[0]->SetData(vertices.data(),
+				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
+			mc->vertexArray->GetVertexBuffers()[0]->SetLayout(layout);
+		}
+	}
+
 }

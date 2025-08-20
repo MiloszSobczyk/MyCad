@@ -7,6 +7,17 @@
 
 namespace UI
 {
+	inline std::vector<entt::entity> GetSelectedPointHandles(Ref<Scene> scene)
+	{
+		std::vector<entt::entity> pointHandles;
+		for (auto e : scene->GetAllEntitiesWith<IsSelectedTag, TranslationComponent>())
+		{
+			auto& tc = e.GetComponent<TranslationComponent>();
+			pointHandles.push_back(tc.translation.entity.GetHandle());
+		}
+		return pointHandles;
+	}
+
 	inline void DisplayShapeCreator(Ref<Scene> scene)
 	{
 		ImGui::Begin("Shape creation##shape_creation");
@@ -21,12 +32,7 @@ namespace UI
 		}
 		if (ImGui::Button("Create Polyline##shape_creation"))
 		{
-			std::vector<entt::entity> pointHandles;
-			for (auto e : scene->GetAllEntitiesWith<IsSelectedTag, TranslationComponent>())
-			{
-				auto& tc = e.GetComponent<TranslationComponent>();
-				pointHandles.push_back(tc.translation.entity.GetHandle());
-			}
+			auto pointHandles = GetSelectedPointHandles(scene);
 			if (!pointHandles.empty())
 			{
 				auto polyline = ObjectCreator::CreatePolyline(scene, pointHandles);
@@ -38,9 +44,20 @@ namespace UI
 					nc.AddToNotify(polyline.GetHandle());
 				}
 			}
-			else
+		}
+		if (ImGui::Button("Create Bezier Curve C0##shape_creation"))
+		{
+			auto pointHandles = GetSelectedPointHandles(scene);
+			if (!pointHandles.empty())
 			{
-				ImGui::Text("No points selected to create a polyline.");
+				auto polyline = ObjectCreator::CreateBezierCurveC0(scene, pointHandles);
+
+				for (auto pointHandle : pointHandles)
+				{
+					Entity pointEntity{ pointHandle, scene.get() };
+					auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
+					nc.AddToNotify(polyline.GetHandle());
+				}
 			}
 		}
 

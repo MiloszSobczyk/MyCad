@@ -52,4 +52,20 @@ namespace ObjectCreator
 
 		return polyline;
 	}
+
+	inline Entity CreateBezierCurveC0(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
+	{
+		auto polyline = scene->CreateEntity();
+
+		auto id = polyline.EmplaceComponent<IdComponent>().id;
+		polyline.EmplaceComponent<NameComponent>().name = "BezierCyurveC0" + std::to_string(id);
+
+		auto& pc = polyline.EmplaceComponent<LineComponent>();
+		pc.pointHandles = pointHandles;
+
+		polyline.EmplaceTag<IsDirtyTag>();
+		polyline.EmplaceTag<IsBezierCurveC0Tag>();
+
+		return polyline;
+	}
 }

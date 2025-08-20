@@ -4,6 +4,7 @@
 
 
 VertexBuffer::VertexBuffer(uint32_t size)
+	: m_Size(size)
 {
 	glCreateBuffers(1, &m_RendererId);
 	glBindBuffer(GL_ARRAY_BUFFER, m_RendererId);
@@ -11,6 +12,7 @@ VertexBuffer::VertexBuffer(uint32_t size)
 }
 
 VertexBuffer::VertexBuffer(const void* data, uint32_t size)
+	: m_Size(size)
 {
 	glCreateBuffers(1, &m_RendererId);
 	glBindBuffer(GL_ARRAY_BUFFER, m_RendererId);
@@ -34,6 +36,7 @@ void VertexBuffer::Unbind() const
 
 void VertexBuffer::SetData(const void* data, uint32_t size)
 {
+	m_Size = size;
 	glBindBuffer(GL_ARRAY_BUFFER, m_RendererId);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
