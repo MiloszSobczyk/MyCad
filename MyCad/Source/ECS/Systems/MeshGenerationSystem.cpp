@@ -2,6 +2,7 @@
 
 #include "Core/Scene/Entity.h"
 #include "ECS/Components/Components.h"
+#include "Managers/ShaderManager.h"
 
 #include "Algebra.h"
 
@@ -82,6 +83,7 @@ void MeshGenerationSystem::UpdateTorusMeshes()
 			auto mc = &e.EmplaceComponent<MeshComponent>();
 			mc->vertexArray = va;
 			mc->renderingMode = RenderingMode::Lines;
+			mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
 
 			va->Unbind();
 		}
@@ -144,6 +146,7 @@ void MeshGenerationSystem::UpdatePointMeshes()
 		auto mc = &e.EmplaceComponent<MeshComponent>();
 		mc->vertexArray = va;
 		mc->renderingMode = RenderingMode::Triangles;
+		mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
 
 		va->Unbind();
 	}
@@ -199,6 +202,7 @@ void MeshGenerationSystem::UpdatePolylineMeshes()
 			auto mc = &e.EmplaceComponent<MeshComponent>();
 			mc->vertexArray = va;
 			mc->renderingMode = RenderingMode::Lines;
+			mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
 
 			va->Unbind();
 		}

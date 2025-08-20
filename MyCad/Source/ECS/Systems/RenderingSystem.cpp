@@ -40,9 +40,9 @@ void RenderingSystem::Update()
         auto* viewMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
         auto* projectionMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
 
-        auto shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
-
         const auto& mc = e.GetComponent<MeshComponent>();
+
+        auto shader = mc.shader;
     
 		m_Renderer->SetShader(shader);
 		m_Renderer->SetModelMatrix(modelMatrix);

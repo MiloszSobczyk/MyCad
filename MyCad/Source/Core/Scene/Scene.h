@@ -20,10 +20,16 @@ public:
 	Entity CreateEntity();
 	void DestroyEntity(Entity entity);
 
-	template<typename... Components>
+	template<typename... Include>
 	auto GetAllEntitiesWith()
 	{
-		return m_Registry.view<Components...>();
+		return m_Registry.view<Include...>();
+	}
+
+	template<typename... Include, typename... Exclude>
+	auto GetAllEntitiesWith(entt::exclude_t<Exclude...> exclude)
+	{
+		return m_Registry.view<Include...>(exclude);
 	}
 
 	void OnPositionCreated(entt::registry& registry, entt::entity entity);
