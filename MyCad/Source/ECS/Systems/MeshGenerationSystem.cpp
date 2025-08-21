@@ -7,7 +7,9 @@
 #include "Algebra.h"
 
 #include <numbers>
+#include <Creators/ObjectCreator.h>
 
+// Function for quick vertex array creation is needed
 
 MeshGenerationSystem::MeshGenerationSystem(Ref<Scene> scene)
 	: m_Scene{ scene }
@@ -30,7 +32,7 @@ Algebra::Vector4 GetPoint(float angleTube, float angleRadius, float radius, floa
 
 void MeshGenerationSystem::UpdateDirtyTags()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<VirtualComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<VirtualComponent, IsDirtyTag>())
 	{
 		auto& vc = e.GetComponent<VirtualComponent>();
 		Entity targetEntity{ vc.targetEntity, m_Scene.get() };
@@ -111,14 +113,14 @@ void MeshGenerationSystem::UpdateTorusMeshes()
 void MeshGenerationSystem::UpdatePointMeshes()
 {
 	static std::vector<Algebra::Vector4> vertices = {
-		{ Algebra::Vector4(-0.1f, -0.1f, -0.1f, 1.0f) },
-		{ Algebra::Vector4( 0.1f, -0.1f, -0.1f, 1.0f) },
-		{ Algebra::Vector4( 0.1f,  0.1f, -0.1f, 1.0f) },
-		{ Algebra::Vector4(-0.1f,  0.1f, -0.1f, 1.0f) },
-		{ Algebra::Vector4(-0.1f, -0.1f,  0.1f, 1.0f) },
-		{ Algebra::Vector4( 0.1f, -0.1f,  0.1f, 1.0f) },
-		{ Algebra::Vector4( 0.1f,  0.1f,  0.1f, 1.0f) },
-		{ Algebra::Vector4(-0.1f,  0.1f,  0.1f, 1.0f) },
+		{ Algebra::Vector4(-0.05f, -0.05f, -0.05f, 1.0f) },
+		{ Algebra::Vector4( 0.05f, -0.05f, -0.05f, 1.0f) },
+		{ Algebra::Vector4( 0.05f,  0.05f, -0.05f, 1.0f) },
+		{ Algebra::Vector4(-0.05f,  0.05f, -0.05f, 1.0f) },
+		{ Algebra::Vector4(-0.05f, -0.05f,  0.05f, 1.0f) },
+		{ Algebra::Vector4( 0.05f, -0.05f,  0.05f, 1.0f) },
+		{ Algebra::Vector4( 0.05f,  0.05f,  0.05f, 1.0f) },
+		{ Algebra::Vector4(-0.05f,  0.05f,  0.05f, 1.0f) },
 	};
 
 	static std::vector<uint32_t> indices = {
@@ -164,12 +166,17 @@ void MeshGenerationSystem::UpdatePointMeshes()
 void MeshGenerationSystem::UpdateLineMeshes()
 {
 	// Polylines
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>(entt::exclude<BezierCurveC0Component>))
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>())
 	{
-		e.RemoveComponent<IsDirtyTag>();
-
 		const auto& pc = e.GetComponent<LineComponent>();
 
+		if (pc.pointHandles.empty())
+		{
+			continue;
+		}
+
+		e.RemoveComponent<IsDirtyTag>();
+		
 		std::vector<Algebra::Vector4> vertices;
 		std::vector<uint32_t> indices;
 
@@ -310,5 +317,97 @@ void MeshGenerationSystem::UpdateLineMeshes()
 			mc->vertexArray->GetVertexBuffers()[0]->SetLayout(layout);
 		}
 	}
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierCurveC2Component>())
+	{
+		e.RemoveComponent<IsDirtyTag>();
 
+		const auto& bcc = e.GetComponent<BezierCurveC2Component>();
+
+		std::vector<Algebra::Vector4> vertices;
+		std::vector<uint32_t> indices;
+
+		auto& pointHandles = (Entity{ bcc.deBoorPolylineHandle, m_Scene.get() }).GetComponent<LineComponent>().pointHandles;
+
+		if (pointHandles.size() < 4)
+		{
+			continue;
+		}
+
+		for (auto point : pointHandles)
+		{
+			Entity pointEntity{ point, m_Scene.get() };
+
+			if (pointEntity.HasComponent<TranslationComponent>())
+			{
+				Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
+				vertex.w = 1.0f;
+				vertices.push_back(vertex);
+			}
+		}
+
+		Entity bernsteinPolyline{ bcc.bernsteinPolylineHandle, m_Scene.get() };
+
+		for (size_t i = 0; i + 3 < pointHandles.size(); ++i)
+		{
+			auto d0 = Entity { pointHandles[i], m_Scene.get() };
+			auto d1 = Entity { pointHandles[i + 1], m_Scene.get() };
+			auto d2 = Entity { pointHandles[i + 2], m_Scene.get() };
+			auto d3 = Entity { pointHandles[i + 3], m_Scene.get() };
+
+			Algebra::Vector4 D0 = d0.GetComponent<TranslationComponent>().translation;
+			Algebra::Vector4 D1 = d1.GetComponent<TranslationComponent>().translation;
+			Algebra::Vector4 D2 = d2.GetComponent<TranslationComponent>().translation;
+			Algebra::Vector4 D3 = d3.GetComponent<TranslationComponent>().translation;
+
+			D0.w = 1.0f;
+			D1.w = 1.0f;
+			D2.w = 1.0f;
+			D3.w = 1.0f;
+
+			Algebra::Vector4 bezierPoints[4] = {
+				(D0 + 4.0f * D1 + D2) / 6.0f,
+				(2.0f * D1 + D2) / 3.0f,
+				(D1 + 2.0f * D2) / 3.0f,
+				(D1 + 4.0f * D2 + D3) / 6.0f
+			};
+
+			for (int j = 0; j < 4; ++j)
+			{
+				auto pointEntity2 = ObjectCreator::CreatePoint(m_Scene);
+				pointEntity2.GetComponent<TranslationComponent>().SetTranslation(bezierPoints[j]);
+				bernsteinPolyline.GetComponent<LineComponent>().pointHandles.push_back(pointEntity2.GetHandle());
+
+				vertices.push_back(bezierPoints[j]);
+			}
+		}
+
+		BufferLayout layout = {
+			{ ShaderDataType::Float4, "position" }
+		};
+
+		if (!e.HasComponent<MeshComponent>())
+		{
+			Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices.data(),
+				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
+			vb->SetLayout(layout);
+
+			auto va = CreateRef<VertexArray>();
+			va->AddVertexBuffer(vb);
+
+			auto mc = &e.EmplaceComponent<MeshComponent>();
+			mc->vertexArray = va;
+			mc->renderingMode = RenderingMode::Patches;
+			mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
+
+			va->Unbind();
+		}
+		else
+		{
+			// possible source of bugs but have no way of testing it right now
+			auto mc = &e.GetComponent<MeshComponent>();
+			mc->vertexArray->GetVertexBuffers()[0]->SetData(vertices.data(),
+				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
+			mc->vertexArray->GetVertexBuffers()[0]->SetLayout(layout);
+		}
+	}
 }

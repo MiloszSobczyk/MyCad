@@ -14,6 +14,7 @@
 #include "PointComponent.h"
 #include "LineComponent.h"
 #include "BezierCurveC0Component.h"
+#include "BezierCurveC2Component.h"
 
 // Metadata
 #include "IdComponent.h"

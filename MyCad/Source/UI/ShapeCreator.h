@@ -46,6 +46,14 @@ namespace UI
 				ObjectCreator::CreateBezierCurveC0(scene, pointHandles);
 			}
 		}
+		if (ImGui::Button("Create Bezier Curve C2##shape_creation"))
+		{
+			auto pointHandles = GetSelectedPointHandles(scene);
+			if (!pointHandles.empty())
+			{
+				ObjectCreator::CreateBezierCurveC2(scene, pointHandles);
+			}
+		}
 
 		ImGui::End();
 	}

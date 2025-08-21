@@ -79,4 +79,30 @@ namespace ObjectCreator
 
 		return curve;
 	}
+
+	inline Entity CreateBezierCurveC2(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
+	{
+		auto curve = scene->CreateEntity();
+
+		auto id = curve.EmplaceComponent<IdComponent>().id;
+		curve.EmplaceComponent<NameComponent>().name = "BezierCurveC2" + std::to_string(id);
+
+		curve.EmplaceTag<IsDirtyTag>();
+
+		auto& bcc = curve.EmplaceComponent<BezierCurveC2Component>();
+
+		auto deBoorPolyline = CreatePolyline(scene, pointHandles);
+		deBoorPolyline.EmplaceComponent<VirtualComponent>(curve.GetHandle());
+		deBoorPolyline.EmplaceTag<IsInvisibleTag>();
+
+		bcc.deBoorPolylineHandle = deBoorPolyline.GetHandle();
+
+		auto bernsteinPolyline = CreatePolyline(scene, {});
+		bernsteinPolyline.EmplaceComponent<VirtualComponent>(curve.GetHandle());
+		bernsteinPolyline.EmplaceTag<IsInvisibleTag>();
+
+		bcc.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
+
+		return curve;
+	}
 }
