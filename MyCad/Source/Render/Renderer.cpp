@@ -9,15 +9,25 @@ void Renderer::Render(RenderingMode renderingMode)
 		return;
 
 	m_Shader->Bind();
-	m_Shader->SetUniformMat4f("u_viewMatrix", m_ViewMatrix);
-	m_Shader->SetUniformMat4f("u_projectionMatrix", m_ProjectionMatrix);
-	m_Shader->SetUniformVec4f("u_cameraPos", Config::InitialCameraPosition);
+
+    for (auto& [name, value] : m_Uniforms)
+    {
+        std::visit([&](auto&& val)
+            {
+                using T = std::decay_t<decltype(val)>;
+                if constexpr (std::is_same_v<T, int>)
+                    m_Shader->SetUniformInt(name, val);
+                else if constexpr (std::is_same_v<T, Algebra::Matrix4>)
+                    m_Shader->SetUniformMat4f(name, val);
+                else if constexpr (std::is_same_v<T, Algebra::Vector4>)
+                    m_Shader->SetUniformVec4f(name, val);
+            }, value);
+    }
 	
 	m_VertexArray->Bind();
 	
     if (auto& indexBuffer = m_VertexArray->GetIndexBuffer())
     {
-        // Indexed drawing
         GLCall(glDrawElements(
             static_cast<GLenum>(renderingMode),
             indexBuffer->GetCount(),

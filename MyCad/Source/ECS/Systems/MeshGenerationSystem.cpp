@@ -153,7 +153,7 @@ void MeshGenerationSystem::UpdatePointMeshes()
 void MeshGenerationSystem::UpdateLineMeshes()
 {
 	// Polylines
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>(entt::exclude<IsBezierCurveC0Tag>))
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>(entt::exclude<BezierCurveC0Component>))
 	{
 		e.RemoveComponent<IsDirtyTag>();
 
@@ -213,7 +213,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 			mc->vertexArray->SetIndexBuffer(CreateRef<IndexBuffer>(indices.data(), indices.size()));
 		}
 	}
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent, IsBezierCurveC0Tag>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent, BezierCurveC0Component>())
 	{
 		e.RemoveComponent<IsDirtyTag>();
 

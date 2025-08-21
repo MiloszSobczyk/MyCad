@@ -7,6 +7,7 @@
 #include "Algebra.h"
 
 #include <GL/glew.h>
+#include <variant>
 
 enum class RenderingMode
 {
@@ -22,14 +23,20 @@ public:
 
 	inline void SetShader(const Ref<Shader>& shader) { m_Shader = shader; }
 	inline void SetVertexArray(const Ref<VertexArray>& vertexArray) { m_VertexArray = vertexArray; }
-	inline void SetProjectionMatrix(Algebra::Matrix4 projectionMatrix) { m_ProjectionMatrix = projectionMatrix; }
-	inline void SetViewMatrix(Algebra::Matrix4 viewMatrix) { m_ViewMatrix = viewMatrix; }
-	inline void SetModelMatrix(Algebra::Matrix4 modelMatrix) { m_ModelMatrix = modelMatrix; }
+	
+	template<typename T>
+	inline void SetUniform(const std::string& name, const T& value) { m_Uniforms[name] = value; }
 
+	inline void ClearUniforms() { m_Uniforms.clear(); }
 private:
 	Ref<Shader> m_Shader;
 	Ref<VertexArray> m_VertexArray;
-	Algebra::Matrix4 m_ProjectionMatrix;
-	Algebra::Matrix4 m_ViewMatrix;
-	Algebra::Matrix4 m_ModelMatrix;
+
+	using UniformValue = std::variant<
+		int,
+		Algebra::Matrix4,
+		Algebra::Vector4 
+	>;
+
+	std::unordered_map<std::string, UniformValue> m_Uniforms;
 };

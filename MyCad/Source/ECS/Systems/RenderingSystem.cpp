@@ -4,6 +4,7 @@
 #include "ECS/Components/Components.h"
 #include "Managers/ShaderManager.h"
 #include "Render/Uniform/UniformManager.h"
+#include "Utils/Config.h"
 
 
 RenderingSystem::RenderingSystem(Ref<Scene> scene)
@@ -13,7 +14,10 @@ RenderingSystem::RenderingSystem(Ref<Scene> scene)
 
 void RenderingSystem::Update()
 {
-    for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>())
+    auto* viewMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
+    auto* projectionMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
+
+    for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>(entt::exclude<BezierCurveC0Component>))
     {
 		auto modelMatrix = Algebra::Matrix4::Identity();
 
@@ -35,19 +39,33 @@ void RenderingSystem::Update()
             modelMatrix = Algebra::Matrix4::Translation(translation.translation) * modelMatrix;
 		}
 
-        auto* viewMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
-        auto* projectionMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
-
         const auto& mc = e.GetComponent<MeshComponent>();
 
         auto shader = mc.shader;
     
 		m_Renderer->SetShader(shader);
-		m_Renderer->SetModelMatrix(modelMatrix);
-		m_Renderer->SetViewMatrix(*viewMatrix);
-		m_Renderer->SetProjectionMatrix(*projectionMatrix);
+		m_Renderer->SetUniform("u_modelMatrix", modelMatrix);
+		m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
+		m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
 		m_Renderer->SetVertexArray(mc.vertexArray);
 
 		m_Renderer->Render(mc.renderingMode);
+		m_Renderer->ClearUniforms();
+    }
+
+    for (auto e : m_Scene->GetAllEntitiesWith<BezierCurveC0Component>())
+    {
+        const auto& mc = e.GetComponent<MeshComponent>();
+
+        auto shader = mc.shader;
+
+        m_Renderer->SetShader(shader);
+        m_Renderer->SetUniform("u_cameraPos", Config::InitialCameraPosition);
+        m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
+        m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
+        m_Renderer->SetVertexArray(mc.vertexArray);
+
+        m_Renderer->Render(mc.renderingMode);
+        m_Renderer->ClearUniforms();
     }
 }

@@ -64,7 +64,7 @@ namespace ObjectCreator
 		pc.pointHandles = pointHandles;
 
 		polyline.EmplaceTag<IsDirtyTag>();
-		polyline.EmplaceTag<IsBezierCurveC0Tag>();
+		polyline.EmplaceComponent<BezierCurveC0Component>();
 
 		return polyline;
 	}

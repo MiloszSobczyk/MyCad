@@ -13,6 +13,7 @@
 #include "TorusComponent.h"
 #include "PointComponent.h"
 #include "LineComponent.h"
+#include "BezierCurveC0Component.h"
 
 // Metadata
 #include "IdComponent.h"
