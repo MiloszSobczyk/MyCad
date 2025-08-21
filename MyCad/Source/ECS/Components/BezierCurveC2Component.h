@@ -2,7 +2,7 @@
 
 #include <entt/entt.hpp>
 
-struct BezierCurveC0Component
+struct BezierCurveC2Component
 {
 	int tessLevelU = 16;
 	int tessLevelV = 16;

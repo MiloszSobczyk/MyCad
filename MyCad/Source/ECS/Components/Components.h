@@ -21,6 +21,7 @@
 
 // Logic
 #include "NotificationComponent.h"
+#include "VirtualComponent.h"
 
 // Tags
 #include "Tags.h"

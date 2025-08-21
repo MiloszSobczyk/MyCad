@@ -16,6 +16,7 @@ MeshGenerationSystem::MeshGenerationSystem(Ref<Scene> scene)
 
 void MeshGenerationSystem::Update()
 {
+	UpdateDirtyTags();
 	UpdateTorusMeshes();
 	UpdatePointMeshes();
 	UpdateLineMeshes();
@@ -25,6 +26,16 @@ Algebra::Vector4 GetPoint(float angleTube, float angleRadius, float radius, floa
 {
 	return Algebra::Matrix4::RotationY(angleRadius) *
 		Algebra::Vector4(radius + tubeRadius * cosf(angleTube), tubeRadius * sinf(angleTube), 0.f, 1.f);
+}
+
+void MeshGenerationSystem::UpdateDirtyTags()
+{
+	for (auto e : m_Scene->GetAllEntitiesWith<VirtualComponent>())
+	{
+		auto& vc = e.GetComponent<VirtualComponent>();
+		Entity targetEntity{ vc.targetEntity, m_Scene.get() };
+		targetEntity.EmplaceTag<IsDirtyTag>();
+	}
 }
 
 void MeshGenerationSystem::UpdateTorusMeshes()
@@ -213,16 +224,18 @@ void MeshGenerationSystem::UpdateLineMeshes()
 			mc->vertexArray->SetIndexBuffer(CreateRef<IndexBuffer>(indices.data(), indices.size()));
 		}
 	}
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent, BezierCurveC0Component>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierCurveC0Component>())
 	{
 		e.RemoveComponent<IsDirtyTag>();
 
-		const auto& pc = e.GetComponent<LineComponent>();
+		const auto& bcc = e.GetComponent<BezierCurveC0Component>();
 
 		std::vector<Algebra::Vector4> vertices;
 		std::vector<uint32_t> indices;
 
-		for (auto point : pc.pointHandles)
+		auto& pointHandles = (Entity{ bcc.polylineHandle, m_Scene.get() }).GetComponent<LineComponent>().pointHandles;
+
+		for (auto point : pointHandles)
 		{
 			Entity pointEntity{ point, m_Scene.get() };
 

@@ -35,14 +35,7 @@ namespace UI
 			auto pointHandles = GetSelectedPointHandles(scene);
 			if (!pointHandles.empty())
 			{
-				auto polyline = ObjectCreator::CreatePolyline(scene, pointHandles);
-
-				for (auto pointHandle : pointHandles)
-				{
-					Entity pointEntity{ pointHandle, scene.get() };
-					auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
-					nc.AddToNotify(polyline.GetHandle());
-				}
+				ObjectCreator::CreatePolyline(scene, pointHandles);
 			}
 		}
 		if (ImGui::Button("Create Bezier Curve C0##shape_creation"))
@@ -50,14 +43,7 @@ namespace UI
 			auto pointHandles = GetSelectedPointHandles(scene);
 			if (!pointHandles.empty())
 			{
-				auto polyline = ObjectCreator::CreateBezierCurveC0(scene, pointHandles);
-
-				for (auto pointHandle : pointHandles)
-				{
-					Entity pointEntity{ pointHandle, scene.get() };
-					auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
-					nc.AddToNotify(polyline.GetHandle());
-				}
+				ObjectCreator::CreateBezierCurveC0(scene, pointHandles);
 			}
 		}
 

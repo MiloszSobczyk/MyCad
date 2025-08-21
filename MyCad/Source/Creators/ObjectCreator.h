@@ -50,22 +50,33 @@ namespace ObjectCreator
 		
 		polyline.EmplaceTag<IsDirtyTag>();
 
+		for (auto pointHandle : pointHandles)
+		{
+			Entity pointEntity{ pointHandle, scene.get() };
+			auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
+			nc.AddToNotify(polyline.GetHandle());
+		}
+
 		return polyline;
 	}
 
 	inline Entity CreateBezierCurveC0(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
 	{
-		auto polyline = scene->CreateEntity();
+		auto curve = scene->CreateEntity();
 
-		auto id = polyline.EmplaceComponent<IdComponent>().id;
-		polyline.EmplaceComponent<NameComponent>().name = "BezierCyurveC0" + std::to_string(id);
+		auto id = curve.EmplaceComponent<IdComponent>().id;
+		curve.EmplaceComponent<NameComponent>().name = "BezierCurveC0" + std::to_string(id);
 
-		auto& pc = polyline.EmplaceComponent<LineComponent>();
-		pc.pointHandles = pointHandles;
+		curve.EmplaceTag<IsDirtyTag>();
 
-		polyline.EmplaceTag<IsDirtyTag>();
-		polyline.EmplaceComponent<BezierCurveC0Component>();
+		auto& bcc = curve.EmplaceComponent<BezierCurveC0Component>();
+		
+		auto polyline = CreatePolyline(scene, pointHandles);
+		polyline.EmplaceComponent<VirtualComponent>(curve.GetHandle());
+		polyline.EmplaceTag<IsInvisibleTag>();
 
-		return polyline;
+		bcc.polylineHandle = polyline.GetHandle();
+
+		return curve;
 	}
 }

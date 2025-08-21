@@ -11,7 +11,7 @@ namespace UI
 	{
 		ImGui::Begin("Shape List##shape_list");
 
-		auto shapes = scene->GetAllEntitiesWith<NameComponent>();
+		auto shapes = scene->GetAllEntitiesWith<NameComponent>(entt::exclude<VirtualComponent>);
 
 		if (shapes.empty())
 		{

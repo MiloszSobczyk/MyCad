@@ -17,7 +17,7 @@ void RenderingSystem::Update()
     auto* viewMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
     auto* projectionMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
 
-    for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>(entt::exclude<BezierCurveC0Component>))
+    for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>(entt::exclude<BezierCurveC0Component, IsInvisibleTag>))
     {
 		auto modelMatrix = Algebra::Matrix4::Identity();
 
@@ -53,7 +53,7 @@ void RenderingSystem::Update()
 		m_Renderer->ClearUniforms();
     }
 
-    for (auto e : m_Scene->GetAllEntitiesWith<BezierCurveC0Component>())
+    for (auto e : m_Scene->GetAllEntitiesWith<BezierCurveC0Component>(entt::exclude<IsInvisibleTag>))
     {
         const auto& mc = e.GetComponent<MeshComponent>();
 
