@@ -326,23 +326,12 @@ void MeshGenerationSystem::UpdateLineMeshes()
 		std::vector<Algebra::Vector4> vertices;
 		std::vector<uint32_t> indices;
 
-		auto& pointHandles = (Entity{ bcc.deBoorPolylineHandle, m_Scene.get() }).GetComponent<LineComponent>().pointHandles;
+		auto& pointHandles = (Entity{ bcc.deBoorPolylineHandle, m_Scene.get() })
+			.GetComponent<LineComponent>().pointHandles;
 
 		if (pointHandles.size() < 4)
 		{
 			continue;
-		}
-
-		for (auto point : pointHandles)
-		{
-			Entity pointEntity{ point, m_Scene.get() };
-
-			if (pointEntity.HasComponent<TranslationComponent>())
-			{
-				Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
-				vertex.w = 1.0f;
-				vertices.push_back(vertex);
-			}
 		}
 
 		Entity bernsteinPolyline{ bcc.bernsteinPolylineHandle, m_Scene.get() };
@@ -373,9 +362,11 @@ void MeshGenerationSystem::UpdateLineMeshes()
 
 			for (int j = 0; j < 4; ++j)
 			{
-				auto pointEntity2 = ObjectCreator::CreatePoint(m_Scene);
-				pointEntity2.GetComponent<TranslationComponent>().SetTranslation(bezierPoints[j]);
-				bernsteinPolyline.GetComponent<LineComponent>().pointHandles.push_back(pointEntity2.GetHandle());
+				auto pointEntity = ObjectCreator::CreatePoint(m_Scene);
+				pointEntity.EmplaceTag<IsInvisibleTag>();
+				pointEntity.GetComponent<TranslationComponent>().SetTranslation(bezierPoints[j]);
+				bernsteinPolyline.GetComponent<LineComponent>().pointHandles.push_back(pointEntity.GetHandle());
+				pointEntity.EmplaceComponent<VirtualComponent>(bernsteinPolyline.GetHandle());
 
 				vertices.push_back(bezierPoints[j]);
 			}
