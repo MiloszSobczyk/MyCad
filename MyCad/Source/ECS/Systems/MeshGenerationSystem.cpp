@@ -242,6 +242,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 
 		auto& pointHandles = (Entity{ bcc.polylineHandle, m_Scene.get() }).GetComponent<LineComponent>().pointHandles;
 
+		int i = 0;
 		for (auto point : pointHandles)
 		{
 			Entity pointEntity{ point, m_Scene.get() };
@@ -251,8 +252,16 @@ void MeshGenerationSystem::UpdateLineMeshes()
 				Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
 				vertex.w = 1.0f;
 				vertices.push_back(vertex);
+				++i;
+
+				if (i % 4 == 0)
+				{
+					vertices.push_back(vertex);
+					++i;
+				}
 			}
 		}
+
 
 		int rest = vertices.size() % 4;
 
