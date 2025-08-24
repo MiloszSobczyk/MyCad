@@ -7,6 +7,18 @@
 
 namespace UI
 {
+	void DisplayDeselectShapesButton(Ref<Scene> scene)
+	{
+		if (ImGui::Button("Deselect all"))
+		{
+			auto selectedShapes = scene->GetAllEntitiesWith<IsSelectedTag>();
+			for (auto e : selectedShapes)
+			{
+				e.RemoveComponent<IsSelectedTag>();
+			}
+		}
+	}
+
 	void DisplayShapeList(Ref<Scene> scene)
 	{
 		ImGui::Begin("Shape List##shape_list");
@@ -36,6 +48,8 @@ namespace UI
 				}
 			}
 		}
+
+		DisplayDeselectShapesButton(scene);
 
 		ImGui::End();
 	}
