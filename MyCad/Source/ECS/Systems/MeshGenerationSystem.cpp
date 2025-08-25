@@ -3,16 +3,14 @@
 #include "Core/Scene/Entity.h"
 #include "Creators/ShapeCreator.h"
 #include "ECS/Components/Components.h"
+#include "Creators/MeshCreator.h"
 
 #include <numbers>
-
-// Function for quick vertex array creation is needed
 
 MeshGenerationSystem::MeshGenerationSystem(Ref<Scene> scene)
 	: m_Scene{ scene }
 {
 }
-
 
 void MeshGenerationSystem::Update()
 {
@@ -20,12 +18,6 @@ void MeshGenerationSystem::Update()
 	UpdateTorusMeshes();
 	UpdatePointMeshes();
 	UpdateLineMeshes();
-}
-
-Algebra::Vector4 GetPoint(float angleTube, float angleRadius, float radius, float tubeRadius)
-{
-	return Algebra::Matrix4::RotationY(angleRadius) *
-		Algebra::Vector4(radius + tubeRadius * cosf(angleTube), tubeRadius * sinf(angleTube), 0.f, 1.f);
 }
 
 void MeshGenerationSystem::UpdateDirtyTags()
@@ -46,124 +38,29 @@ void MeshGenerationSystem::UpdateTorusMeshes()
 
 		const auto& tc = e.GetComponent<TorusComponent>();
 
-		std::vector<Algebra::Vector4> vertices;
-		std::vector<uint32_t> indices;
+		MeshCreator::MeshData mesh = MeshCreator::GenerateTorusMeshData(tc);
 
-		for (int i = 0; i < tc.majorSegments; i++)
-		{
-			for (int j = 0; j < tc.minorSegments; j++)
-			{
-				Algebra::Vector4 vertex;
-				vertex = GetPoint(2 * std::numbers::pi_v<float> * j / tc.minorSegments,
-					2 * std::numbers::pi_v<float> * i / tc.majorSegments, tc.majorRadius, tc.minorRadius);
-				vertices.push_back(vertex);
-			}
-		}
-
-		for (int i = 0; i < tc.majorSegments; i++)
-		{
-			int iNext = (i + 1) % tc.majorSegments;
-			for (int j = 0; j < tc.minorSegments; j++)
-			{
-				int jNext = (j + 1) % tc.minorSegments;
-				indices.push_back(tc.minorSegments * i + j);
-				indices.push_back(tc.minorSegments * i + jNext);
-				indices.push_back(tc.minorSegments * i + j);
-				indices.push_back((tc.minorSegments * iNext) + j);
-			}
-		}
-
-		BufferLayout layout = {
-			{ ShaderDataType::Float4, "position" }
-		};
-
-		if (!e.HasComponent<MeshComponent>())
-		{
-			Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices.data(),
-				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
-			vb->SetLayout(layout);
-
-			Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(indices.data(), indices.size());
-
-			auto va = CreateRef<VertexArray>();
-			va->AddVertexBuffer(vb);
-			va->SetIndexBuffer(ib);
-
-			auto mc = &e.EmplaceComponent<MeshComponent>();
-			mc->vertexArray = va;
-			mc->renderingMode = RenderingMode::Lines;
-			mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
-
-			va->Unbind();
-		}
-		else
-		{
-			// possible source of bugs but have no way of testing it right now
-			auto mc = &e.GetComponent<MeshComponent>();
-			mc->vertexArray->GetVertexBuffers()[0]->SetData(vertices.data(),
-				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
-			mc->vertexArray->GetVertexBuffers()[0]->SetLayout(layout);
-			mc->vertexArray->SetIndexBuffer(CreateRef<IndexBuffer>(indices.data(), indices.size()));
-		}
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, RenderingMode::Lines, ShaderName::Default);
 	}
 }
 
 void MeshGenerationSystem::UpdatePointMeshes()
 {
-	static std::vector<Algebra::Vector4> vertices = {
-		{ Algebra::Vector4(-0.05f, -0.05f, -0.05f, 1.0f) },
-		{ Algebra::Vector4( 0.05f, -0.05f, -0.05f, 1.0f) },
-		{ Algebra::Vector4( 0.05f,  0.05f, -0.05f, 1.0f) },
-		{ Algebra::Vector4(-0.05f,  0.05f, -0.05f, 1.0f) },
-		{ Algebra::Vector4(-0.05f, -0.05f,  0.05f, 1.0f) },
-		{ Algebra::Vector4( 0.05f, -0.05f,  0.05f, 1.0f) },
-		{ Algebra::Vector4( 0.05f,  0.05f,  0.05f, 1.0f) },
-		{ Algebra::Vector4(-0.05f,  0.05f,  0.05f, 1.0f) },
-	};
-
-	static std::vector<uint32_t> indices = {
-		0, 1, 2,  2, 3, 0,
-		4, 5, 6,  6, 7, 4,
-		0, 3, 7,  7, 4, 0,
-		1, 5, 6,  6, 2, 1,
-		0, 1, 5,  5, 4, 0,
-		3, 2, 6,  6, 7, 3
-	};
+	MeshCreator::MeshData mesh = MeshCreator::GeneratePointMeshData();
 
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PointComponent>())
 	{
-		e.RemoveComponent<IsDirtyTag>();
-
-		if (e.HasComponent<MeshComponent>())
-			continue;
-
-		BufferLayout layout = {
-			{ ShaderDataType::Float4, "position" }
-		};
-
-		Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices.data(),
-			static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
-		vb->SetLayout(layout);
-
-		Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(indices.data(), indices.size());
-
-		auto va = CreateRef<VertexArray>();
-		va->AddVertexBuffer(vb);
-		va->SetIndexBuffer(ib);
-
-		auto mc = &e.EmplaceComponent<MeshComponent>();
-		mc->vertexArray = va;
-		mc->renderingMode = RenderingMode::Triangles;
-		mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
-
-		va->Unbind();
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, RenderingMode::Triangles, ShaderName::Default);
 	}
 }
 
 // Removing point from mesh should also remove mesh's reference from point
 void MeshGenerationSystem::UpdateLineMeshes()
 {
-	// Polylines
+	BufferLayout layout = {
+		{ ShaderDataType::Float4, "position" }
+	};
+
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>())
 	{
 		const auto& pc = e.GetComponent<LineComponent>();
@@ -196,38 +93,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 			indices.push_back(i + 1);
 		}
 
-		BufferLayout layout = {
-			{ ShaderDataType::Float4, "position" }
-		};
-
-		if (!e.HasComponent<MeshComponent>())
-		{
-			Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices.data(),
-				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
-			vb->SetLayout(layout);
-
-			Ref<IndexBuffer> ib = CreateRef<IndexBuffer>(indices.data(), indices.size());
-
-			auto va = CreateRef<VertexArray>();
-			va->AddVertexBuffer(vb);
-			va->SetIndexBuffer(ib);
-
-			auto mc = &e.EmplaceComponent<MeshComponent>();
-			mc->vertexArray = va;
-			mc->renderingMode = RenderingMode::Lines;
-			mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::Default);
-
-			va->Unbind();
-		}
-		else
-		{
-			// possible source of bugs but have no way of testing it right now
-			auto mc = &e.GetComponent<MeshComponent>();
-			mc->vertexArray->GetVertexBuffers()[0]->SetData(vertices.data(),
-				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
-			mc->vertexArray->GetVertexBuffers()[0]->SetLayout(layout);
-			mc->vertexArray->SetIndexBuffer(CreateRef<IndexBuffer>(indices.data(), indices.size()));
-		}
+		MeshCreator::UpdateMesh(e, vertices, indices, layout, RenderingMode::Lines, ShaderName::Default);
 	}
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierCurveC0Component>())
 	{
@@ -259,7 +125,6 @@ void MeshGenerationSystem::UpdateLineMeshes()
 				}
 			}
 		}
-
 
 		int rest = vertices.size() % 4;
 
@@ -295,34 +160,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 			vertices.push_back(p2);
 		}
 
-		BufferLayout layout = {
-			{ ShaderDataType::Float4, "position" }
-		};
-
-		if (!e.HasComponent<MeshComponent>())
-		{
-			Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices.data(),
-				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
-			vb->SetLayout(layout);
-
-			auto va = CreateRef<VertexArray>();
-			va->AddVertexBuffer(vb);
-
-			auto mc = &e.EmplaceComponent<MeshComponent>();
-			mc->vertexArray = va;
-			mc->renderingMode = RenderingMode::Patches;
-			mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
-
-			va->Unbind();
-		}
-		else
-		{
-			// possible source of bugs but have no way of testing it right now
-			auto mc = &e.GetComponent<MeshComponent>();
-			mc->vertexArray->GetVertexBuffers()[0]->SetData(vertices.data(),
-				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
-			mc->vertexArray->GetVertexBuffers()[0]->SetLayout(layout);
-		}
+		MeshCreator::UpdateMesh(e, vertices, indices, layout, RenderingMode::Patches, ShaderName::BezierCurve);
 	}
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierCurveC2Component>())
 	{
@@ -383,29 +221,6 @@ void MeshGenerationSystem::UpdateLineMeshes()
 			{ ShaderDataType::Float4, "position" }
 		};
 
-		if (!e.HasComponent<MeshComponent>())
-		{
-			Ref<VertexBuffer> vb = CreateRef<VertexBuffer>(vertices.data(),
-				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
-			vb->SetLayout(layout);
-
-			auto va = CreateRef<VertexArray>();
-			va->AddVertexBuffer(vb);
-
-			auto mc = &e.EmplaceComponent<MeshComponent>();
-			mc->vertexArray = va;
-			mc->renderingMode = RenderingMode::Patches;
-			mc->shader = ShaderManager::GetInstance().GetShader(ShaderName::BezierCurve);
-
-			va->Unbind();
-		}
-		else
-		{
-			// possible source of bugs but have no way of testing it right now
-			auto mc = &e.GetComponent<MeshComponent>();
-			mc->vertexArray->GetVertexBuffers()[0]->SetData(vertices.data(),
-				static_cast<uint32_t>(vertices.size() * sizeof(Algebra::Vector4)));
-			mc->vertexArray->GetVertexBuffers()[0]->SetLayout(layout);
-		}
+		MeshCreator::UpdateMesh(e, vertices, indices, layout, RenderingMode::Patches, ShaderName::BezierCurve);
 	}
 }
