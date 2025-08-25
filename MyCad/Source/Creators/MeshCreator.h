@@ -55,9 +55,9 @@ namespace MeshCreator
         Entity& e,
         std::vector<Algebra::Vector4>& vertices,
         std::vector<uint32_t>& indices,
-        BufferLayout& layout,
-        RenderingMode mode,
-        ShaderName shaderName)
+        BufferLayout layout = BufferLayout{ { ShaderDataType::Float4, "position" } },
+        RenderingMode mode = RenderingMode::Lines,
+        ShaderName shaderName = ShaderName::Default)
     {
         if (!e.HasComponent<MeshComponent>())
         {
@@ -178,6 +178,169 @@ namespace MeshCreator
     }
 #pragma endregion Torus
 
+#pragma region Line
+    MeshData GenerateLineMeshData(const LineComponent& lc, Ref<Scene> scene)
+    {
+        MeshData mesh;
 
+        for (auto handle : lc.pointHandles)
+        {
+            Entity pointEntity{ handle, scene.get() };
 
+            if (pointEntity.HasComponent<TranslationComponent>())
+            {
+                Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
+                vertex.w = 1.0f;
+                mesh.vertices.push_back(vertex);
+            }
+        }
+
+        for (size_t i = 0; i + 1 < lc.pointHandles.size(); ++i)
+        {
+            mesh.indices.push_back(static_cast<uint32_t>(i));
+            mesh.indices.push_back(static_cast<uint32_t>(i + 1));
+        }
+
+        mesh.layout = BufferLayout{
+            { ShaderDataType::Float4, "position" }
+        };
+
+        return mesh;
+    }
+#pragma endregion Line
+
+#pragma region BezierCurveC0
+    void PadBezierVertices(std::vector<Algebra::Vector4>& vertices)
+    {
+        int rest = static_cast<int>(vertices.size() % 4);
+        if (rest == 0) return;
+
+        switch (rest)
+        {
+        case 1:
+        {
+            auto p = vertices.back();
+            vertices.insert(vertices.end(), 3, p);
+            break;
+        }
+        case 2:
+        {
+            auto p0 = vertices[vertices.size() - 2];
+            auto p1 = vertices.back();
+            vertices.pop_back();
+            vertices.pop_back();
+            vertices.push_back(p0);
+            vertices.push_back(p0);
+            vertices.push_back(p1);
+            vertices.push_back(p1);
+            break;
+        }
+        case 3:
+        {
+            auto p0 = vertices[vertices.size() - 3];
+            auto p1 = vertices[vertices.size() - 2];
+            auto p2 = vertices.back();
+            vertices.pop_back();
+            vertices.pop_back();
+            vertices.pop_back();
+            vertices.push_back(p0);
+            vertices.push_back((1.f / 3.f) * p0 + (2.f / 3.f) * p1);
+            vertices.push_back((2.f / 3.f) * p1 + (1.f / 3.f) * p2);
+            vertices.push_back(p2);
+            break;
+        }
+        }
+    }
+
+    MeshData GenerateBezierC0MeshData(const BezierCurveC0Component& bcc, Ref<Scene> scene)
+    {
+        MeshData mesh;
+
+        auto& pointHandles = (Entity{ bcc.polylineHandle, scene.get()}).GetComponent<LineComponent>().pointHandles;
+
+        int i = 0;
+        for (auto handle : pointHandles)
+        {
+            Entity pointEntity{ handle, scene.get()};
+
+            if (pointEntity.HasComponent<TranslationComponent>())
+            {
+                Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
+                vertex.w = 1.0f;
+                mesh.vertices.push_back(vertex);
+                ++i;
+
+                if (i % 4 == 0)
+                {
+                    // duplicate every 4th point
+                    mesh.vertices.push_back(vertex);
+                    ++i;
+                }
+            }
+        }
+
+		PadBezierVertices(mesh.vertices);
+
+        mesh.layout = BufferLayout{
+            { ShaderDataType::Float4, "position" }
+        };
+
+        return mesh;
+    }
+#pragma endregion BezierCurveC0
+
+#pragma region BezierCurveC2
+    MeshData GenerateBezierC2MeshData(const BezierCurveC2Component& bcc, Ref<Scene> scene)
+    {
+        MeshData mesh;
+
+        auto& pointHandles = (Entity{ bcc.deBoorPolylineHandle, scene.get()})
+            .GetComponent<LineComponent>().pointHandles;
+
+        if (pointHandles.size() < 4)
+            return mesh;
+
+        Entity bernsteinPolyline{ bcc.bernsteinPolylineHandle, scene.get() };
+
+        for (size_t i = 0; i + 3 < pointHandles.size(); ++i)
+        {
+            auto d0 = Entity{ pointHandles[i]    , scene.get() };
+            auto d1 = Entity{ pointHandles[i + 1], scene.get() };
+            auto d2 = Entity{ pointHandles[i + 2], scene.get() };
+            auto d3 = Entity{ pointHandles[i + 3], scene.get() };
+
+            Algebra::Vector4 D0 = d0.GetComponent<TranslationComponent>().translation;
+            Algebra::Vector4 D1 = d1.GetComponent<TranslationComponent>().translation;
+            Algebra::Vector4 D2 = d2.GetComponent<TranslationComponent>().translation;
+            Algebra::Vector4 D3 = d3.GetComponent<TranslationComponent>().translation;
+
+            D0.w = D1.w = D2.w = D3.w = 1.0f;
+
+            Algebra::Vector4 bezierPoints[4] = {
+                (D0 + 4.0f * D1 + D2) / 6.0f,
+                (2.0f * D1 + D2) / 3.0f,
+                (D1 + 2.0f * D2) / 3.0f,
+                (D1 + 4.0f * D2 + D3) / 6.0f
+            };
+
+            for (int j = 0; j < 4; ++j)
+            {
+                auto pointEntity = ShapeCreator::CreatePoint(scene);
+                pointEntity.EmplaceTag<IsInvisibleTag>();
+                pointEntity.GetComponent<TranslationComponent>().SetTranslation(bezierPoints[j]);
+                bernsteinPolyline.GetComponent<LineComponent>().pointHandles.push_back(pointEntity.GetHandle());
+                pointEntity.EmplaceComponent<VirtualComponent>(bernsteinPolyline.GetHandle());
+
+                mesh.vertices.push_back(bezierPoints[j]);
+            }
+        }
+
+        mesh.layout = BufferLayout{
+            { ShaderDataType::Float4, "position" }
+        };
+
+        return mesh;
+    }
+
+#pragma endregion BezierCurveC2
 }
