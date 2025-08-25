@@ -197,6 +197,7 @@
     <ClInclude Include="Source\Core\App.h" />
     <ClInclude Include="Source\Core\Observable.h" />
     <ClInclude Include="Source\Core\Scene\Scene.h" />
+    <ClInclude Include="Source\Creators\MeshCreator.h" />
     <ClInclude Include="Source\Creators\ShapeCreator.h" />
     <ClInclude Include="Source\ECS\Components\BezierCurveC0Component.h" />
     <ClInclude Include="Source\ECS\Components\BezierCurveC2Component.h" />

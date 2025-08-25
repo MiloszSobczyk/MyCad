@@ -3,6 +3,9 @@
 #include "Core/Scene/Scene.h"
 #include "Utils/Base.h"
 
+#include "Algebra.h"
+#include "Managers/ShaderManager.h"
+
 class MeshGenerationSystem
 {
 public:
@@ -14,7 +17,6 @@ private:
 	Ref<Scene> m_Scene;
 
 	void UpdateDirtyTags();
-
 	void UpdateTorusMeshes();
 	void UpdatePointMeshes();
 	void UpdateLineMeshes();

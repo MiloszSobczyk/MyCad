@@ -24,18 +24,18 @@ namespace UI
 
 		if (ImGui::Button("Create Torus##shape_creation"))
 		{
-			ObjectCreator::CreateTorus(scene);
+			ShapeCreator::CreateTorus(scene);
 		}
 		if (ImGui::Button("Create Point##shape_creation"))
 		{
-			ObjectCreator::CreatePoint(scene);
+			ShapeCreator::CreatePoint(scene);
 		}
 		if (ImGui::Button("Create Polyline##shape_creation"))
 		{
 			auto pointHandles = GetSelectedPointHandles(scene);
 			if (!pointHandles.empty())
 			{
-				ObjectCreator::CreatePolyline(scene, pointHandles);
+				ShapeCreator::CreatePolyline(scene, pointHandles);
 			}
 		}
 		if (ImGui::Button("Create Bezier Curve C0##shape_creation"))
@@ -43,7 +43,7 @@ namespace UI
 			auto pointHandles = GetSelectedPointHandles(scene);
 			if (!pointHandles.empty())
 			{
-				ObjectCreator::CreateBezierCurveC0(scene, pointHandles);
+				ShapeCreator::CreateBezierCurveC0(scene, pointHandles);
 			}
 		}
 		if (ImGui::Button("Create Bezier Curve C2##shape_creation"))
@@ -51,7 +51,7 @@ namespace UI
 			auto pointHandles = GetSelectedPointHandles(scene);
 			if (!pointHandles.empty())
 			{
-				ObjectCreator::CreateBezierCurveC2(scene, pointHandles);
+				ShapeCreator::CreateBezierCurveC2(scene, pointHandles);
 			}
 		}
 

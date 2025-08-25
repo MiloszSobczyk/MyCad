@@ -4,7 +4,7 @@
 #include "Core/Scene/Entity.h"
 #include "ECS/Components/Components.h"
 
-namespace ObjectCreator
+namespace ShapeCreator
 {
 	inline Entity CreatePoint(Ref<Scene> scene)
 	{

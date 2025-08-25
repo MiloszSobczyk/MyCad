@@ -3,9 +3,6 @@
 #include "Core/Scene/Entity.h"
 #include "Creators/ShapeCreator.h"
 #include "ECS/Components/Components.h"
-#include "Managers/ShaderManager.h"
-
-#include "Algebra.h"
 
 #include <numbers>
 
@@ -15,6 +12,7 @@ MeshGenerationSystem::MeshGenerationSystem(Ref<Scene> scene)
 	: m_Scene{ scene }
 {
 }
+
 
 void MeshGenerationSystem::Update()
 {
@@ -371,7 +369,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 
 			for (int j = 0; j < 4; ++j)
 			{
-				auto pointEntity = ObjectCreator::CreatePoint(m_Scene);
+				auto pointEntity = ShapeCreator::CreatePoint(m_Scene);
 				pointEntity.EmplaceTag<IsInvisibleTag>();
 				pointEntity.GetComponent<TranslationComponent>().SetTranslation(bezierPoints[j]);
 				bernsteinPolyline.GetComponent<LineComponent>().pointHandles.push_back(pointEntity.GetHandle());
