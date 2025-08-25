@@ -6,6 +6,20 @@
 
 namespace ObjectCreator
 {
+	inline Entity CreatePoint(Ref<Scene> scene)
+	{
+		auto point = scene->CreateEntity();
+
+		auto id = point.EmplaceComponent<IdComponent>().id;
+		point.EmplaceComponent<NameComponent>().name = "Point" + std::to_string(id);
+
+		point.EmplaceComponent<PointComponent>();
+		point.EmplaceComponent<TranslationComponent>();
+		point.EmplaceTag<IsDirtyTag>();
+
+		return point;
+	}
+
 	inline Entity CreateTorus(Ref<Scene> scene)
 	{
 		auto torus = scene->CreateEntity();
@@ -22,20 +36,6 @@ namespace ObjectCreator
 		torus.EmplaceTag<IsDirtyTag>();
 
 		return torus;
-	}
-
-	inline Entity CreatePoint(Ref<Scene> scene)
-	{
-		auto point = scene->CreateEntity();
-
-		auto id = point.EmplaceComponent<IdComponent>().id;
-		point.EmplaceComponent<NameComponent>().name = "Point" + std::to_string(id);
-
-		point.EmplaceComponent<PointComponent>();
-		point.EmplaceComponent<TranslationComponent>();
-		point.EmplaceTag<IsDirtyTag>();
-
-		return point;
 	}
 
 	inline Entity CreatePolyline(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)

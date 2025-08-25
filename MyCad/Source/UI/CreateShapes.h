@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Scene/Scene.h"
-#include "Creators/ObjectCreator.h"
+#include "Creators/ShapeCreator.h"
 
 #include <imgui/imgui.h>
 

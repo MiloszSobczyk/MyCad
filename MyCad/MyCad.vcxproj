@@ -197,7 +197,7 @@
     <ClInclude Include="Source\Core\App.h" />
     <ClInclude Include="Source\Core\Observable.h" />
     <ClInclude Include="Source\Core\Scene\Scene.h" />
-    <ClInclude Include="Source\Creators\ObjectCreator.h" />
+    <ClInclude Include="Source\Creators\ShapeCreator.h" />
     <ClInclude Include="Source\ECS\Components\BezierCurveC0Component.h" />
     <ClInclude Include="Source\ECS\Components\BezierCurveC2Component.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
@@ -230,7 +230,7 @@
     <ClInclude Include="Source\Render\Uniform\Uniform.h" />
     <ClInclude Include="Source\Render\Uniform\UniformManager.h" />
     <ClInclude Include="Source\Render\Uniform\UniformManager.ipp" />
-    <ClInclude Include="Source\UI\ShapeCreator.h" />
+    <ClInclude Include="Source\UI\CreateShapes.h" />
     <ClInclude Include="Source\UI\ShapeList.h" />
     <ClInclude Include="Source\UI\ShapeProperties.h" />
     <ClInclude Include="Source\UI\UI.h" />

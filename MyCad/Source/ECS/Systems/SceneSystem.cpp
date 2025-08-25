@@ -1,9 +1,8 @@
 #include "SceneSystem.h"
 
 #include "Algebra.h"
-#include "Creators/ObjectCreator.h"
-#include "Utils/Logger.h"
 #include "UI/UI.h"
+#include "Utils/Logger.h"
 
 #include <iostream>
 
@@ -14,8 +13,6 @@ SceneSystem::SceneSystem()
     m_RenderingSystem(m_Scene),
 	m_NotificationSystem(m_Scene)
 {
-	//ObjectCreator::CreatePoint(m_Scene);
-	//ObjectCreator::CreateTorus(m_Scene);
 }
 
 void SceneSystem::Update()

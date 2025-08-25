@@ -1,13 +1,13 @@
 #include "MeshGenerationSystem.h"
 
 #include "Core/Scene/Entity.h"
+#include "Creators/ShapeCreator.h"
 #include "ECS/Components/Components.h"
 #include "Managers/ShaderManager.h"
 
 #include "Algebra.h"
 
 #include <numbers>
-#include <Creators/ObjectCreator.h>
 
 // Function for quick vertex array creation is needed
 
