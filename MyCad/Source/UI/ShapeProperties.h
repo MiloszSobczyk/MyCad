@@ -94,6 +94,7 @@ namespace UI
 			}
         }
 
+		// a lot of repeated code, but it can stay for now
         for (auto e : selectedShapes)
         {
             ImGui::Text("%s", GenerateLabel(e, e.GetComponent<NameComponent>().name).c_str());
@@ -107,6 +108,20 @@ namespace UI
             {
 				auto& lc = e.GetComponent<LineComponent>();
 				DisplayPolylineComponentUI(e, lc, scene);
+            }
+            if (e.HasComponent<BezierCurveC0Component>())
+            {
+                auto& bc = e.GetComponent<BezierCurveC0Component>();
+				auto& lc = Entity{ bc.polylineHandle, scene.get() }.GetComponent<LineComponent>();
+                DisplayPolylineComponentUI(e, lc, scene);
+            }
+            if (e.HasComponent<BezierCurveC2Component>())
+            {
+                auto& bc = e.GetComponent<BezierCurveC2Component>();
+                auto& deBoorLC = Entity{ bc.deBoorPolylineHandle, scene.get() }.GetComponent<LineComponent>();
+                auto& bernsteinLC = Entity{ bc.bernsteinPolylineHandle, scene.get() }.GetComponent<LineComponent>();
+                DisplayPolylineComponentUI(e, deBoorLC, scene);
+                //DisplayPolylineComponentUI(e, bernsteinLC, scene);
             }
 
             ImGui::Separator();

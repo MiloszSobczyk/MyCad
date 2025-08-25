@@ -9,4 +9,9 @@ struct IdComponent
 	IdComponent()
 		: id{ IdManager::GetInstance().GetNextId() }
 	{}
+
+	~IdComponent()
+	{
+		IdManager::GetInstance().FreeId(id);
+	}
 };

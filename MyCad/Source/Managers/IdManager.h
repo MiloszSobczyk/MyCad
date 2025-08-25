@@ -1,17 +1,21 @@
 #pragma once
 
+#include <queue>
+
 class IdManager
 {
 public:
-	static IdManager& GetInstance();
+    static IdManager& GetInstance();
 
-	unsigned int GetNextId();
+    unsigned int GetNextId();
+    void FreeId(unsigned int id);
 
 private:
-	IdManager();
-	~IdManager();
-	IdManager(const IdManager&) = delete;
-	void operator=(const IdManager&) = delete;
+    IdManager() = default;
+    ~IdManager() = default;
+    IdManager(const IdManager&) = delete;
+    void operator=(const IdManager&) = delete;
 
-	unsigned int m_CurrentId = 0;
+    unsigned int m_CurrentId = 0;
+    std::queue<unsigned int> m_FreeIds;
 };
