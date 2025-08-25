@@ -50,6 +50,8 @@ void MeshGenerationSystem::UpdatePointMeshes()
 
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PointComponent>())
 	{
+		e.RemoveComponent<IsDirtyTag>();
+
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, RenderingMode::Triangles);
 	}
 }
@@ -60,6 +62,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>())
 	{
 		e.RemoveComponent<IsDirtyTag>();
+
 		const auto& pc = e.GetComponent<LineComponent>();
 
 		if (pc.pointHandles.empty())
