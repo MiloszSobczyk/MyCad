@@ -16,6 +16,8 @@
 #include "BezierCurveC0Component.h"
 #include "BezierCurveC2Component.h"
 #include "InterpolatingCurveComponent.h"
+#include "BezierSurfaceC0Component.h"
+#include "PatchComponent.h"
 
 // Metadata
 #include "IdComponent.h"

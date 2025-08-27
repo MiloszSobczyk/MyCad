@@ -17,7 +17,8 @@ private:
 	Ref<Scene> m_Scene;
 
 	void UpdateDirtyTags();
-	void UpdateTorusMeshes();
 	void UpdatePointMeshes();
+	void UpdateTorusMeshes();
 	void UpdateLineMeshes();
+	void UpdateSurfaceMeshes();
 };

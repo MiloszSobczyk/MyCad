@@ -22,13 +22,13 @@ namespace UI
 	{
 		ImGui::Begin("Shape creation##shape_creation");
 
-		if (ImGui::Button("Create Torus##shape_creation"))
-		{
-			ShapeCreator::CreateTorus(scene);
-		}
 		if (ImGui::Button("Create Point##shape_creation"))
 		{
 			ShapeCreator::CreatePoint(scene);
+		}
+		if (ImGui::Button("Create Torus##shape_creation"))
+		{
+			ShapeCreator::CreateTorus(scene);
 		}
 		if (ImGui::Button("Create Polyline##shape_creation"))
 		{
@@ -61,6 +61,10 @@ namespace UI
 			{
 				ShapeCreator::CreateInterpolatingCurve(scene, pointHandles);
 			}
+		}
+		if (ImGui::Button("Create Bezier Surface C0##shape_creation"))
+		{
+			ShapeCreator::CreateBezierSurfaceC0(scene);
 		}
 
 		ImGui::End();

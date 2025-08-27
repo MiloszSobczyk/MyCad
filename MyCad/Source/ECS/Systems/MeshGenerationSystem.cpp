@@ -6,6 +6,7 @@
 #include "Creators/MeshCreator.h"
 
 #include <numbers>
+#include <array>
 
 MeshGenerationSystem::MeshGenerationSystem(Ref<Scene> scene)
 	: m_Scene{ scene }
@@ -15,9 +16,10 @@ MeshGenerationSystem::MeshGenerationSystem(Ref<Scene> scene)
 void MeshGenerationSystem::Update()
 {
 	UpdateDirtyTags();
-	UpdateTorusMeshes();
 	UpdatePointMeshes();
+	UpdateTorusMeshes();
 	UpdateLineMeshes();
+	UpdateSurfaceMeshes();
 }
 
 void MeshGenerationSystem::UpdateDirtyTags()
@@ -27,6 +29,18 @@ void MeshGenerationSystem::UpdateDirtyTags()
 		auto& vc = e.GetComponent<VirtualComponent>();
 		Entity targetEntity{ vc.targetEntity, m_Scene.get() };
 		targetEntity.EmplaceTag<IsDirtyTag>();
+	}
+}
+
+void MeshGenerationSystem::UpdatePointMeshes()
+{
+	MeshCreator::MeshData mesh = MeshCreator::GeneratePointMeshData();
+
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PointComponent>())
+	{
+		e.RemoveComponent<IsDirtyTag>();
+
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, RenderingMode::Triangles);
 	}
 }
 
@@ -44,19 +58,7 @@ void MeshGenerationSystem::UpdateTorusMeshes()
 	}
 }
 
-void MeshGenerationSystem::UpdatePointMeshes()
-{
-	MeshCreator::MeshData mesh = MeshCreator::GeneratePointMeshData();
-
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PointComponent>())
-	{
-		e.RemoveComponent<IsDirtyTag>();
-
-		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, RenderingMode::Triangles);
-	}
-}
-
-// Removing point from mesh should also remove mesh's reference from point
+// Removing point from mesh should also remove mesh's reference from point, so I will need ShapeManagementSystem
 void MeshGenerationSystem::UpdateLineMeshes()
 {
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>())
@@ -105,5 +107,39 @@ void MeshGenerationSystem::UpdateLineMeshes()
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
 			RenderingMode::Patches, ShaderName::BezierCurve);
+	}
+}
+
+void MeshGenerationSystem::UpdateSurfaceMeshes()
+{
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierSurfaceC0Component>())
+	{
+		e.RemoveComponent<IsDirtyTag>();
+
+		auto& bsc = e.GetComponent<BezierSurfaceC0Component>();
+		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierSurfaceC0MeshData(bsc, m_Scene);
+
+		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
+		{
+			Entity patchEntity = m_Scene->CreateEntity();
+			auto& pc = patchEntity.EmplaceComponent<PatchComponent>();
+
+			int startIndex = patchIndex * 16;
+
+			std::vector<entt::entity> controlPoints;
+			for (int i = 0; i < 16; ++i)
+			{
+				Entity pointEntity = ShapeCreator::CreatePoint(m_Scene);
+				pointEntity.EmplaceTag<IsInvisibleTag>();
+				pointEntity.GetComponent<TranslationComponent>().SetTranslation(mesh.vertices[startIndex + i]);
+				controlPoints.push_back(pointEntity.GetHandle());
+			}
+
+			pc.bernsteinPolylineHandle = ShapeCreator::CreatePolyline(m_Scene, controlPoints).GetHandle();
+		}
+
+
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
+			RenderingMode::Patches, ShaderName::BezierSurface);
 	}
 }

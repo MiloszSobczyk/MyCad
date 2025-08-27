@@ -514,4 +514,78 @@ namespace MeshCreator
     }
 
 #pragma endregion InterpolatingCurve
+
+#pragma region BezierSurfaceC0
+
+    std::vector<Algebra::Vector4> SetupControlPoints(Algebra::Vector4 position, float width, float height,
+        int rows, int columns)
+    {
+        std::vector<Algebra::Vector4> controlPoints;
+        controlPoints.reserve(rows * columns);
+
+        float dx = width / static_cast<float>(columns - 1);
+        float dy = height / static_cast<float>(rows - 1);
+
+        Algebra::Vector4 startingPosition = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
+
+        for (int i = 0; i < rows; ++i)
+        {
+            for (int j = 0; j < columns; ++j)
+            {
+                auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
+                auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
+
+                controlPoints.push_back(startingPosition + widthOffset + heightOffset);
+            }
+        }
+
+        return controlPoints;
+    }
+
+    std::vector<Algebra::Vector4> SetupPatches(const BezierSurfaceC0Component& bsc, Ref<Scene> scene,
+		const std::vector<Algebra::Vector4>& controlPoints, int rows, int columns)
+    {
+        std::vector<Algebra::Vector4> patchPoints;
+        for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
+        {
+            int startingI = patchIndex / bsc.widthPatches;
+            int startingJ = patchIndex % bsc.widthPatches;
+
+            for (int i = 0; i < 4; ++i)
+            {
+                for (int j = 0; j < 4; ++j)
+                {
+                    patchPoints.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
+                }
+            }
+        }
+
+        return patchPoints;
+    }
+
+    MeshData GenerateBezierSurfaceC0MeshData(BezierSurfaceC0Component& bsc, Ref<Scene> scene)
+    {
+		int rows = bsc.heightPatches * 3 + 1;
+		int columns = bsc.widthPatches * 3 + 1;
+
+		auto controlPoints = SetupControlPoints(Algebra::Vector4(0.f, 0.f, 0.f, 1.f), 2.f, 2.f, rows, columns);
+        
+        for(auto& p : controlPoints)
+        {
+            p.w = 1.f;
+		}
+
+		auto vertices = SetupPatches(bsc, scene, controlPoints, rows, columns);
+
+        MeshData mesh;
+        mesh.vertices = vertices;
+        mesh.indices = {};
+        mesh.layout = BufferLayout{
+            { ShaderDataType::Float4, "position" }
+        };
+
+        return mesh;
+    }
+
+#pragma endregion BezierSurfaceC0
 }

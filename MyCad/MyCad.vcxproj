@@ -201,6 +201,7 @@
     <ClInclude Include="Source\Creators\ShapeCreator.h" />
     <ClInclude Include="Source\ECS\Components\BezierCurveC0Component.h" />
     <ClInclude Include="Source\ECS\Components\BezierCurveC2Component.h" />
+    <ClInclude Include="Source\ECS\Components\BezierSurfaceC0Component.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\IdComponent.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="Source\ECS\Components\MeshComponent.h" />
     <ClInclude Include="Source\ECS\Components\NameComponent.h" />
     <ClInclude Include="Source\ECS\Components\NotificationComponent.h" />
+    <ClInclude Include="Source\ECS\Components\PatchComponent.h" />
     <ClInclude Include="Source\ECS\Components\PointComponent.h" />
     <ClInclude Include="Source\ECS\Components\Tags.h" />
     <ClInclude Include="Source\ECS\Components\TorusComponent.h" />

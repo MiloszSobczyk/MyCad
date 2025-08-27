@@ -30,7 +30,7 @@ void OpenGLApi::InitRendering()
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	// TODO: re-add it
 	//GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glPatchParameteri(GL_PATCH_VERTICES, 4));
+	GLCall(glPatchParameteri(GL_PATCH_VERTICES, 16));
 }
 
 void OpenGLApi::DeinitGLFW()

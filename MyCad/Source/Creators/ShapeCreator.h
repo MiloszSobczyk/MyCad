@@ -11,7 +11,7 @@ namespace ShapeCreator
 		auto point = scene->CreateEntity();
 
 		auto id = point.EmplaceComponent<IdComponent>().id;
-		point.EmplaceComponent<NameComponent>().name = "Point" + std::to_string(id);
+		point.EmplaceComponent<NameComponent>().name = "Point_" + std::to_string(id);
 
 		point.EmplaceComponent<PointComponent>();
 		point.EmplaceComponent<TranslationComponent>();
@@ -25,7 +25,7 @@ namespace ShapeCreator
 		auto torus = scene->CreateEntity();
 
 		auto id = torus.EmplaceComponent<IdComponent>().id;
-		torus.EmplaceComponent<NameComponent>().name = "Torus" + std::to_string(id);
+		torus.EmplaceComponent<NameComponent>().name = "Torus_" + std::to_string(id);
 
 		torus.EmplaceComponent<TorusComponent>();
 
@@ -43,7 +43,7 @@ namespace ShapeCreator
 		auto polyline = scene->CreateEntity();
 
 		auto id = polyline.EmplaceComponent<IdComponent>().id;
-		polyline.EmplaceComponent<NameComponent>().name = "Polyline" + std::to_string(id);
+		polyline.EmplaceComponent<NameComponent>().name = "Polyline_" + std::to_string(id);
 
 		auto& pc = polyline.EmplaceComponent<LineComponent>();
 		pc.pointHandles = pointHandles;
@@ -65,7 +65,7 @@ namespace ShapeCreator
 		auto curve = scene->CreateEntity();
 
 		auto id = curve.EmplaceComponent<IdComponent>().id;
-		curve.EmplaceComponent<NameComponent>().name = "BezierCurveC0" + std::to_string(id);
+		curve.EmplaceComponent<NameComponent>().name = "BezierCurveC0_" + std::to_string(id);
 
 		curve.EmplaceTag<IsDirtyTag>();
 
@@ -85,7 +85,7 @@ namespace ShapeCreator
 		auto curve = scene->CreateEntity();
 
 		auto id = curve.EmplaceComponent<IdComponent>().id;
-		curve.EmplaceComponent<NameComponent>().name = "BezierCurveC2" + std::to_string(id);
+		curve.EmplaceComponent<NameComponent>().name = "BezierCurveC2_" + std::to_string(id);
 
 		curve.EmplaceTag<IsDirtyTag>();
 
@@ -111,7 +111,7 @@ namespace ShapeCreator
 		auto curve = scene->CreateEntity();
 
 		auto id = curve.EmplaceComponent<IdComponent>().id;
-		curve.EmplaceComponent<NameComponent>().name = "InterpolatingCurve" + std::to_string(id);
+		curve.EmplaceComponent<NameComponent>().name = "InterpolatingCurve_" + std::to_string(id);
 
 		curve.EmplaceTag<IsDirtyTag>();
 
@@ -130,5 +130,19 @@ namespace ShapeCreator
 		icc.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
 
 		return curve;
+	}
+
+	inline Entity CreateBezierSurfaceC0(Ref<Scene> scene)
+	{
+		auto surface = scene->CreateEntity();
+
+		auto id = surface.EmplaceComponent<IdComponent>().id;
+		surface.EmplaceComponent<NameComponent>().name = "BezierSurfaceC0_" + std::to_string(id);
+
+		surface.EmplaceTag<IsDirtyTag>();
+
+		auto& icc = surface.EmplaceComponent<BezierSurfaceC0Component>();
+
+		return surface;
 	}
 }
