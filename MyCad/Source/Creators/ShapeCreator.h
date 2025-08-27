@@ -105,4 +105,30 @@ namespace ShapeCreator
 
 		return curve;
 	}
+
+	inline Entity CreateInterpolatingCurve(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
+	{
+		auto curve = scene->CreateEntity();
+
+		auto id = curve.EmplaceComponent<IdComponent>().id;
+		curve.EmplaceComponent<NameComponent>().name = "InterpolatingCurve" + std::to_string(id);
+
+		curve.EmplaceTag<IsDirtyTag>();
+
+		auto& icc = curve.EmplaceComponent<InterpolatingCurveComponent>();
+
+		auto interpolatingPolyline = CreatePolyline(scene, pointHandles);
+		interpolatingPolyline.EmplaceComponent<VirtualComponent>(curve.GetHandle());
+		interpolatingPolyline.EmplaceTag<IsInvisibleTag>();
+
+		icc.interpolatingPolylineHandle = interpolatingPolyline.GetHandle();
+
+		auto bernsteinPolyline = CreatePolyline(scene, {});
+		bernsteinPolyline.EmplaceComponent<VirtualComponent>(curve.GetHandle());
+		bernsteinPolyline.EmplaceTag<IsInvisibleTag>();
+
+		icc.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
+
+		return curve;
+	}
 }

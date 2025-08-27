@@ -95,4 +95,15 @@ void MeshGenerationSystem::UpdateLineMeshes()
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, 
 			RenderingMode::Patches, ShaderName::BezierCurve);
 	}
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, InterpolatingCurveComponent>())
+	{
+		e.RemoveComponent<IsDirtyTag>();
+
+		const auto& icc = e.GetComponent<InterpolatingCurveComponent>();
+
+		MeshCreator::MeshData mesh = MeshCreator::GenerateInterpolatingCurveMeshData(icc, m_Scene);
+
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
+			RenderingMode::Patches, ShaderName::BezierCurve);
+	}
 }

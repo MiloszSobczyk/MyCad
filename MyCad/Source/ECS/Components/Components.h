@@ -15,6 +15,7 @@
 #include "LineComponent.h"
 #include "BezierCurveC0Component.h"
 #include "BezierCurveC2Component.h"
+#include "InterpolatingCurveComponent.h"
 
 // Metadata
 #include "IdComponent.h"

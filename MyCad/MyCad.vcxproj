@@ -204,6 +204,7 @@
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\IdComponent.h" />
+    <ClInclude Include="Source\ECS\Components\InterpolatingCurveComponent.h" />
     <ClInclude Include="Source\ECS\Components\LineComponent.h" />
     <ClInclude Include="Source\ECS\Components\MeshComponent.h" />
     <ClInclude Include="Source\ECS\Components\NameComponent.h" />

@@ -54,6 +54,14 @@ namespace UI
 				ShapeCreator::CreateBezierCurveC2(scene, pointHandles);
 			}
 		}
+		if (ImGui::Button("Create Interpolating Curve##shape_creation"))
+		{
+			auto pointHandles = GetSelectedPointHandles(scene);
+			if (!pointHandles.empty())
+			{
+				ShapeCreator::CreateInterpolatingCurve(scene, pointHandles);
+			}
+		}
 
 		ImGui::End();
 	}
