@@ -84,7 +84,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierC0MeshData(bcc, m_Scene);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, 
-			RenderingMode::Patches, ShaderName::BezierCurve);
+			RenderingMode::Patches, { ShaderName::BezierCurve });
 	}
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierCurveC2Component>())
 	{
@@ -95,7 +95,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierC2MeshData(bcc, m_Scene);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, 
-			RenderingMode::Patches, ShaderName::BezierCurve);
+			RenderingMode::Patches, { ShaderName::BezierCurve });
 	}
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, InterpolatingCurveComponent>())
 	{
@@ -106,7 +106,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 		MeshCreator::MeshData mesh = MeshCreator::GenerateInterpolatingCurveMeshData(icc, m_Scene);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
-			RenderingMode::Patches, ShaderName::BezierCurve);
+			RenderingMode::Patches, { ShaderName::BezierCurve });
 	}
 }
 
@@ -138,8 +138,7 @@ void MeshGenerationSystem::UpdateSurfaceMeshes()
 			pc.bernsteinPolylineHandle = ShapeCreator::CreatePolyline(m_Scene, controlPoints).GetHandle();
 		}
 
-
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
-			RenderingMode::Patches, ShaderName::BezierSurface);
+			RenderingMode::Patches, { ShaderName::BezierSurface, ShaderName::BezierSurface2 });
 	}
 }

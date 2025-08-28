@@ -6,7 +6,7 @@
 
 struct MeshComponent
 {
-	Ref<Shader> shader;
+	std::vector<Ref<Shader>> shaders;
 	Ref<VertexArray> vertexArray;
 	RenderingMode renderingMode;
 };

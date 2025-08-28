@@ -50,3 +50,8 @@ void Renderer::Render(RenderingMode renderingMode)
 	m_VertexArray->Unbind();
 	m_Shader->Unbind();
 }
+
+void Renderer::SetPatchParameters(int count)
+{
+    GLCall(glPatchParameteri(GL_PATCH_VERTICES, count));
+}

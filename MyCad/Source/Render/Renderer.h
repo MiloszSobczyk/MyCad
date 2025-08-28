@@ -16,10 +16,14 @@ enum class RenderingMode
 	Patches = GL_PATCHES,
 };
 
+//would be nice to move some of this staff to OpenGLApi
+
 class Renderer
 {
 public:
 	void Render(RenderingMode renderingMode);
+
+	void SetPatchParameters(int count);
 
 	inline void SetShader(const Ref<Shader>& shader) { m_Shader = shader; }
 	inline void SetVertexArray(const Ref<VertexArray>& vertexArray) { m_VertexArray = vertexArray; }

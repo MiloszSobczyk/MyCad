@@ -17,7 +17,10 @@ void RenderingSystem::Update()
     auto* viewMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
     auto* projectionMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
 
-    for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>(entt::exclude<BezierCurveC0Component, BezierCurveC2Component, IsInvisibleTag>))
+    m_Renderer->SetPatchParameters(4);
+
+    for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>(entt::exclude<BezierCurveC0Component, BezierCurveC2Component, 
+        InterpolatingCurveComponent, BezierSurfaceC0Component, IsInvisibleTag>))
     {
 		auto modelMatrix = Algebra::Matrix4::Identity();
 
@@ -41,66 +44,87 @@ void RenderingSystem::Update()
 
         const auto& mc = e.GetComponent<MeshComponent>();
 
-        auto shader = mc.shader;
-    
-		m_Renderer->SetShader(shader);
 		m_Renderer->SetUniform("u_modelMatrix", modelMatrix);
 		m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
 		m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
 		m_Renderer->SetVertexArray(mc.vertexArray);
 
-		m_Renderer->Render(mc.renderingMode);
-		m_Renderer->ClearUniforms();
+        for (const auto& shader : mc.shaders)
+        {
+		    m_Renderer->SetShader(shader);
+		    m_Renderer->Render(mc.renderingMode);
+		    m_Renderer->ClearUniforms();
+        }
     }
 
     for (auto e : m_Scene->GetAllEntitiesWith<BezierCurveC0Component>(entt::exclude<IsInvisibleTag>))
     {
         const auto& mc = e.GetComponent<MeshComponent>();
 
-        auto shader = mc.shader;
-
-        m_Renderer->SetShader(shader);
         m_Renderer->SetUniform("u_cameraPos", Config::InitialCameraPosition);
         m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
         m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
         m_Renderer->SetVertexArray(mc.vertexArray);
 
-        m_Renderer->Render(mc.renderingMode);
-        m_Renderer->ClearUniforms();
+        for (const auto& shader : mc.shaders)
+        {
+            m_Renderer->SetShader(shader);
+            m_Renderer->Render(mc.renderingMode);
+            m_Renderer->ClearUniforms();
+        }
     }
 
     for (auto e : m_Scene->GetAllEntitiesWith<BezierCurveC2Component>(entt::exclude<IsInvisibleTag>))
     {
         const auto& mc = e.GetComponent<MeshComponent>();
 
-        auto shader = mc.shader;
-
-        m_Renderer->SetShader(shader);
         m_Renderer->SetUniform("u_cameraPos", Config::InitialCameraPosition);
         m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
         m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
         m_Renderer->SetVertexArray(mc.vertexArray);
 
-        m_Renderer->Render(mc.renderingMode);
-        m_Renderer->ClearUniforms();
+        for (const auto& shader : mc.shaders)
+        {
+            m_Renderer->SetShader(shader);
+            m_Renderer->Render(mc.renderingMode);
+            m_Renderer->ClearUniforms();
+        }
     }
+
+    for (auto e : m_Scene->GetAllEntitiesWith<InterpolatingCurveComponent>(entt::exclude<IsInvisibleTag>))
+    {
+        const auto& mc = e.GetComponent<MeshComponent>();
+
+        m_Renderer->SetUniform("u_cameraPos", Config::InitialCameraPosition);
+        m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
+        m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
+        m_Renderer->SetVertexArray(mc.vertexArray);
+
+        for (const auto& shader : mc.shaders)
+        {
+            m_Renderer->SetShader(shader);
+            m_Renderer->Render(mc.renderingMode);
+            m_Renderer->ClearUniforms();
+        }
+    }
+
+    m_Renderer->SetPatchParameters(16);
 
     for (auto e : m_Scene->GetAllEntitiesWith<BezierSurfaceC0Component>(entt::exclude<IsInvisibleTag>))
     {
         const auto& mc = e.GetComponent<MeshComponent>();
 
-        auto shader = mc.shader;
-
-        m_Renderer->SetShader(shader);
-        m_Renderer->SetUniform("u_cameraPos", Config::InitialCameraPosition);
         m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
         m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
         m_Renderer->SetUniform("u_tessLevelU", 16);
         m_Renderer->SetUniform("u_tessLevelV", 16);
         m_Renderer->SetVertexArray(mc.vertexArray);
 
-        m_Renderer->Render(mc.renderingMode);
-        m_Renderer->ClearUniforms();
+        for (const auto& shader : mc.shaders)
+        {
+            m_Renderer->SetShader(shader);
+            m_Renderer->Render(mc.renderingMode);
+            m_Renderer->ClearUniforms();
+        }
     }
-
 }

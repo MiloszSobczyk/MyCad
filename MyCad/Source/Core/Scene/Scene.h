@@ -44,6 +44,24 @@ public:
         return entities;
     }
 
+    template<typename... Include, typename... Exclude>
+    std::vector<Entity> GetAllEntitiesWithAny(entt::exclude_t<Exclude...> exclude)
+    {
+        std::vector<Entity> entities;
+        std::unordered_set<entt::entity> seen;
+
+        ([&] {
+            auto view = m_Registry.view<Include>(exclude);
+            for (auto entity : view) {
+                if (seen.insert(entity).second) {
+                    entities.emplace_back(entity, this);
+                }
+            }
+            }(), ...);
+
+        return entities;
+    }
+
 	void OnPositionCreated(entt::registry& registry, entt::entity entity);
 
 private:

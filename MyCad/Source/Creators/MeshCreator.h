@@ -57,7 +57,7 @@ namespace MeshCreator
         std::vector<uint32_t>& indices,
         BufferLayout layout = BufferLayout{ { ShaderDataType::Float4, "position" } },
         RenderingMode mode = RenderingMode::Lines,
-        ShaderName shaderName = ShaderName::Default)
+        std::vector<ShaderName> shaderNames = { ShaderName::Default })
     {
         if (!e.HasComponent<MeshComponent>())
         {
@@ -80,7 +80,10 @@ namespace MeshCreator
             auto& mc = e.EmplaceComponent<MeshComponent>();
             mc.vertexArray = va;
             mc.renderingMode = mode;
-            mc.shader = ShaderManager::GetInstance().GetShader(shaderName);
+            for (auto shaderName : shaderNames)
+            {
+				mc.shaders.push_back(ShaderManager::GetInstance().GetShader(shaderName));
+            }
 
             va->Unbind();
         }
@@ -568,7 +571,7 @@ namespace MeshCreator
 		int rows = bsc.heightPatches * 3 + 1;
 		int columns = bsc.widthPatches * 3 + 1;
 
-		auto controlPoints = SetupControlPoints(Algebra::Vector4(0.f, 0.f, 0.f, 1.f), 2.f, 2.f, rows, columns);
+		auto controlPoints = SetupControlPoints(Algebra::Vector4(0.f, 0.f, 0.f, 1.f), 4.f, 4.f, rows, columns);
         
         for(auto& p : controlPoints)
         {
@@ -580,7 +583,7 @@ namespace MeshCreator
         MeshData mesh;
         mesh.vertices = vertices;
         mesh.indices = {};
-        mesh.layout = BufferLayout{
+        mesh.layout = BufferLayout {
             { ShaderDataType::Float4, "position" }
         };
 
