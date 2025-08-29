@@ -148,14 +148,15 @@ namespace ShapeCreator
 			pointEntity.EmplaceTag<IsInvisibleTag>();
 			bsc.pointHandles.push_back(pointEntity.GetHandle());
 			// Probably here
-			//auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
-			//nc.AddToNotify(surface.GetHandle());
+			auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
+			nc.AddToNotify(surface.GetHandle());
 		}
 
 		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
 		{
 			Entity patchEntity = scene->CreateEntity();
 			auto& pc = patchEntity.EmplaceComponent<PatchComponent>();
+			patchEntity.EmplaceComponent<VirtualComponent>(surface.GetHandle());
 
 			int startingI = patchIndex / bsc.widthPatches;
 			int startingJ = patchIndex % bsc.widthPatches;

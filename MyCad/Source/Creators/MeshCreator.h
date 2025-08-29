@@ -538,8 +538,8 @@ namespace MeshCreator
                 auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
                 auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
 
-				auto result = startingPosition + widthOffset + heightOffset;
-				result.w = 1.f;
+                auto result = startingPosition + widthOffset + heightOffset;
+                result.w = 1.f;
 
                 controlPoints.push_back(startingPosition + widthOffset + heightOffset);
             }
@@ -548,8 +548,7 @@ namespace MeshCreator
         return controlPoints;
     }
 
-    std::vector<Algebra::Vector4> SetupVertices(const BezierSurfaceC0Component& bsc, Ref<Scene> scene,
-		const std::vector<Algebra::Vector4>& controlPoints, int rows, int columns)
+    std::vector<Algebra::Vector4> SetupVertices(const BezierSurfaceC0Component& bsc, const std::vector<Algebra::Vector4>& controlPoints, int rows, int columns)
     {
         std::vector<Algebra::Vector4> vertices;
         for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
@@ -569,14 +568,43 @@ namespace MeshCreator
         return vertices;
     }
 
+    std::vector<Algebra::Vector4> ExtractVertices(const BezierSurfaceC0Component& bsc, Ref<Scene> scene)
+    {
+        std::vector<Algebra::Vector4> vertices;
+        for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
+        {
+			Entity patchEntity{ bsc.patchHandles[patchIndex], scene.get() };
+			auto& pc = patchEntity.GetComponent<PatchComponent>();
+
+            for (int i = 0; i < 16; ++i)
+            {
+				Entity pointEntity{ pc.pointHandles[i], scene.get() };
+                vertices.push_back(pointEntity.GetComponent<TranslationComponent>().translation);
+            }
+        }
+
+        return vertices;
+	}
+
     MeshData GenerateBezierSurfaceC0MeshData(BezierSurfaceC0Component& bsc, Ref<Scene> scene)
     {
 		int rows = bsc.GetRows();
 		int columns = bsc.GetColumns();
 
-		auto controlPoints = SetupControlPoints(Algebra::Vector4(0.f, 0.f, 0.f, 1.f), 4.f, 4.f, rows, columns);
+        std::vector<Algebra::Vector4> controlPoints;
+        std::vector<Algebra::Vector4> vertices;
 
-		auto vertices = SetupVertices(bsc, scene, controlPoints, rows, columns);
+        if (bsc.initialized)
+        {
+			vertices = ExtractVertices(bsc, scene);
+        }
+        else
+        {
+		    controlPoints = SetupControlPoints(Algebra::Vector4(0.f, 0.f, 0.f, 1.f), 4.f, 4.f, rows, columns);
+		    vertices = SetupVertices(bsc, controlPoints, rows, columns);
+			bsc.initialized = true;
+        }
+
 
         MeshData mesh;
         mesh.vertices = vertices;

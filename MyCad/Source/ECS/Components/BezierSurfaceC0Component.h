@@ -5,6 +5,8 @@
 
 struct BezierSurfaceC0Component
 {
+	bool initialized = false;
+
 	int tessLevelU = 16;
 	int tessLevelV = 16;
 
