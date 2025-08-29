@@ -53,8 +53,8 @@ void RenderingSystem::Update()
         {
 		    m_Renderer->SetShader(shader);
 		    m_Renderer->Render(mc.renderingMode);
-		    m_Renderer->ClearUniforms();
         }
+		m_Renderer->ClearUniforms();
     }
 
     for (auto e : m_Scene->GetAllEntitiesWith<BezierCurveC0Component>(entt::exclude<IsInvisibleTag>))
@@ -70,8 +70,8 @@ void RenderingSystem::Update()
         {
             m_Renderer->SetShader(shader);
             m_Renderer->Render(mc.renderingMode);
-            m_Renderer->ClearUniforms();
         }
+        m_Renderer->ClearUniforms();
     }
 
     for (auto e : m_Scene->GetAllEntitiesWith<BezierCurveC2Component>(entt::exclude<IsInvisibleTag>))
@@ -87,8 +87,8 @@ void RenderingSystem::Update()
         {
             m_Renderer->SetShader(shader);
             m_Renderer->Render(mc.renderingMode);
-            m_Renderer->ClearUniforms();
         }
+        m_Renderer->ClearUniforms();
     }
 
     for (auto e : m_Scene->GetAllEntitiesWith<InterpolatingCurveComponent>(entt::exclude<IsInvisibleTag>))
@@ -104,8 +104,8 @@ void RenderingSystem::Update()
         {
             m_Renderer->SetShader(shader);
             m_Renderer->Render(mc.renderingMode);
-            m_Renderer->ClearUniforms();
         }
+        m_Renderer->ClearUniforms();
     }
 
     m_Renderer->SetPatchParameters(16);
@@ -124,7 +124,7 @@ void RenderingSystem::Update()
         {
             m_Renderer->SetShader(shader);
             m_Renderer->Render(mc.renderingMode);
-            m_Renderer->ClearUniforms();
         }
+        m_Renderer->ClearUniforms();
     }
 }

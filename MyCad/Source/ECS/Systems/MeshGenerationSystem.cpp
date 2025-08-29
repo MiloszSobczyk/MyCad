@@ -121,21 +121,16 @@ void MeshGenerationSystem::UpdateSurfaceMeshes()
 
 		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
 		{
-			Entity patchEntity = m_Scene->CreateEntity();
-			auto& pc = patchEntity.EmplaceComponent<PatchComponent>();
+			Entity patchEntity{ bsc.patchHandles[patchIndex], m_Scene.get() };
+			auto& pc = patchEntity.GetComponent<PatchComponent>();
 
 			int startIndex = patchIndex * 16;
-
 			std::vector<entt::entity> controlPoints;
 			for (int i = 0; i < 16; ++i)
 			{
-				Entity pointEntity = ShapeCreator::CreatePoint(m_Scene);
-				pointEntity.EmplaceTag<IsInvisibleTag>();
+				Entity pointEntity{ pc.pointHandles[i], m_Scene.get() };
 				pointEntity.GetComponent<TranslationComponent>().SetTranslation(mesh.vertices[startIndex + i]);
-				controlPoints.push_back(pointEntity.GetHandle());
 			}
-
-			pc.bernsteinPolylineHandle = ShapeCreator::CreatePolyline(m_Scene, controlPoints).GetHandle();
 		}
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,

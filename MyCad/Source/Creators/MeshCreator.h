@@ -538,6 +538,9 @@ namespace MeshCreator
                 auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
                 auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
 
+				auto result = startingPosition + widthOffset + heightOffset;
+				result.w = 1.f;
+
                 controlPoints.push_back(startingPosition + widthOffset + heightOffset);
             }
         }
@@ -545,10 +548,10 @@ namespace MeshCreator
         return controlPoints;
     }
 
-    std::vector<Algebra::Vector4> SetupPatches(const BezierSurfaceC0Component& bsc, Ref<Scene> scene,
+    std::vector<Algebra::Vector4> SetupVertices(const BezierSurfaceC0Component& bsc, Ref<Scene> scene,
 		const std::vector<Algebra::Vector4>& controlPoints, int rows, int columns)
     {
-        std::vector<Algebra::Vector4> patchPoints;
+        std::vector<Algebra::Vector4> vertices;
         for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
         {
             int startingI = patchIndex / bsc.widthPatches;
@@ -558,27 +561,22 @@ namespace MeshCreator
             {
                 for (int j = 0; j < 4; ++j)
                 {
-                    patchPoints.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
+                    vertices.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
                 }
             }
         }
 
-        return patchPoints;
+        return vertices;
     }
 
     MeshData GenerateBezierSurfaceC0MeshData(BezierSurfaceC0Component& bsc, Ref<Scene> scene)
     {
-		int rows = bsc.heightPatches * 3 + 1;
-		int columns = bsc.widthPatches * 3 + 1;
+		int rows = bsc.GetRows();
+		int columns = bsc.GetColumns();
 
 		auto controlPoints = SetupControlPoints(Algebra::Vector4(0.f, 0.f, 0.f, 1.f), 4.f, 4.f, rows, columns);
-        
-        for(auto& p : controlPoints)
-        {
-            p.w = 1.f;
-		}
 
-		auto vertices = SetupPatches(bsc, scene, controlPoints, rows, columns);
+		auto vertices = SetupVertices(bsc, scene, controlPoints, rows, columns);
 
         MeshData mesh;
         mesh.vertices = vertices;

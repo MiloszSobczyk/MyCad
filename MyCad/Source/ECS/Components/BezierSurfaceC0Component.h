@@ -11,5 +11,9 @@ struct BezierSurfaceC0Component
 	int widthPatches = 4;
 	int heightPatches = 4;
 
+	std::vector<entt::entity> pointHandles;
 	std::vector<entt::entity> patchHandles;
+
+	inline int GetColumns() const { return widthPatches * 3 + 1; }
+	inline int GetRows() const { return heightPatches * 3 + 1; }
 };
