@@ -520,28 +520,85 @@ namespace MeshCreator
 
 #pragma region BezierSurfaceC0
 
-    std::vector<Algebra::Vector4> SetupControlPoints(Algebra::Vector4 position, float width, float height,
-        int rows, int columns)
+    std::vector<Algebra::Vector4> SetupControlPoints(BezierSurfaceC0Component& bsc, Algebra::Vector4 position, 
+        float width, float height)
     {
+		int rows = bsc.GetRows();
+		int columns = bsc.GetColumns();
+
         std::vector<Algebra::Vector4> controlPoints;
         controlPoints.reserve(rows * columns);
 
-        float dx = width / static_cast<float>(columns - 1);
-        float dy = height / static_cast<float>(rows - 1);
-
-        Algebra::Vector4 startingPosition = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
-
-        for (int i = 0; i < rows; ++i)
+        if (bsc.connectionType == ConnectionType::Flat)
         {
+            float dx = width / static_cast<float>(columns - 1);
+            float dy = height / static_cast<float>(rows - 1);
+
+            Algebra::Vector4 startingPosition = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
+
+            for (int i = 0; i < rows; ++i)
+            {
+                for (int j = 0; j < columns; ++j)
+                {
+                    auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
+                    auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
+
+                    auto result = startingPosition + widthOffset + heightOffset;
+                    result.w = 1.f;
+
+                    controlPoints.push_back(startingPosition + widthOffset + heightOffset);
+                }
+            }
+		}
+        else if (bsc.connectionType == ConnectionType::Columns)
+        {
+            float dHeight = height / static_cast<float>(rows - 1);
+            float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(columns - 1);
+
+            Algebra::Vector4 startingPosition = position - Algebra::Vector4(0.f, 0.f, height / 2.f);
+
+            for (int i = 0; i < rows; ++i)
+            {
+                for (int j = 0; j < columns - 1; ++j)
+                {
+                    Algebra::Vector4 heightOffset = Algebra::Vector4(0.f, 0.f, i * dHeight);
+                    Algebra::Vector4 radiusOffset =
+                        Algebra::Matrix4::RotationZ(dAngle * j) *
+                        Algebra::Vector4(width / 2.f, 0.f, 0.f);
+
+                    auto result = startingPosition + heightOffset + radiusOffset;
+                    result.w = 1.f;
+                    controlPoints.push_back(result);
+                }
+
+                controlPoints.push_back(controlPoints[i * columns]);
+            }
+        }
+        else if (bsc.connectionType == ConnectionType::Rows)
+        {
+            float dHeight = height / static_cast<float>(columns - 1);
+            float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(rows - 1);
+
+            Algebra::Vector4 startingPosition = position - Algebra::Vector4(height / 2.f, 0.f, 0.f);
+
+            for (int i = 0; i < rows - 1; ++i)
+            {
+                for (int j = 0; j < columns; ++j)
+                {
+                    Algebra::Vector4 radiusOffset =
+                        Algebra::Matrix4::RotationX(dAngle * i) *
+                        Algebra::Vector4(0.f, width / 2.f, 0.f);
+                    Algebra::Vector4 heightOffset = Algebra::Vector4(j * dHeight, 0.f, 0.f);
+
+                    auto result = startingPosition + heightOffset + radiusOffset;
+                    result.w = 1.f;
+                    controlPoints.push_back(result);
+                }
+            }
+
             for (int j = 0; j < columns; ++j)
             {
-                auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
-                auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
-
-                auto result = startingPosition + widthOffset + heightOffset;
-                result.w = 1.f;
-
-                controlPoints.push_back(startingPosition + widthOffset + heightOffset);
+                controlPoints.push_back(controlPoints[j]);
             }
         }
 
@@ -600,7 +657,7 @@ namespace MeshCreator
         }
         else
         {
-		    controlPoints = SetupControlPoints(Algebra::Vector4(0.f, 0.f, 0.f, 1.f), 4.f, 4.f, rows, columns);
+		    controlPoints = SetupControlPoints(bsc, Algebra::Vector4(0.f, 0.f, 0.f, 1.f), 4.f, 4.f);
 		    vertices = SetupVertices(bsc, controlPoints, rows, columns);
 			bsc.initialized = true;
         }

@@ -3,6 +3,13 @@
 #include <vector>
 #include <entt/entt.hpp>
 
+enum ConnectionType
+{
+	Flat = 0,
+	Columns = 1,
+	Rows = 2,
+};
+
 struct BezierSurfaceC0Component
 {
 	bool initialized = false;
@@ -12,6 +19,8 @@ struct BezierSurfaceC0Component
 
 	int widthPatches = 4;
 	int heightPatches = 4;
+
+	ConnectionType connectionType = ConnectionType::Rows;
 
 	std::vector<entt::entity> pointHandles;
 	std::vector<entt::entity> patchHandles;
