@@ -9,7 +9,7 @@ enum class ConnectionType
 	Rows = 2,
 };
 
-struct BezierSurfaceC0Component
+struct BezierSurfaceComponent
 {
 	bool initialized = false;
 
