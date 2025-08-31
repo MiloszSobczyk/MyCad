@@ -140,11 +140,12 @@ namespace ShapeCreator
 
 
 
-	inline std::vector<Algebra::Vector4> SetupControlPointsC0(
+	inline std::vector<Algebra::Vector4> SetupControlPoints(
 		BezierSurfaceComponent& bsc, Algebra::Vector4 position, float width, float height)
 	{
 		int rows = bsc.GetRows();
 		int columns = bsc.GetColumns();
+		bool c2 = bsc.C2;
 		std::vector<Algebra::Vector4> controlPoints;
 		controlPoints.reserve(rows * columns);
 
@@ -176,7 +177,7 @@ namespace ShapeCreator
 
 			for (int i = 0; i < rows; ++i) 
 			{
-				for (int j = 0; j < columns - 1; ++j) 
+				for (int j = 0; j < columns - (c2 ? 3 : 1); ++j) 
 				{
 					Algebra::Vector4 point = startPos + Algebra::Vector4(0.f, 0.f, i * dHeight) +
 						Algebra::Matrix4::RotationZ(dAngle * j) *
@@ -184,7 +185,12 @@ namespace ShapeCreator
 					point.w = 1.f;
 					controlPoints.push_back(point);
 				}
-				controlPoints.push_back(controlPoints[i * columns]);
+				controlPoints.push_back(controlPoints[i * columns + 0]);
+				if (c2)
+				{
+					controlPoints.push_back(controlPoints[i * columns + 1]);
+					controlPoints.push_back(controlPoints[i * columns + 2]);
+				}
 			}
 			break;
 		}
@@ -195,7 +201,7 @@ namespace ShapeCreator
 			float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(rows - 1);
 			Algebra::Vector4 startPos = position - Algebra::Vector4(height / 2.f, 0.f, 0.f);
 
-			for (int i = 0; i < rows - 1; ++i) 
+			for (int i = 0; i < rows - 3; ++i) 
 			{
 				for (int j = 0; j < columns; ++j) 
 				{
@@ -207,9 +213,12 @@ namespace ShapeCreator
 					controlPoints.push_back(point);
 				}
 			}
-			for (int j = 0; j < columns; ++j)
+			for (int i = 0; i < (c2 ? 3 : 1); ++i)
 			{
-				controlPoints.push_back(controlPoints[j]);
+				for (int j = 0; j < columns; ++j)
+				{
+					controlPoints.push_back(controlPoints[i * columns + j]);
+				}
 			}
 			break;
 		}
@@ -302,7 +311,7 @@ namespace ShapeCreator
 		surface.EmplaceTag<IsDirtyTag>();
 
 		auto& bsc = surface.EmplaceComponent<BezierSurfaceComponent>();
-		auto controlPoints = SetupControlPointsC0(bsc, Algebra::Vector4(0.f, 0.f, 0.f), 4.f, 4.f);
+		auto controlPoints = SetupControlPoints(bsc, Algebra::Vector4(0.f, 0.f, 0.f), 4.f, 4.f);
 
 		// Create points
 		bsc.pointHandles.reserve(controlPoints.size());
@@ -355,90 +364,6 @@ namespace ShapeCreator
 		}
 
 		return surface;
-	}
-
-	// Can be merged with SetupControlPointsC0
-	inline std::vector<Algebra::Vector4> SetupControlPointsC2(
-		BezierSurfaceComponent& bsc, Algebra::Vector4 position, float width, float height)
-	{
-		int rows = bsc.GetRows();
-		int columns = bsc.GetColumns();
-		std::vector<Algebra::Vector4> controlPoints;
-		controlPoints.reserve(rows * columns);
-
-		switch (bsc.connectionType)
-		{
-		case ConnectionType::Flat:
-		{
-			float dx = width / static_cast<float>(columns - 1);
-			float dy = height / static_cast<float>(rows - 1);
-			Algebra::Vector4 startPos = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
-
-			for (int i = 0; i < rows; ++i)
-			{
-				for (int j = 0; j < columns; ++j)
-				{
-					Algebra::Vector4 point = startPos + Algebra::Vector4(j * dx, i * dy, 0.f);
-					point.w = 1.f;
-					controlPoints.push_back(point);
-				}
-			}
-			break;
-		}
-
-		case ConnectionType::Columns:
-		{
-			float dHeight = height / static_cast<float>(rows - 1);
-			float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(columns - 1);
-			Algebra::Vector4 startPos = position - Algebra::Vector4(0.f, 0.f, height / 2.f);
-
-			for (int i = 0; i < rows; ++i)
-			{
-				for (int j = 0; j < columns - 3; ++j)
-				{
-					Algebra::Vector4 point = startPos + Algebra::Vector4(0.f, 0.f, i * dHeight) +
-						Algebra::Matrix4::RotationZ(dAngle * j) *
-						Algebra::Vector4(width / 2.f, 0.f, 0.f);
-					point.w = 1.f;
-					controlPoints.push_back(point);
-				}
-				controlPoints.push_back(controlPoints[i * columns + 0]);
-				controlPoints.push_back(controlPoints[i * columns + 1]);
-				controlPoints.push_back(controlPoints[i * columns + 2]);
-			}
-			break;
-		}
-
-		case ConnectionType::Rows:
-		{
-			float dHeight = height / static_cast<float>(columns - 1);
-			float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(rows - 1);
-			Algebra::Vector4 startPos = position - Algebra::Vector4(height / 2.f, 0.f, 0.f);
-
-			for (int i = 0; i < rows - 3; ++i)
-			{
-				for (int j = 0; j < columns; ++j)
-				{
-					Algebra::Vector4 point = startPos +
-						Algebra::Vector4(j * dHeight, 0.f, 0.f) +
-						Algebra::Matrix4::RotationX(dAngle * i) *
-						Algebra::Vector4(0.f, width / 2.f, 0.f);
-					point.w = 1.f;
-					controlPoints.push_back(point);
-				}
-			}
-			for (int i = 0; i < 3; ++i)
-			{
-				for (int j = 0; j < columns; ++j)
-				{
-					controlPoints.push_back(controlPoints[i * columns + j]);
-				}
-			}
-			break;
-		}
-		}
-
-		return controlPoints;
 	}
 
 	inline std::vector<Algebra::Vector4> UpdatePatchC2(PatchComponent& patch, Ref<Scene> scene, 
@@ -510,7 +435,7 @@ namespace ShapeCreator
 
 		auto& bsc = surface.EmplaceComponent<BezierSurfaceComponent>();
 		bsc.C2 = true;
-		auto controlPoints = SetupControlPointsC2(bsc, Algebra::Vector4(0.f, 0.f, 0.f), 4.f, 4.f);
+		auto controlPoints = SetupControlPoints(bsc, Algebra::Vector4(0.f, 0.f, 0.f), 4.f, 4.f);
 
 		// Create points
 		bsc.pointHandles.reserve(controlPoints.size());
