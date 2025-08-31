@@ -306,3 +306,231 @@ namespace Curves
 		}
 	}
 }
+
+namespace Surfaces
+{
+	inline std::vector<Algebra::Vector4> SetupControlPoints(
+		BezierSurfaceComponent& bsc, Algebra::Vector4 position, float width, float height)
+	{
+		int rows = bsc.GetRows();
+		int columns = bsc.GetColumns();
+		bool c2 = bsc.C2;
+		std::vector<Algebra::Vector4> controlPoints;
+		controlPoints.reserve(rows * columns);
+
+		switch (bsc.connectionType)
+		{
+		case ConnectionType::Flat:
+		{
+			float dx = width / static_cast<float>(columns - 1);
+			float dy = height / static_cast<float>(rows - 1);
+			Algebra::Vector4 startPos = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
+
+			for (int i = 0; i < rows; ++i)
+			{
+				for (int j = 0; j < columns; ++j)
+				{
+					Algebra::Vector4 point = startPos + Algebra::Vector4(j * dx, i * dy, 0.f);
+					point.w = 1.f;
+					controlPoints.push_back(point);
+				}
+			}
+			break;
+		}
+
+		case ConnectionType::Columns:
+		{
+			float dHeight = height / static_cast<float>(rows - 1);
+			float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(columns - 1);
+			Algebra::Vector4 startPos = position - Algebra::Vector4(0.f, 0.f, height / 2.f);
+
+			for (int i = 0; i < rows; ++i)
+			{
+				for (int j = 0; j < columns - (c2 ? 3 : 1); ++j)
+				{
+					Algebra::Vector4 point = startPos + Algebra::Vector4(0.f, 0.f, i * dHeight) +
+						Algebra::Matrix4::RotationZ(dAngle * j) *
+						Algebra::Vector4(width / 2.f, 0.f, 0.f);
+					point.w = 1.f;
+					controlPoints.push_back(point);
+				}
+				controlPoints.push_back(controlPoints[i * columns + 0]);
+				if (c2)
+				{
+					controlPoints.push_back(controlPoints[i * columns + 1]);
+					controlPoints.push_back(controlPoints[i * columns + 2]);
+				}
+			}
+			break;
+		}
+
+		case ConnectionType::Rows:
+		{
+			float dHeight = height / static_cast<float>(columns - 1);
+			float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(rows - 1);
+			Algebra::Vector4 startPos = position - Algebra::Vector4(height / 2.f, 0.f, 0.f);
+
+			for (int i = 0; i < rows - 3; ++i)
+			{
+				for (int j = 0; j < columns; ++j)
+				{
+					Algebra::Vector4 point = startPos +
+						Algebra::Vector4(j * dHeight, 0.f, 0.f) +
+						Algebra::Matrix4::RotationX(dAngle * i) *
+						Algebra::Vector4(0.f, width / 2.f, 0.f);
+					point.w = 1.f;
+					controlPoints.push_back(point);
+				}
+			}
+			for (int i = 0; i < (c2 ? 3 : 1); ++i)
+			{
+				for (int j = 0; j < columns; ++j)
+				{
+					controlPoints.push_back(controlPoints[i * columns + j]);
+				}
+			}
+			break;
+		}
+		}
+
+		return controlPoints;
+	}
+
+	inline void InitializePatchPolylinePoints(Entity polylineEntity, std::vector<entt::entity> pointHandles,
+		Ref<Scene> scene, bool addToNotify = true)
+	{
+		std::vector<entt::entity> polylinePointHandles = {
+			// Rows
+			pointHandles[0],
+			pointHandles[1],
+			pointHandles[2],
+			pointHandles[3],
+
+			pointHandles[7],
+			pointHandles[6],
+			pointHandles[5],
+			pointHandles[4],
+
+			pointHandles[8],
+			pointHandles[9],
+			pointHandles[10],
+			pointHandles[11],
+
+			pointHandles[15],
+			pointHandles[14],
+			pointHandles[13],
+			pointHandles[12],
+
+			// Columns
+			pointHandles[12],
+			pointHandles[8],
+			pointHandles[4],
+			pointHandles[0],
+
+			pointHandles[1],
+			pointHandles[5],
+			pointHandles[9],
+			pointHandles[13],
+
+			pointHandles[14],
+			pointHandles[10],
+			pointHandles[6],
+			pointHandles[2],
+
+			pointHandles[3],
+			pointHandles[7],
+			pointHandles[11],
+			pointHandles[15]
+		};
+
+		auto& polylineComponent = polylineEntity.GetComponent<PolylineComponent>();
+		polylineComponent.pointHandles = polylinePointHandles;
+		if (addToNotify)
+		{
+			for (auto handle : polylinePointHandles)
+			{
+				Entity pointEntity{ handle, scene.get() };
+				auto& notificationComponent = pointEntity.GetComponent<NotificationComponent>();
+				notificationComponent.AddToNotify(polylineEntity.GetHandle());
+			}
+		}
+	}
+
+	namespace C0
+	{
+		inline std::vector<Algebra::Vector4> UpdatePatch(PatchComponent& patch, Ref<Scene> scene)
+		{
+			std::vector<Algebra::Vector4> result;
+			result.reserve(patch.pointHandles.size());
+
+			for (auto handle : patch.pointHandles)
+			{
+				Entity pointEntity{ handle, scene.get() };
+				result.push_back(pointEntity.GetComponent<TranslationComponent>().translation);
+			}
+
+			return result;
+		}
+	}
+
+	namespace C2
+	{
+		inline std::vector<Algebra::Vector4> UpdatePatch(PatchComponent& patch, Ref<Scene> scene,
+			PolylineComponent& bernsteinPolyline)
+		{
+			static constexpr float A[4][4] = {
+				{ 1.f / 6.f, 4.f / 6.f, 1.f / 6.f, 0.f },
+				{ 0.f,       4.f / 6.f, 2.f / 6.f, 0.f },
+				{ 0.f,       2.f / 6.f, 4.f / 6.f, 0.f },
+				{ 0.f,       1.f / 6.f, 4.f / 6.f, 1.f / 6.f }
+			};
+
+			std::array<std::array<Algebra::Vector4, 4>, 4> P;
+			for (int i = 0; i < 4; ++i)
+			{
+				for (int j = 0; j < 4; ++j)
+				{
+					P[i][j] = Entity{ patch.pointHandles[i * 4 + j], scene.get() }
+						.GetComponent<TranslationComponent>().translation;
+				}
+			}
+
+			std::array<std::array<Algebra::Vector4, 4>, 4> Q{};
+			for (int i = 0; i < 4; ++i)
+			{
+				for (int j = 0; j < 4; ++j)
+				{
+					for (int k = 0; k < 4; ++k)
+					{
+						Q[i][j] += A[i][k] * P[k][j];
+					}
+				}
+			}
+
+			std::vector<Algebra::Vector4> bernsteinPoints;
+			bernsteinPoints.reserve(16);
+
+			for (int i = 0; i < 4; ++i)
+			{
+				for (int j = 0; j < 4; ++j)
+				{
+					Algebra::Vector4 b;
+					for (int k = 0; k < 4; ++k)
+					{
+						b += Q[i][k] * A[j][k];
+					}
+					bernsteinPoints.push_back(b);
+				}
+			}
+
+			for (int i = 0; i < 16; ++i)
+			{
+				Entity point{ bernsteinPolyline.pointHandles[i], scene.get() };
+				point.GetComponent<TranslationComponent>().SetTranslation(bernsteinPoints[i]);
+				point.RemoveComponent<IsNotifiedTag>();
+			}
+
+			return bernsteinPoints;
+		}
+	}
+}
