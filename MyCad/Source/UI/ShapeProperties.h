@@ -115,14 +115,6 @@ namespace UI
 				auto& polylineComponent = Entity{ curveComponent.bernsteinPolylineHandle, scene.get() }.GetComponent<PolylineComponent>();
                 DisplayPolylineComponentUI(e, polylineComponent, scene);
             }
-            if (e.HasComponent<BezierCurveC2Component>())
-            {
-                auto& bc = e.GetComponent<BezierCurveC2Component>();
-                auto& deBoorLC = Entity{ bc.deBoorPolylineHandle, scene.get() }.GetComponent<PolylineComponent>();
-                auto& bernsteinLC = Entity{ bc.bernsteinPolylineHandle, scene.get() }.GetComponent<PolylineComponent>();
-                DisplayPolylineComponentUI(e, deBoorLC, scene);
-                //DisplayPolylineComponentUI(e, bernsteinLC, scene);
-            }
 
             ImGui::Separator();
         }

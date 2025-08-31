@@ -91,6 +91,55 @@ namespace Curves
 			return result;
 		}
 	}
+	namespace C2
+	{
+		inline std::vector<Algebra::Vector4> UpdateCurve(CurveComponent& curveComponent, Ref<Scene> scene)
+		{
+			auto& controlPolyline = Entity{ curveComponent.controlPolylineHandle, scene.get() }
+				.GetComponent<PolylineComponent>();
+
+			auto& pointHandles = controlPolyline.pointHandles;
+
+			std::vector<Algebra::Vector4> vertices;
+			Entity bernsteinPolyline{ curveComponent.bernsteinPolylineHandle, scene.get() };
+
+			for (size_t i = 0; i + 3 < pointHandles.size(); ++i)
+			{
+				auto d0 = Entity{ pointHandles[i]    , scene.get() };
+				auto d1 = Entity{ pointHandles[i + 1], scene.get() };
+				auto d2 = Entity{ pointHandles[i + 2], scene.get() };
+				auto d3 = Entity{ pointHandles[i + 3], scene.get() };
+
+				Algebra::Vector4 D0 = d0.GetComponent<TranslationComponent>().translation;
+				Algebra::Vector4 D1 = d1.GetComponent<TranslationComponent>().translation;
+				Algebra::Vector4 D2 = d2.GetComponent<TranslationComponent>().translation;
+				Algebra::Vector4 D3 = d3.GetComponent<TranslationComponent>().translation;
+
+				D0.w = D1.w = D2.w = D3.w = 1.0f;
+
+				Algebra::Vector4 bezierPoints[4] = {
+					(D0 + 4.0f * D1 + D2) / 6.0f,
+					(2.0f * D1 + D2) / 3.0f,
+					(D1 + 2.0f * D2) / 3.0f,
+					(D1 + 4.0f * D2 + D3) / 6.0f
+				};
+
+				for (int j = 0; j < 4; ++j)
+				{
+					auto pointEntity = ShapeCreator::CreatePoint(scene);
+					pointEntity.EmplaceTag<IsInvisibleTag>();
+					pointEntity.GetComponent<TranslationComponent>().SetTranslation(bezierPoints[j]);
+					pointEntity.EmplaceComponent<VirtualComponent>(bernsteinPolyline.GetHandle());
+					
+					bernsteinPolyline.GetComponent<PolylineComponent>().pointHandles.push_back(pointEntity.GetHandle());
+
+					vertices.push_back(bezierPoints[j]);
+				}
+			}
+
+			return vertices;
+		}
+	}
 	namespace Interpolating
 	{
 		inline std::vector<Algebra::Vector4> SolveTrilinearMatrix(std::vector<float>& alpha,
@@ -248,8 +297,9 @@ namespace Curves
 				auto pointEntity = ShapeCreator::CreatePoint(scene);
 				pointEntity.EmplaceTag<IsInvisibleTag>();
 				pointEntity.GetComponent<TranslationComponent>().SetTranslation(vertices[i]);
-				bernsteinPolyline.GetComponent<PolylineComponent>().pointHandles.push_back(pointEntity.GetHandle());
 				pointEntity.EmplaceComponent<VirtualComponent>(bernsteinPolyline.GetHandle());
+
+				bernsteinPolyline.GetComponent<PolylineComponent>().pointHandles.push_back(pointEntity.GetHandle());
 			}
 
 			return vertices;

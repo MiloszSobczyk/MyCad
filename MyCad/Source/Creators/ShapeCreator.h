@@ -91,28 +91,32 @@ namespace ShapeCreator
 
 	inline Entity CreateBezierCurveC2(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
 	{
-		auto curve = scene->CreateEntity();
+		auto curveEntity = scene->CreateEntity();
 
-		auto id = curve.EmplaceComponent<IdComponent>().id;
-		curve.EmplaceComponent<NameComponent>().name = "BezierCurveC2_" + std::to_string(id);
+		auto id = curveEntity.EmplaceComponent<IdComponent>().id;
+		curveEntity.EmplaceComponent<NameComponent>().name = "BezierCurveC2_" + std::to_string(id);
 
-		curve.EmplaceTag<IsDirtyTag>();
+		curveEntity.EmplaceTag<IsDirtyTag>();
 
-		auto& bcc = curve.EmplaceComponent<BezierCurveC2Component>();
+		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 
 		auto deBoorPolyline = CreatePolyline(scene, pointHandles);
-		deBoorPolyline.EmplaceComponent<VirtualComponent>(curve.GetHandle());
+		deBoorPolyline.EmplaceComponent<VirtualComponent>(curveEntity.GetHandle());
 		deBoorPolyline.EmplaceTag<IsInvisibleTag>();
 
-		bcc.deBoorPolylineHandle = deBoorPolyline.GetHandle();
+		curveComponent.controlPolylineHandle = deBoorPolyline.GetHandle();
 
 		auto bernsteinPolyline = CreatePolyline(scene, {});
-		bernsteinPolyline.EmplaceComponent<VirtualComponent>(curve.GetHandle());
+		bernsteinPolyline.EmplaceComponent<VirtualComponent>(curveEntity.GetHandle());
 		bernsteinPolyline.EmplaceTag<IsInvisibleTag>();
 
-		bcc.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
+		curveComponent.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
 
-		return curve;
+		curveComponent.onUpdate = [scene](CurveComponent& curve) {
+			return Curves::C2::UpdateCurve(curve, scene);
+			};
+
+		return curveEntity;
 	}
 
 	inline Entity CreateInterpolatingCurve(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)

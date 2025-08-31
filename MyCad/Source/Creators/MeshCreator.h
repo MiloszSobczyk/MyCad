@@ -228,62 +228,6 @@ namespace MeshCreator
     }
 #pragma endregion Curve
 
-// points need to be removed upon changes in the deBoor polyline
-#pragma region BezierCurveC2
-    MeshData GenerateBezierC2MeshData(const BezierCurveC2Component& bcc, Ref<Scene> scene)
-    {
-        MeshData mesh;
-
-        auto& pointHandles = (Entity{ bcc.deBoorPolylineHandle, scene.get()})
-            .GetComponent<PolylineComponent>().pointHandles;
-
-        if (pointHandles.size() < 4)
-            return mesh;
-
-        Entity bernsteinPolyline{ bcc.bernsteinPolylineHandle, scene.get() };
-
-        for (size_t i = 0; i + 3 < pointHandles.size(); ++i)
-        {
-            auto d0 = Entity{ pointHandles[i]    , scene.get() };
-            auto d1 = Entity{ pointHandles[i + 1], scene.get() };
-            auto d2 = Entity{ pointHandles[i + 2], scene.get() };
-            auto d3 = Entity{ pointHandles[i + 3], scene.get() };
-
-            Algebra::Vector4 D0 = d0.GetComponent<TranslationComponent>().translation;
-            Algebra::Vector4 D1 = d1.GetComponent<TranslationComponent>().translation;
-            Algebra::Vector4 D2 = d2.GetComponent<TranslationComponent>().translation;
-            Algebra::Vector4 D3 = d3.GetComponent<TranslationComponent>().translation;
-
-            D0.w = D1.w = D2.w = D3.w = 1.0f;
-
-            Algebra::Vector4 bezierPoints[4] = {
-                (D0 + 4.0f * D1 + D2) / 6.0f,
-                (2.0f * D1 + D2) / 3.0f,
-                (D1 + 2.0f * D2) / 3.0f,
-                (D1 + 4.0f * D2 + D3) / 6.0f
-            };
-
-            for (int j = 0; j < 4; ++j)
-            {
-                auto pointEntity = ShapeCreator::CreatePoint(scene);
-                pointEntity.EmplaceTag<IsInvisibleTag>();
-                pointEntity.GetComponent<TranslationComponent>().SetTranslation(bezierPoints[j]);
-                bernsteinPolyline.GetComponent<PolylineComponent>().pointHandles.push_back(pointEntity.GetHandle());
-                pointEntity.EmplaceComponent<VirtualComponent>(bernsteinPolyline.GetHandle());
-
-                mesh.vertices.push_back(bezierPoints[j]);
-            }
-        }
-
-        mesh.layout = BufferLayout{
-            { ShaderDataType::Float4, "position" }
-        };
-
-        return mesh;
-    }
-
-#pragma endregion BezierCurveC2
-
 #pragma region Patch
 
     MeshData GeneratePatchMeshData(PatchComponent& pc, Ref<Scene> scene)
