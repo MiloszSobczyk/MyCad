@@ -81,31 +81,9 @@ void MeshGenerationSystem::UpdateLineMeshes()
 
 		auto& curveComponent = e.GetComponent<CurveComponent>();
 
-		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierC0MeshData(curveComponent, m_Scene);
+		MeshCreator::MeshData mesh = MeshCreator::GenerateCurveMeshData(curveComponent, m_Scene);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, 
-			RenderingMode::Patches, { ShaderName::BezierCurve });
-	}
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierCurveC2Component>())
-	{
-		e.RemoveComponent<IsDirtyTag>();
-
-		const auto& bcc = e.GetComponent<BezierCurveC2Component>();
-
-		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierC2MeshData(bcc, m_Scene);
-
-		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, 
-			RenderingMode::Patches, { ShaderName::BezierCurve });
-	}
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, InterpolatingCurveComponent>())
-	{
-		e.RemoveComponent<IsDirtyTag>();
-
-		const auto& icc = e.GetComponent<InterpolatingCurveComponent>();
-
-		MeshCreator::MeshData mesh = MeshCreator::GenerateInterpolatingCurveMeshData(icc, m_Scene);
-
-		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
 			RenderingMode::Patches, { ShaderName::BezierCurve });
 	}
 }

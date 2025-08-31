@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ShapeCreatorHelpers.h"
+
 #include "Core/Scene/Scene.h"
 #include "Core/Scene/Entity.h"
 #include "ECS/Components/Components.h"
@@ -9,8 +11,6 @@
 
 namespace ShapeCreator
 {
-	// Split these into multiple namespaces
-
 	inline Entity CreatePoint(Ref<Scene> scene)
 	{
 		auto point = scene->CreateEntity();
@@ -65,82 +65,6 @@ namespace ShapeCreator
 		return polyline;
 	}
 
-
-	inline void PadBezierVertices(std::vector<Algebra::Vector4>& vertices)
-	{
-		int rest = static_cast<int>(vertices.size() % 4);
-		if (rest == 0) return;
-
-		switch (rest)
-		{
-		case 1:
-		{
-			auto p = vertices.back();
-			vertices.insert(vertices.end(), 3, p);
-			break;
-		}
-		case 2:
-		{
-			auto p0 = vertices[vertices.size() - 2];
-			auto p1 = vertices.back();
-			vertices.pop_back();
-			vertices.pop_back();
-			vertices.push_back(p0);
-			vertices.push_back(p0);
-			vertices.push_back(p1);
-			vertices.push_back(p1);
-			break;
-		}
-		case 3:
-		{
-			auto p0 = vertices[vertices.size() - 3];
-			auto p1 = vertices[vertices.size() - 2];
-			auto p2 = vertices.back();
-			vertices.pop_back();
-			vertices.pop_back();
-			vertices.pop_back();
-			vertices.push_back(p0);
-			vertices.push_back((1.f / 3.f) * p0 + (2.f / 3.f) * p1);
-			vertices.push_back((2.f / 3.f) * p1 + (1.f / 3.f) * p2);
-			vertices.push_back(p2);
-			break;
-		}
-		}
-	}
-
-	inline std::vector<Algebra::Vector4> UpdateBezierCurveC0(CurveComponent& curve, Ref<Scene> scene)
-	{
-		auto& bernsteinPolyline = Entity{ curve.bernsteinPolylineHandle, scene.get() }
-			.GetComponent<PolylineComponent>();
-
-		std::vector<Algebra::Vector4> result;
-
-		int i = 0;
-		for (auto handle : bernsteinPolyline.pointHandles)
-		{
-			Entity pointEntity{ handle, scene.get() };
-
-			if (pointEntity.HasComponent<TranslationComponent>())
-			{
-				Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
-				vertex.w = 1.0f;
-				result.push_back(vertex);
-				++i;
-
-				if (i % 4 == 0)
-				{
-					// duplicate every 4th point
-					result.push_back(vertex);
-					++i;
-				}
-			}
-		}
-
-		PadBezierVertices(result);
-
-		return result;
-	}
-
 	inline Entity CreateBezierCurveC0(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
 	{
 		auto curveEntity = scene->CreateEntity();
@@ -159,7 +83,7 @@ namespace ShapeCreator
 		curveComponent.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
 
 		curveComponent.onUpdate = [scene](CurveComponent& curve) {
-			return UpdateBezierCurveC0(curve, scene);
+			return Curves::C0::UpdateCurve(curve, scene);
 			};
 
 		return curveEntity;
@@ -193,32 +117,33 @@ namespace ShapeCreator
 
 	inline Entity CreateInterpolatingCurve(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
 	{
-		auto curve = scene->CreateEntity();
+		auto curveEntity = scene->CreateEntity();
 
-		auto id = curve.EmplaceComponent<IdComponent>().id;
-		curve.EmplaceComponent<NameComponent>().name = "InterpolatingCurve_" + std::to_string(id);
+		auto id = curveEntity.EmplaceComponent<IdComponent>().id;
+		curveEntity.EmplaceComponent<NameComponent>().name = "InterpolatingCurve_" + std::to_string(id);
 
-		curve.EmplaceTag<IsDirtyTag>();
+		curveEntity.EmplaceTag<IsDirtyTag>();
 
-		auto& icc = curve.EmplaceComponent<InterpolatingCurveComponent>();
+		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 
 		auto interpolatingPolyline = CreatePolyline(scene, pointHandles);
-		interpolatingPolyline.EmplaceComponent<VirtualComponent>(curve.GetHandle());
+		interpolatingPolyline.EmplaceComponent<VirtualComponent>(curveEntity.GetHandle());
 		interpolatingPolyline.EmplaceTag<IsInvisibleTag>();
 
-		icc.interpolatingPolylineHandle = interpolatingPolyline.GetHandle();
+		curveComponent.controlPolylineHandle = interpolatingPolyline.GetHandle();
 
 		auto bernsteinPolyline = CreatePolyline(scene, {});
-		bernsteinPolyline.EmplaceComponent<VirtualComponent>(curve.GetHandle());
+		bernsteinPolyline.EmplaceComponent<VirtualComponent>(curveEntity.GetHandle());
 		bernsteinPolyline.EmplaceTag<IsInvisibleTag>();
 
-		icc.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
+		curveComponent.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
 
-		return curve;
+		curveComponent.onUpdate = [scene](CurveComponent& curve) {
+			return Curves::Interpolating::UpdateCurve(curve, scene);
+			};
+
+		return curveEntity;
 	}
-
-
-
 
 	inline std::vector<Algebra::Vector4> SetupControlPoints(
 		BezierSurfaceComponent& bsc, Algebra::Vector4 position, float width, float height)

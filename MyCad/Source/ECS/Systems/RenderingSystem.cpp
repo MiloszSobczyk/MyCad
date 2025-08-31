@@ -19,8 +19,7 @@ void RenderingSystem::Update()
 
     m_Renderer->SetPatchParameters(4);
 
-    for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>(entt::exclude<CurveComponent, BezierCurveC2Component, 
-        InterpolatingCurveComponent, PatchComponent, IsInvisibleTag>))
+    for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>(entt::exclude<CurveComponent, PatchComponent, IsInvisibleTag>))
     {
 		auto modelMatrix = Algebra::Matrix4::Identity();
 
@@ -58,40 +57,6 @@ void RenderingSystem::Update()
     }
 
     for (auto e : m_Scene->GetAllEntitiesWith<CurveComponent>(entt::exclude<IsInvisibleTag>))
-    {
-        const auto& mc = e.GetComponent<MeshComponent>();
-
-        m_Renderer->SetUniform("u_cameraPos", Config::InitialCameraPosition);
-        m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
-        m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
-        m_Renderer->SetVertexArray(mc.vertexArray);
-
-        for (const auto& shader : mc.shaders)
-        {
-            m_Renderer->SetShader(shader);
-            m_Renderer->Render(mc.renderingMode);
-        }
-        m_Renderer->ClearUniforms();
-    }
-
-    for (auto e : m_Scene->GetAllEntitiesWith<BezierCurveC2Component>(entt::exclude<IsInvisibleTag>))
-    {
-        const auto& mc = e.GetComponent<MeshComponent>();
-
-        m_Renderer->SetUniform("u_cameraPos", Config::InitialCameraPosition);
-        m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
-        m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
-        m_Renderer->SetVertexArray(mc.vertexArray);
-
-        for (const auto& shader : mc.shaders)
-        {
-            m_Renderer->SetShader(shader);
-            m_Renderer->Render(mc.renderingMode);
-        }
-        m_Renderer->ClearUniforms();
-    }
-
-    for (auto e : m_Scene->GetAllEntitiesWith<InterpolatingCurveComponent>(entt::exclude<IsInvisibleTag>))
     {
         const auto& mc = e.GetComponent<MeshComponent>();
 

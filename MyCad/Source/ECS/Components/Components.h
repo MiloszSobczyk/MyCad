@@ -14,7 +14,6 @@
 #include "PointComponent.h"
 #include "PolylineComponent.h"
 #include "BezierCurveC2Component.h"
-#include "InterpolatingCurveComponent.h"
 #include "CurveComponent.h"
 #include "PatchComponent.h"
 #include "BezierSurfaceComponent.h"
