@@ -521,6 +521,22 @@ namespace MeshCreator
 
 #pragma endregion InterpolatingCurve
 
+#pragma region Patch
+
+    MeshData GeneratePatchMeshData(PatchComponent& pc, Ref<Scene> scene)
+    {
+        MeshData mesh;
+        mesh.vertices = pc.CallUpdate();
+        mesh.indices = {};
+        mesh.layout = BufferLayout{
+            { ShaderDataType::Float4, "position" }
+        };
+
+        return mesh;
+    }
+
+#pragma endregion Patch
+
 #pragma region BezierSurfaceC0
 
     std::vector<Algebra::Vector4> ExtractVertices(const BezierSurfaceComponent& bsc, Ref<Scene> scene)

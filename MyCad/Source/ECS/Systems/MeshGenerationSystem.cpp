@@ -19,7 +19,7 @@ void MeshGenerationSystem::Update()
 	UpdatePointMeshes();
 	UpdateTorusMeshes();
 	UpdateLineMeshes();
-	UpdateSurfaceMeshes();
+	UpdatePatchMeshes();
 }
 
 void MeshGenerationSystem::UpdateDirtyTags()
@@ -110,17 +110,15 @@ void MeshGenerationSystem::UpdateLineMeshes()
 	}
 }
 
-void MeshGenerationSystem::UpdateSurfaceMeshes()
+void MeshGenerationSystem::UpdatePatchMeshes()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierSurfaceComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PatchComponent>())
 	{
 		e.RemoveComponent<IsDirtyTag>();
 
-		auto& bsc = e.GetComponent<BezierSurfaceComponent>();
-		if (bsc.C2)
-			continue;
-
-		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierSurfaceC0MeshData(bsc, m_Scene);
+		auto& pc = e.GetComponent<PatchComponent>();
+		
+		MeshCreator::MeshData mesh = MeshCreator::GeneratePatchMeshData(pc, m_Scene);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
 			RenderingMode::Patches, { ShaderName::BezierSurface, ShaderName::BezierSurface2 });

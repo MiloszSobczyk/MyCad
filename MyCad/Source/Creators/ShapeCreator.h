@@ -268,6 +268,7 @@ namespace ShapeCreator
 		{
 			Entity patchEntity = scene->CreateEntity();
 			auto& pc = patchEntity.EmplaceComponent<PatchComponent>();
+			patchEntity.EmplaceTag<IsDirtyTag>();
 			patchEntity.EmplaceComponent<VirtualComponent>(surface.GetHandle());
 
 			int startI = patchIndex / bsc.widthPatches;
@@ -279,7 +280,11 @@ namespace ShapeCreator
 			{
 				for (int j = 0; j < 4; ++j) 
 				{
-					handles.push_back(bsc.pointHandles[(startI * 3 + i) * bsc.GetColumns() + startJ * 3 + j]);
+					auto pointHandle = bsc.pointHandles[(startI * 3 + i) * bsc.GetColumns() + startJ * 3 + j];
+					auto pointEntity = Entity{ pointHandle, scene.get() };
+					pointEntity.GetComponent<NotificationComponent>().AddToNotify(patchEntity.GetHandle());
+
+					handles.push_back(pointHandle);
 				}
 			}
 
@@ -406,6 +411,7 @@ namespace ShapeCreator
 		{
 			Entity patchEntity = scene->CreateEntity();
 			auto& pc = patchEntity.EmplaceComponent<PatchComponent>();
+			patchEntity.EmplaceTag<IsDirtyTag>();
 			patchEntity.EmplaceComponent<VirtualComponent>(surface.GetHandle());
 
 			int startI = patchIndex / bsc.widthPatches;
@@ -417,8 +423,11 @@ namespace ShapeCreator
 			{
 				for (int j = 0; j < 4; ++j)
 				{
-					int index = (startI + i) * bsc.GetColumns() + startJ + j;
-					handles.push_back(bsc.pointHandles[(startI + i) * bsc.GetColumns() + startJ + j]);
+					auto pointHandle = bsc.pointHandles[(startI + i) * bsc.GetColumns() + startJ + j];
+					auto pointEntity = Entity{ pointHandle, scene.get() };
+					pointEntity.GetComponent<NotificationComponent>().AddToNotify(patchEntity.GetHandle());
+
+					handles.push_back(pointHandle);
 				}
 			}
 
