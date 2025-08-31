@@ -215,77 +215,11 @@ namespace MeshCreator
 #pragma endregion Line
 
 #pragma region BezierCurveC0
-    void PadBezierVertices(std::vector<Algebra::Vector4>& vertices)
-    {
-        int rest = static_cast<int>(vertices.size() % 4);
-        if (rest == 0) return;
-
-        switch (rest)
-        {
-        case 1:
-        {
-            auto p = vertices.back();
-            vertices.insert(vertices.end(), 3, p);
-            break;
-        }
-        case 2:
-        {
-            auto p0 = vertices[vertices.size() - 2];
-            auto p1 = vertices.back();
-            vertices.pop_back();
-            vertices.pop_back();
-            vertices.push_back(p0);
-            vertices.push_back(p0);
-            vertices.push_back(p1);
-            vertices.push_back(p1);
-            break;
-        }
-        case 3:
-        {
-            auto p0 = vertices[vertices.size() - 3];
-            auto p1 = vertices[vertices.size() - 2];
-            auto p2 = vertices.back();
-            vertices.pop_back();
-            vertices.pop_back();
-            vertices.pop_back();
-            vertices.push_back(p0);
-            vertices.push_back((1.f / 3.f) * p0 + (2.f / 3.f) * p1);
-            vertices.push_back((2.f / 3.f) * p1 + (1.f / 3.f) * p2);
-            vertices.push_back(p2);
-            break;
-        }
-        }
-    }
-
-    MeshData GenerateBezierC0MeshData(const BezierCurveC0Component& bcc, Ref<Scene> scene)
+    MeshData GenerateBezierC0MeshData(CurveComponent& bcc, Ref<Scene> scene)
     {
         MeshData mesh;
-
-        auto& pointHandles = (Entity{ bcc.polylineHandle, scene.get()}).GetComponent<PolylineComponent>().pointHandles;
-
-        int i = 0;
-        for (auto handle : pointHandles)
-        {
-            Entity pointEntity{ handle, scene.get()};
-
-            if (pointEntity.HasComponent<TranslationComponent>())
-            {
-                Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
-                vertex.w = 1.0f;
-                mesh.vertices.push_back(vertex);
-                ++i;
-
-                if (i % 4 == 0)
-                {
-                    // duplicate every 4th point
-                    mesh.vertices.push_back(vertex);
-                    ++i;
-                }
-            }
-        }
-
-		PadBezierVertices(mesh.vertices);
-
+        mesh.vertices = bcc.CallUpdate();
+        mesh.indices = {};
         mesh.layout = BufferLayout{
             { ShaderDataType::Float4, "position" }
         };

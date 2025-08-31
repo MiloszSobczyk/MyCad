@@ -75,13 +75,13 @@ void MeshGenerationSystem::UpdateLineMeshes()
 		MeshCreator::MeshData mesh = MeshCreator::GenerateLineMeshData(pc, m_Scene);
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout);
 	}
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierCurveC0Component>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, CurveComponent>())
 	{
 		e.RemoveComponent<IsDirtyTag>();
 
-		const auto& bcc = e.GetComponent<BezierCurveC0Component>();
+		auto& curveComponent = e.GetComponent<CurveComponent>();
 
-		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierC0MeshData(bcc, m_Scene);
+		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierC0MeshData(curveComponent, m_Scene);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, 
 			RenderingMode::Patches, { ShaderName::BezierCurve });

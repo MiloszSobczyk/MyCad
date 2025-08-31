@@ -109,11 +109,11 @@ namespace UI
 				auto& lc = e.GetComponent<PolylineComponent>();
 				DisplayPolylineComponentUI(e, lc, scene);
             }
-            if (e.HasComponent<BezierCurveC0Component>())
+            if (e.HasComponent<CurveComponent>())
             {
-                auto& bc = e.GetComponent<BezierCurveC0Component>();
-				auto& lc = Entity{ bc.polylineHandle, scene.get() }.GetComponent<PolylineComponent>();
-                DisplayPolylineComponentUI(e, lc, scene);
+                auto& curveComponent = e.GetComponent<CurveComponent>();
+				auto& polylineComponent = Entity{ curveComponent.bernsteinPolylineHandle, scene.get() }.GetComponent<PolylineComponent>();
+                DisplayPolylineComponentUI(e, polylineComponent, scene);
             }
             if (e.HasComponent<BezierCurveC2Component>())
             {

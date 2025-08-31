@@ -199,14 +199,14 @@
     <ClInclude Include="Source\Core\Scene\Scene.h" />
     <ClInclude Include="Source\Creators\MeshCreator.h" />
     <ClInclude Include="Source\Creators\ShapeCreator.h" />
-    <ClInclude Include="Source\ECS\Components\BezierCurveC0Component.h" />
     <ClInclude Include="Source\ECS\Components\BezierCurveC2Component.h" />
     <ClInclude Include="Source\ECS\Components\BezierSurfaceComponent.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
+    <ClInclude Include="Source\ECS\Components\CurveComponent.h" />
     <ClInclude Include="Source\ECS\Components\IdComponent.h" />
     <ClInclude Include="Source\ECS\Components\InterpolatingCurveComponent.h" />
-    <ClInclude Include="Source\ECS\Components\LineComponent.h" />
+    <ClInclude Include="Source\ECS\Components\PolylineComponent.h" />
     <ClInclude Include="Source\ECS\Components\MeshComponent.h" />
     <ClInclude Include="Source\ECS\Components\NameComponent.h" />
     <ClInclude Include="Source\ECS\Components\NotificationComponent.h" />
