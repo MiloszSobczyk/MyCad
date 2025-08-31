@@ -229,6 +229,59 @@ namespace ShapeCreator
 		return result;
 	}
 
+	inline void InitializeBernsteinPolyline(Entity e, Ref<Scene> scene)
+	{
+		auto& patch = e.GetComponent<PatchComponent>();
+
+		std::vector<entt::entity> bernsteinPolylinePoints = {
+			// Rows
+			patch.pointHandles[0],
+			patch.pointHandles[1],
+			patch.pointHandles[2],
+			patch.pointHandles[3],
+
+			patch.pointHandles[7],
+			patch.pointHandles[6],
+			patch.pointHandles[5],
+			patch.pointHandles[4],
+
+			patch.pointHandles[8],
+			patch.pointHandles[9],
+			patch.pointHandles[10],
+			patch.pointHandles[11],
+
+			patch.pointHandles[15],
+			patch.pointHandles[14],
+			patch.pointHandles[13],
+			patch.pointHandles[12],
+
+			// Columns
+			patch.pointHandles[12],
+			patch.pointHandles[8],
+			patch.pointHandles[4],
+			patch.pointHandles[0],
+
+			patch.pointHandles[1],
+			patch.pointHandles[5],
+			patch.pointHandles[9],
+			patch.pointHandles[13],
+
+			patch.pointHandles[14],
+			patch.pointHandles[10],
+			patch.pointHandles[6],
+			patch.pointHandles[2],
+
+			patch.pointHandles[3],
+			patch.pointHandles[7],
+			patch.pointHandles[11],
+			patch.pointHandles[15]
+		};
+
+		patch.bernsteinPolylineHandle = CreatePolyline(scene, bernsteinPolylinePoints).GetHandle();
+		auto bernsteinPolyline = Entity{ patch.bernsteinPolylineHandle, scene.get() };
+		bernsteinPolyline.EmplaceComponent<VirtualComponent>(e.GetHandle());
+	}
+
 	inline Entity CreateBezierSurfaceC0(Ref<Scene> scene) 
 	{
 		auto surface = scene->CreateEntity();
@@ -281,6 +334,7 @@ namespace ShapeCreator
 			}
 
 			pc.pointHandles = handles;
+			InitializeBernsteinPolyline(patchEntity, scene);
 			pc.onUpdate = [scene](PatchComponent& patch) {
 				return UpdatePatchC0(patch, scene);
 				};

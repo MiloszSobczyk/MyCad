@@ -536,42 +536,4 @@ namespace MeshCreator
     }
 
 #pragma endregion Patch
-
-#pragma region BezierSurfaceC0
-
-    std::vector<Algebra::Vector4> ExtractVertices(const BezierSurfaceComponent& bsc, Ref<Scene> scene)
-    {
-        std::vector<Algebra::Vector4> vertices;
-        for (auto patchHandle : bsc.patchHandles)
-        {
-			Entity patchEntity{ patchHandle, scene.get() };
-			auto& pc = patchEntity.GetComponent<PatchComponent>();
-
-            auto updatedVertices = pc.CallUpdate();
-
-            vertices.insert(vertices.end(), updatedVertices.begin(), updatedVertices.end());
-        }
-
-        return vertices;
-	}
-
-    MeshData GenerateBezierSurfaceC0MeshData(BezierSurfaceComponent& bsc, Ref<Scene> scene)
-    {
-		auto vertices = ExtractVertices(bsc, scene);
-
-        MeshData mesh;
-        mesh.vertices = vertices;
-        mesh.indices = {};
-        mesh.layout = BufferLayout {
-            { ShaderDataType::Float4, "position" }
-        };
-
-        return mesh;
-    }
-
-#pragma endregion BezierSurfaceC0
-
-#pragma region BezierSurfaceC2
-
-#pragma endregion BezierSurfaceC2
 }
