@@ -137,6 +137,9 @@ namespace ShapeCreator
 		return curve;
 	}
 
+
+
+
 	inline std::vector<Algebra::Vector4> SetupControlPointsC0(
 		BezierSurfaceComponent& bsc, Algebra::Vector4 position, float width, float height)
 	{
@@ -229,57 +232,61 @@ namespace ShapeCreator
 		return result;
 	}
 
-	inline void InitializeBernsteinPolyline(Entity e, Ref<Scene> scene)
+	inline void InitializePatchPolylinePoints(Entity polylineEntity, std::vector<entt::entity> pointHandles,
+		Ref<Scene> scene)
 	{
-		auto& patch = e.GetComponent<PatchComponent>();
-
-		std::vector<entt::entity> bernsteinPolylinePoints = {
+		std::vector<entt::entity> polylinePointHandles = {
 			// Rows
-			patch.pointHandles[0],
-			patch.pointHandles[1],
-			patch.pointHandles[2],
-			patch.pointHandles[3],
+			pointHandles[0],
+			pointHandles[1],
+			pointHandles[2],
+			pointHandles[3],
 
-			patch.pointHandles[7],
-			patch.pointHandles[6],
-			patch.pointHandles[5],
-			patch.pointHandles[4],
+			pointHandles[7],
+			pointHandles[6],
+			pointHandles[5],
+			pointHandles[4],
 
-			patch.pointHandles[8],
-			patch.pointHandles[9],
-			patch.pointHandles[10],
-			patch.pointHandles[11],
+			pointHandles[8],
+			pointHandles[9],
+			pointHandles[10],
+			pointHandles[11],
 
-			patch.pointHandles[15],
-			patch.pointHandles[14],
-			patch.pointHandles[13],
-			patch.pointHandles[12],
+			pointHandles[15],
+			pointHandles[14],
+			pointHandles[13],
+			pointHandles[12],
 
 			// Columns
-			patch.pointHandles[12],
-			patch.pointHandles[8],
-			patch.pointHandles[4],
-			patch.pointHandles[0],
+			pointHandles[12],
+			pointHandles[8],
+			pointHandles[4],
+			pointHandles[0],
 
-			patch.pointHandles[1],
-			patch.pointHandles[5],
-			patch.pointHandles[9],
-			patch.pointHandles[13],
+			pointHandles[1],
+			pointHandles[5],
+			pointHandles[9],
+			pointHandles[13],
 
-			patch.pointHandles[14],
-			patch.pointHandles[10],
-			patch.pointHandles[6],
-			patch.pointHandles[2],
+			pointHandles[14],
+			pointHandles[10],
+			pointHandles[6],
+			pointHandles[2],
 
-			patch.pointHandles[3],
-			patch.pointHandles[7],
-			patch.pointHandles[11],
-			patch.pointHandles[15]
+			pointHandles[3],
+			pointHandles[7],
+			pointHandles[11],
+			pointHandles[15]
 		};
 
-		patch.bernsteinPolylineHandle = CreatePolyline(scene, bernsteinPolylinePoints).GetHandle();
-		auto bernsteinPolyline = Entity{ patch.bernsteinPolylineHandle, scene.get() };
-		bernsteinPolyline.EmplaceComponent<VirtualComponent>(e.GetHandle());
+		auto& polylineComponent = polylineEntity.GetComponent<LineComponent>();
+		polylineComponent.pointHandles = polylinePointHandles;
+		for(auto handle : polylinePointHandles)
+		{
+			Entity pointEntity{ handle, scene.get() };
+			auto& notificationComponent = pointEntity.GetComponent<NotificationComponent>();
+			notificationComponent.AddToNotify(polylineEntity.GetHandle());
+		}
 	}
 
 	inline Entity CreateBezierSurfaceC0(Ref<Scene> scene) 
@@ -312,9 +319,11 @@ namespace ShapeCreator
 		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex) 
 		{
 			Entity patchEntity = scene->CreateEntity();
-			auto& pc = patchEntity.EmplaceComponent<PatchComponent>();
 			patchEntity.EmplaceTag<IsDirtyTag>();
 			patchEntity.EmplaceComponent<VirtualComponent>(surface.GetHandle());
+			
+			auto& patchComponent = patchEntity.EmplaceComponent<PatchComponent>();
+			patchComponent.bernsteinPolylineHandle = CreatePolyline(scene, {}).GetHandle();
 
 			int startI = patchIndex / bsc.widthPatches;
 			int startJ = patchIndex % bsc.widthPatches;
@@ -333,11 +342,12 @@ namespace ShapeCreator
 				}
 			}
 
-			pc.pointHandles = handles;
-			InitializeBernsteinPolyline(patchEntity, scene);
-			pc.onUpdate = [scene](PatchComponent& patch) {
+			patchComponent.pointHandles = handles;
+			patchComponent.onUpdate = [scene](PatchComponent& patch) {
 				return UpdatePatchC0(patch, scene);
 				};
+			InitializePatchPolylinePoints(Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }, handles, scene);
+
 			bsc.patchHandles.push_back(patchEntity.GetHandle());
 		}
 
