@@ -137,8 +137,8 @@ namespace ShapeCreator
 		return curve;
 	}
 
-	inline std::vector<Algebra::Vector4> SetupControlPoints(
-		BezierSurfaceC0Component& bsc, Algebra::Vector4 position, float width, float height)
+	inline std::vector<Algebra::Vector4> SetupControlPointsC0(
+		BezierSurfaceComponent& bsc, Algebra::Vector4 position, float width, float height)
 	{
 		int rows = bsc.GetRows();
 		int columns = bsc.GetColumns();
@@ -245,8 +245,8 @@ namespace ShapeCreator
 		surface.EmplaceComponent<NameComponent>().name = "BezierSurfaceC0_" + std::to_string(id);
 		surface.EmplaceTag<IsDirtyTag>();
 
-		auto& bsc = surface.EmplaceComponent<BezierSurfaceC0Component>();
-		auto controlPoints = SetupControlPoints(bsc, Algebra::Vector4(0.f, 0.f, 0.f), 4.f, 4.f);
+		auto& bsc = surface.EmplaceComponent<BezierSurfaceComponent>();
+		auto controlPoints = SetupControlPointsC0(bsc, Algebra::Vector4(0.f, 0.f, 0.f), 4.f, 4.f);
 
 		// Create points
 		bsc.pointHandles.reserve(controlPoints.size());

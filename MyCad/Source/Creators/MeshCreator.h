@@ -523,7 +523,7 @@ namespace MeshCreator
 
 #pragma region BezierSurfaceC0
 
-    std::vector<Algebra::Vector4> ExtractVertices(const BezierSurfaceC0Component& bsc, Ref<Scene> scene)
+    std::vector<Algebra::Vector4> ExtractVertices(const BezierSurfaceComponent& bsc, Ref<Scene> scene)
     {
         std::vector<Algebra::Vector4> vertices;
         for (auto patchHandle : bsc.patchHandles)
@@ -539,7 +539,7 @@ namespace MeshCreator
         return vertices;
 	}
 
-    MeshData GenerateBezierSurfaceC0MeshData(BezierSurfaceC0Component& bsc, Ref<Scene> scene)
+    MeshData GenerateBezierSurfaceC0MeshData(BezierSurfaceComponent& bsc, Ref<Scene> scene)
     {
 		auto vertices = ExtractVertices(bsc, scene);
 

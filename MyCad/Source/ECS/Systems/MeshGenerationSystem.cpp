@@ -112,11 +112,11 @@ void MeshGenerationSystem::UpdateLineMeshes()
 
 void MeshGenerationSystem::UpdateSurfaceMeshes()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierSurfaceC0Component>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierSurfaceComponent>())
 	{
 		e.RemoveComponent<IsDirtyTag>();
 
-		auto& bsc = e.GetComponent<BezierSurfaceC0Component>();
+		auto& bsc = e.GetComponent<BezierSurfaceComponent>();
 		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierSurfaceC0MeshData(bsc, m_Scene);
 
 		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)

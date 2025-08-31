@@ -20,7 +20,7 @@ void RenderingSystem::Update()
     m_Renderer->SetPatchParameters(4);
 
     for (auto e : m_Scene->GetAllEntitiesWith<MeshComponent>(entt::exclude<BezierCurveC0Component, BezierCurveC2Component, 
-        InterpolatingCurveComponent, BezierSurfaceC0Component, IsInvisibleTag>))
+        InterpolatingCurveComponent, BezierSurfaceComponent, IsInvisibleTag>))
     {
 		auto modelMatrix = Algebra::Matrix4::Identity();
 
@@ -110,7 +110,7 @@ void RenderingSystem::Update()
 
     m_Renderer->SetPatchParameters(16);
 
-    for (auto e : m_Scene->GetAllEntitiesWith<BezierSurfaceC0Component>(entt::exclude<IsInvisibleTag>))
+    for (auto e : m_Scene->GetAllEntitiesWith<BezierSurfaceComponent>(entt::exclude<IsInvisibleTag>))
     {
         const auto& mc = e.GetComponent<MeshComponent>();
 

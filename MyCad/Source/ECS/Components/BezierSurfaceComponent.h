@@ -11,7 +11,7 @@ enum class ConnectionType
 
 struct BezierSurfaceComponent
 {
-	bool initialized = false;
+	bool C2 = false;
 
 	int tessLevelU = 16;
 	int tessLevelV = 16;
