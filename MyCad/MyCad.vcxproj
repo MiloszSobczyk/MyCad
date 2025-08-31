@@ -202,6 +202,7 @@
     <ClInclude Include="Source\ECS\Components\BezierCurveC0Component.h" />
     <ClInclude Include="Source\ECS\Components\BezierCurveC2Component.h" />
     <ClInclude Include="Source\ECS\Components\BezierSurfaceC0Component.h" />
+    <ClInclude Include="Source\ECS\Components\BezierSurfaceC2Component.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\IdComponent.h" />

@@ -3,7 +3,7 @@
 #include <vector>
 #include <entt/entt.hpp>
 
-enum ConnectionType
+enum class ConnectionType
 {
 	Flat = 0,
 	Columns = 1,
@@ -20,7 +20,7 @@ struct BezierSurfaceC0Component
 	int widthPatches = 4;
 	int heightPatches = 4;
 
-	ConnectionType connectionType = ConnectionType::Rows;
+	ConnectionType connectionType = ConnectionType::Flat;
 
 	std::vector<entt::entity> pointHandles;
 	std::vector<entt::entity> patchHandles;

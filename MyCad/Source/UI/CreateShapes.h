@@ -66,6 +66,10 @@ namespace UI
 		{
 			ShapeCreator::CreateBezierSurfaceC0(scene);
 		}
+		if (ImGui::Button("Create Bezier Surface C2##shape_creation"))
+		{
+			ShapeCreator::CreateBezierSurfaceC2(scene);
+		}
 
 		ImGui::End();
 	}

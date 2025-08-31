@@ -9,6 +9,8 @@
 
 namespace MeshCreator
 {
+    // Split these into multiple namespaces
+
     struct MeshData
     {
         std::vector<Algebra::Vector4> vertices;
@@ -292,6 +294,7 @@ namespace MeshCreator
     }
 #pragma endregion BezierCurveC0
 
+// points need to be removed upon changes in the deBoor polyline
 #pragma region BezierCurveC2
     MeshData GenerateBezierC2MeshData(const BezierCurveC2Component& bcc, Ref<Scene> scene)
     {
@@ -674,4 +677,191 @@ namespace MeshCreator
     }
 
 #pragma endregion BezierSurfaceC0
+
+#pragma region BezierSurfaceC2
+
+    std::vector<Algebra::Vector4> SetupControlPoints2(BezierSurfaceC2Component& bsc, Algebra::Vector4 position,
+        float width, float height)
+    {
+        int rows = bsc.GetRows();
+        int columns = bsc.GetColumns();
+
+        std::vector<Algebra::Vector4> controlPoints;
+        controlPoints.reserve(rows * columns);
+
+        if (bsc.connectionType == ConnectionType2::Flat)
+        {
+            float dx = width / static_cast<float>(columns - 1);
+            float dy = height / static_cast<float>(rows - 1);
+
+            Algebra::Vector4 startingPosition = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
+
+            for (int i = 0; i < rows; ++i)
+            {
+                for (int j = 0; j < columns; ++j)
+                {
+                    auto heightOffset = Algebra::Vector4(0.f, i * dy, 0.f);
+                    auto widthOffset = Algebra::Vector4(j * dx, 0.f, 0.f);
+
+                    auto result = startingPosition + widthOffset + heightOffset;
+                    result.w = 1.f;
+
+                    controlPoints.push_back(startingPosition + widthOffset + heightOffset);
+                }
+            }
+        }
+        else if (bsc.connectionType == ConnectionType2::Columns)
+        {
+            float dHeight = height / static_cast<float>(rows - 1);
+            float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(columns - 1);
+
+            Algebra::Vector4 startingPosition = position - Algebra::Vector4(0.f, 0.f, height / 2.f);
+
+            for (int i = 0; i < rows; ++i)
+            {
+                for (int j = 0; j < columns - 3; ++j)
+                {
+                    Algebra::Vector4 heightOffset = Algebra::Vector4(0.f, 0.f, i * dHeight);
+                    Algebra::Vector4 radiusOffset =
+                        Algebra::Matrix4::RotationZ(dAngle * j) *
+                        Algebra::Vector4(width / 2.f, 0.f, 0.f);
+
+                    auto result = startingPosition + heightOffset + radiusOffset;
+                    result.w = 1.f;
+                    controlPoints.push_back(result);
+                }
+
+                controlPoints.push_back(controlPoints[i * columns + 0]);
+                controlPoints.push_back(controlPoints[i * columns + 1]);
+                controlPoints.push_back(controlPoints[i * columns + 2]);
+            }
+        }
+        else if (bsc.connectionType == ConnectionType2::Rows)
+        {
+            float dHeight = height / static_cast<float>(columns - 1);
+            float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(rows - 1);
+
+            Algebra::Vector4 startingPosition = position - Algebra::Vector4(height / 2.f, 0.f, 0.f);
+
+            for (int i = 0; i < rows - 3; ++i)
+            {
+                for (int j = 0; j < columns; ++j)
+                {
+                    Algebra::Vector4 radiusOffset =
+                        Algebra::Matrix4::RotationX(dAngle * i) *
+                        Algebra::Vector4(0.f, width / 2.f, 0.f);
+                    Algebra::Vector4 heightOffset = Algebra::Vector4(j * dHeight, 0.f, 0.f);
+
+                    auto result = startingPosition + heightOffset + radiusOffset;
+                    result.w = 1.f;
+                    controlPoints.push_back(result);
+                }
+            }
+
+            for (int i = 0; i < 3; ++i)
+            {
+                for (int j = 0; j < columns; ++j)
+                {
+                    controlPoints.push_back(controlPoints[i * columns + j]);
+                }
+            }
+        }
+
+        return controlPoints;
+    }
+
+    void UpdatePatches(BezierSurfaceC2Component& bsc, Ref<Scene> scene, std::vector<Algebra::Vector4> controlPoints)
+    {
+        int rows = bsc.GetRows();
+        int columns = bsc.GetColumns();
+
+        for(int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
+        {
+            int startingI = patchIndex / bsc.widthPatches;
+            int startingJ = patchIndex % bsc.widthPatches;
+
+            Entity patchEntity{ bsc.patchHandles[patchIndex], scene.get() };
+
+            auto& pc = patchEntity.GetComponent<PatchComponent>();
+            for (int i = 0; i < 4; ++i)
+            {
+                for (int j = 0; j < 4; ++j)
+                {
+                    Entity pointEntity{ pc.pointHandles[i * 4 + j], scene.get() };
+                    pointEntity.GetComponent<TranslationComponent>().SetTranslation(
+                        controlPoints[(startingI + i) * columns + startingJ + j]);
+                }
+            }
+		}
+	}
+
+    std::vector<Algebra::Vector4> SetupVertices2(const BezierSurfaceC2Component& bsc, const std::vector<Algebra::Vector4>& controlPoints, int rows, int columns)
+    {
+        std::vector<Algebra::Vector4> vertices;
+        for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
+        {
+            int startingI = patchIndex / bsc.widthPatches;
+            int startingJ = patchIndex % bsc.widthPatches;
+
+            for (int i = 0; i < 4; ++i)
+            {
+                for (int j = 0; j < 4; ++j)
+                {
+                    vertices.push_back(controlPoints[(startingI * 3 + i) * columns + startingJ * 3 + j]);
+                }
+            }
+        }
+
+        return vertices;
+    }
+
+    std::vector<Algebra::Vector4> ExtractVertices2(const BezierSurfaceC2Component& bsc, Ref<Scene> scene)
+    {
+        std::vector<Algebra::Vector4> vertices;
+        for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
+        {
+            Entity patchEntity{ bsc.patchHandles[patchIndex], scene.get() };
+            auto& pc = patchEntity.GetComponent<PatchComponent>();
+
+            for (int i = 0; i < 16; ++i)
+            {
+                Entity pointEntity{ pc.pointHandles[i], scene.get() };
+                vertices.push_back(pointEntity.GetComponent<TranslationComponent>().translation);
+            }
+        }
+
+        return vertices;
+    }
+
+    MeshData GenerateBezierSurfaceC2MeshData(BezierSurfaceC2Component& bsc, Ref<Scene> scene)
+    {
+        int rows = bsc.GetRows();
+        int columns = bsc.GetColumns();
+
+        std::vector<Algebra::Vector4> controlPoints;
+        std::vector<Algebra::Vector4> vertices;
+
+        if (bsc.initialized)
+        {
+            vertices = ExtractVertices2(bsc, scene);
+        }
+        else
+        {
+            controlPoints = SetupControlPoints2(bsc, Algebra::Vector4(0.f, 0.f, 0.f, 1.f), 4.f, 4.f);
+			UpdatePatches(bsc, scene, controlPoints);
+            bsc.initialized = true;
+        }
+
+        MeshData mesh;
+        mesh.vertices = vertices;
+        mesh.indices = {};
+        mesh.layout = BufferLayout{
+            { ShaderDataType::Float4, "position" }
+        };
+
+        return mesh;
+    }
+
+#pragma endregion BezierSurfaceC2
+
 }

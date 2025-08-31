@@ -6,6 +6,8 @@
 
 namespace ShapeCreator
 {
+	// Split these into multiple namespaces
+
 	inline Entity CreatePoint(Ref<Scene> scene)
 	{
 		auto point = scene->CreateEntity();
@@ -177,4 +179,52 @@ namespace ShapeCreator
 
 		return surface;
 	}
+
+	inline Entity CreateBezierSurfaceC2(Ref<Scene> scene)
+	{
+		auto surface = scene->CreateEntity();
+
+		auto id = surface.EmplaceComponent<IdComponent>().id;
+		surface.EmplaceComponent<NameComponent>().name = "BezierSurfaceC2_" + std::to_string(id);
+
+		surface.EmplaceTag<IsDirtyTag>();
+
+		auto& bsc = surface.EmplaceComponent<BezierSurfaceC2Component>();
+		for (int i = 0; i < bsc.GetColumns() * bsc.GetRows(); ++i)
+		{
+			Entity pointEntity = ShapeCreator::CreatePoint(scene);
+			pointEntity.EmplaceTag<IsInvisibleTag>();
+			bsc.pointHandles.push_back(pointEntity.GetHandle());
+			// Probably here
+			auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
+			nc.AddToNotify(surface.GetHandle());
+		}
+
+		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
+		{
+			Entity patchEntity = scene->CreateEntity();
+			auto& pc = patchEntity.EmplaceComponent<PatchComponent>();
+			patchEntity.EmplaceComponent<VirtualComponent>(surface.GetHandle());
+
+			int startingI = patchIndex / bsc.widthPatches;
+			int startingJ = patchIndex % bsc.widthPatches;
+
+			std::vector<entt::entity> controlPoints;
+			for (int i = 0; i < 4; ++i)
+			{
+				for (int j = 0; j < 4; ++j)
+				{
+					controlPoints.push_back(bsc.pointHandles[(startingI + i) * bsc.GetColumns() + startingJ + j]);
+				}
+			}
+
+			pc.pointHandles = controlPoints;
+			pc.deBoorPolylineHandle = ShapeCreator::CreatePolyline(scene, controlPoints).GetHandle();
+			pc.bernsteinPolylineHandle = ShapeCreator::CreatePolyline(scene, {}).GetHandle();
+			bsc.patchHandles.push_back(patchEntity.GetHandle());
+		}
+
+		return surface;
+	}
+
 }
