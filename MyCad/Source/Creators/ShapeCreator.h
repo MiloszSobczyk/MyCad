@@ -229,14 +229,6 @@ namespace ShapeCreator
 		return result;
 	}
 
-	inline void InitializePatch(PatchComponent& pc, Ref<Scene> scene, const std::vector<entt::entity>& handles) 
-	{
-		pc.pointHandles = handles;
-		pc.onUpdate = [scene](PatchComponent& patch) {
-			return UpdatePatchC0(patch, scene);
-			};
-	}
-
 	inline Entity CreateBezierSurfaceC0(Ref<Scene> scene) 
 	{
 		auto surface = scene->CreateEntity();
@@ -288,7 +280,10 @@ namespace ShapeCreator
 				}
 			}
 
-			InitializePatch(pc, scene, handles);
+			pc.pointHandles = handles;
+			pc.onUpdate = [scene](PatchComponent& patch) {
+				return UpdatePatchC0(patch, scene);
+				};
 			bsc.patchHandles.push_back(patchEntity.GetHandle());
 		}
 
@@ -379,6 +374,57 @@ namespace ShapeCreator
 		return controlPoints;
 	}
 
+	inline std::vector<Algebra::Vector4> UpdatePatchC2(PatchComponent& patch, Ref<Scene> scene)
+	{
+		static constexpr float A[4][4] = {
+			{ 1.f / 6.f, 4.f / 6.f, 1.f / 6.f, 0.f },
+			{ 0.f,       4.f / 6.f, 2.f / 6.f, 0.f },
+			{ 0.f,       2.f / 6.f, 4.f / 6.f, 0.f },
+			{ 0.f,       1.f / 6.f, 4.f / 6.f, 1.f / 6.f }
+		};
+
+		std::array<std::array<Algebra::Vector4, 4>, 4> P;
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				P[i][j] = Entity{ patch.pointHandles[i * 4 + j], scene.get() }
+					.GetComponent<TranslationComponent>().translation;
+			}
+		}
+
+		std::array<std::array<Algebra::Vector4, 4>, 4> Q{};
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				for (int k = 0; k < 4; ++k)
+				{
+					Q[i][j] += A[i][k] * P[k][j];
+				}
+			}
+		}
+
+		std::vector<Algebra::Vector4> bernsteinPoints;
+		bernsteinPoints.reserve(16);
+
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				Algebra::Vector4 b;
+				for (int k = 0; k < 4; ++k)
+				{
+					b += Q[i][k] * A[j][k];
+				}
+				bernsteinPoints.push_back(b);
+			}
+		}
+
+		return bernsteinPoints;
+	}
+
+
 	inline Entity CreateBezierSurfaceC2(Ref<Scene> scene)
 	{
 		auto surface = scene->CreateEntity();
@@ -431,7 +477,10 @@ namespace ShapeCreator
 				}
 			}
 
-			InitializePatch(pc, scene, handles);
+			pc.pointHandles = handles;
+			pc.onUpdate = [scene](PatchComponent& patch) {
+				return UpdatePatchC2(patch, scene);
+				};
 			bsc.patchHandles.push_back(patchEntity.GetHandle());
 		}
 
