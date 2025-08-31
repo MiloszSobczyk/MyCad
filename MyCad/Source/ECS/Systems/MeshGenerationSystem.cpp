@@ -61,11 +61,11 @@ void MeshGenerationSystem::UpdateTorusMeshes()
 // Removing point from mesh should also remove mesh's reference from point, so I will need ShapeManagementSystem
 void MeshGenerationSystem::UpdateLineMeshes()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, LineComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PolylineComponent>())
 	{
 		e.RemoveComponent<IsDirtyTag>();
 
-		const auto& pc = e.GetComponent<LineComponent>();
+		const auto& pc = e.GetComponent<PolylineComponent>();
 
 		if (pc.pointHandles.empty())
 		{

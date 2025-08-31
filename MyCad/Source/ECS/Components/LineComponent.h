@@ -3,7 +3,7 @@
 #include <entt/entt.hpp>
 #include <vector>
 
-struct LineComponent
+struct PolylineComponent
 {
 	std::vector<entt::entity> pointHandles;
 };

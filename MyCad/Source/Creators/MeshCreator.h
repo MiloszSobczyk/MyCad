@@ -184,7 +184,7 @@ namespace MeshCreator
 #pragma endregion Torus
 
 #pragma region Line
-    MeshData GenerateLineMeshData(const LineComponent& lc, Ref<Scene> scene)
+    MeshData GenerateLineMeshData(const PolylineComponent& lc, Ref<Scene> scene)
     {
         MeshData mesh;
 
@@ -261,7 +261,7 @@ namespace MeshCreator
     {
         MeshData mesh;
 
-        auto& pointHandles = (Entity{ bcc.polylineHandle, scene.get()}).GetComponent<LineComponent>().pointHandles;
+        auto& pointHandles = (Entity{ bcc.polylineHandle, scene.get()}).GetComponent<PolylineComponent>().pointHandles;
 
         int i = 0;
         for (auto handle : pointHandles)
@@ -301,7 +301,7 @@ namespace MeshCreator
         MeshData mesh;
 
         auto& pointHandles = (Entity{ bcc.deBoorPolylineHandle, scene.get()})
-            .GetComponent<LineComponent>().pointHandles;
+            .GetComponent<PolylineComponent>().pointHandles;
 
         if (pointHandles.size() < 4)
             return mesh;
@@ -334,7 +334,7 @@ namespace MeshCreator
                 auto pointEntity = ShapeCreator::CreatePoint(scene);
                 pointEntity.EmplaceTag<IsInvisibleTag>();
                 pointEntity.GetComponent<TranslationComponent>().SetTranslation(bezierPoints[j]);
-                bernsteinPolyline.GetComponent<LineComponent>().pointHandles.push_back(pointEntity.GetHandle());
+                bernsteinPolyline.GetComponent<PolylineComponent>().pointHandles.push_back(pointEntity.GetHandle());
                 pointEntity.EmplaceComponent<VirtualComponent>(bernsteinPolyline.GetHandle());
 
                 mesh.vertices.push_back(bezierPoints[j]);
@@ -467,7 +467,7 @@ namespace MeshCreator
         MeshData mesh;
 
         auto& pointHandles = (Entity{ icc.interpolatingPolylineHandle, scene.get() })
-            .GetComponent<LineComponent>().pointHandles;
+            .GetComponent<PolylineComponent>().pointHandles;
 
 		std::vector<Algebra::Vector4> positions;
         for (auto pointHandle : pointHandles)
@@ -506,7 +506,7 @@ namespace MeshCreator
             auto pointEntity = ShapeCreator::CreatePoint(scene);
             pointEntity.EmplaceTag<IsInvisibleTag>();
             pointEntity.GetComponent<TranslationComponent>().SetTranslation(bernsteinPoints[i]);
-            bernsteinPolyline.GetComponent<LineComponent>().pointHandles.push_back(pointEntity.GetHandle());
+            bernsteinPolyline.GetComponent<PolylineComponent>().pointHandles.push_back(pointEntity.GetHandle());
             pointEntity.EmplaceComponent<VirtualComponent>(bernsteinPolyline.GetHandle());
 
             mesh.vertices.push_back(bernsteinPoints[i]);

@@ -50,7 +50,7 @@ namespace ShapeCreator
 		auto id = polyline.EmplaceComponent<IdComponent>().id;
 		polyline.EmplaceComponent<NameComponent>().name = "Polyline_" + std::to_string(id);
 
-		auto& pc = polyline.EmplaceComponent<LineComponent>();
+		auto& pc = polyline.EmplaceComponent<PolylineComponent>();
 		pc.pointHandles = pointHandles;
 		
 		polyline.EmplaceTag<IsDirtyTag>();
@@ -288,7 +288,7 @@ namespace ShapeCreator
 			pointHandles[15]
 		};
 
-		auto& polylineComponent = polylineEntity.GetComponent<LineComponent>();
+		auto& polylineComponent = polylineEntity.GetComponent<PolylineComponent>();
 		polylineComponent.pointHandles = polylinePointHandles;
 		if (addToNotify)
 		{
@@ -367,7 +367,7 @@ namespace ShapeCreator
 	}
 
 	inline std::vector<Algebra::Vector4> UpdatePatchC2(PatchComponent& patch, Ref<Scene> scene, 
-		LineComponent& bernsteinPolyline)
+		PolylineComponent& bernsteinPolyline)
 	{
 		static constexpr float A[4][4] = {
 			{ 1.f / 6.f, 4.f / 6.f, 1.f / 6.f, 0.f },
@@ -481,7 +481,7 @@ namespace ShapeCreator
 
 			patchComponent.pointHandles = deBoorPointHandles;
 
-			auto& bernsteinPolyline = Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }.GetComponent<LineComponent>();
+			auto& bernsteinPolyline = Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }.GetComponent<PolylineComponent>();
 			patchComponent.onUpdate = [scene, &bernsteinPolyline](PatchComponent& patch) {
 				return UpdatePatchC2(patch, scene, bernsteinPolyline);
 				};

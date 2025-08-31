@@ -22,7 +22,7 @@ namespace UI
         }
 	}
 
-    inline bool DisplayPolylineComponentUI(Entity& entity, LineComponent& lc, Ref<Scene> scene)
+    inline bool DisplayPolylineComponentUI(Entity& entity, PolylineComponent& lc, Ref<Scene> scene)
     {
         bool changed = false;
         ImGui::Text("Control Points:");
@@ -88,7 +88,7 @@ namespace UI
 
         if (ImGui::Button("Refresh polyline"))
         {
-            for(auto e : scene->GetAllEntitiesWith<LineComponent>())
+            for(auto e : scene->GetAllEntitiesWith<PolylineComponent>())
             {
                 e.EmplaceTag<IsDirtyTag>();
 			}
@@ -104,22 +104,22 @@ namespace UI
                 auto& tc = e.GetComponent<TranslationComponent>();
 				DisplayTranslationComponentUI(e, tc);
             }
-            if (e.HasComponent<LineComponent>())
+            if (e.HasComponent<PolylineComponent>())
             {
-				auto& lc = e.GetComponent<LineComponent>();
+				auto& lc = e.GetComponent<PolylineComponent>();
 				DisplayPolylineComponentUI(e, lc, scene);
             }
             if (e.HasComponent<BezierCurveC0Component>())
             {
                 auto& bc = e.GetComponent<BezierCurveC0Component>();
-				auto& lc = Entity{ bc.polylineHandle, scene.get() }.GetComponent<LineComponent>();
+				auto& lc = Entity{ bc.polylineHandle, scene.get() }.GetComponent<PolylineComponent>();
                 DisplayPolylineComponentUI(e, lc, scene);
             }
             if (e.HasComponent<BezierCurveC2Component>())
             {
                 auto& bc = e.GetComponent<BezierCurveC2Component>();
-                auto& deBoorLC = Entity{ bc.deBoorPolylineHandle, scene.get() }.GetComponent<LineComponent>();
-                auto& bernsteinLC = Entity{ bc.bernsteinPolylineHandle, scene.get() }.GetComponent<LineComponent>();
+                auto& deBoorLC = Entity{ bc.deBoorPolylineHandle, scene.get() }.GetComponent<PolylineComponent>();
+                auto& bernsteinLC = Entity{ bc.bernsteinPolylineHandle, scene.get() }.GetComponent<PolylineComponent>();
                 DisplayPolylineComponentUI(e, deBoorLC, scene);
                 //DisplayPolylineComponentUI(e, bernsteinLC, scene);
             }
