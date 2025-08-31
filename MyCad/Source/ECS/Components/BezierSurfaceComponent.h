@@ -25,5 +25,5 @@ struct BezierSurfaceComponent
 	std::vector<entt::entity> patchHandles;
 
 	inline int GetColumns() const { return C2 ? widthPatches + 3 : (widthPatches * 3 + 1); }
-	inline int GetRows() const { return C2 ? heightPatches : (heightPatches * 3 + 1); }
+	inline int GetRows() const { return C2 ? heightPatches + 3 : (heightPatches * 3 + 1); }
 };

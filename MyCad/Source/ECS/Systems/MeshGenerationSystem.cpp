@@ -117,6 +117,9 @@ void MeshGenerationSystem::UpdateSurfaceMeshes()
 		e.RemoveComponent<IsDirtyTag>();
 
 		auto& bsc = e.GetComponent<BezierSurfaceComponent>();
+		if (bsc.C2)
+			continue;
+
 		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierSurfaceC0MeshData(bsc, m_Scene);
 
 		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
@@ -132,17 +135,6 @@ void MeshGenerationSystem::UpdateSurfaceMeshes()
 				pointEntity.GetComponent<TranslationComponent>().SetTranslation(mesh.vertices[startIndex + i]);
 			}
 		}
-
-		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
-			RenderingMode::Patches, { ShaderName::BezierSurface, ShaderName::BezierSurface2 });
-	}
-
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, BezierSurfaceC2Component>())
-	{
-		e.RemoveComponent<IsDirtyTag>();
-
-		auto& bsc = e.GetComponent<BezierSurfaceC2Component>();
-		MeshCreator::MeshData mesh = MeshCreator::GenerateBezierSurfaceC2MeshData(bsc, m_Scene);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
 			RenderingMode::Patches, { ShaderName::BezierSurface, ShaderName::BezierSurface2 });

@@ -112,8 +112,11 @@ void RenderingSystem::Update()
 
     for (auto e : m_Scene->GetAllEntitiesWith<BezierSurfaceComponent>(entt::exclude<IsInvisibleTag>))
     {
-        const auto& mc = e.GetComponent<MeshComponent>();
+		const auto& bsc = e.GetComponent<BezierSurfaceComponent>();
+        if (bsc.C2)
+            continue;
 
+        const auto& mc = e.GetComponent<MeshComponent>();
         m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
         m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
         m_Renderer->SetUniform("u_tessLevelU", 16);

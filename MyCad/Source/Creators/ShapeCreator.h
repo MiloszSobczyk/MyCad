@@ -237,7 +237,8 @@ namespace ShapeCreator
 			};
 	}
 
-	inline Entity CreateBezierSurfaceC0(Ref<Scene> scene) {
+	inline Entity CreateBezierSurfaceC0(Ref<Scene> scene) 
+	{
 		auto surface = scene->CreateEntity();
 
 		// ID & Name
@@ -289,47 +290,139 @@ namespace ShapeCreator
 		return surface;
 	}
 
+	// Can be merged with SetupControlPointsC0
+	inline std::vector<Algebra::Vector4> SetupControlPointsC2(
+		BezierSurfaceComponent& bsc, Algebra::Vector4 position, float width, float height)
+	{
+		int rows = bsc.GetRows();
+		int columns = bsc.GetColumns();
+		std::vector<Algebra::Vector4> controlPoints;
+		controlPoints.reserve(rows * columns);
+
+		switch (bsc.connectionType)
+		{
+		case ConnectionType::Flat:
+		{
+			float dx = width / static_cast<float>(columns - 1);
+			float dy = height / static_cast<float>(rows - 1);
+			Algebra::Vector4 startPos = position - Algebra::Vector4(width / 2.f, height / 2.f, 0.f);
+
+			for (int i = 0; i < rows; ++i)
+			{
+				for (int j = 0; j < columns; ++j)
+				{
+					Algebra::Vector4 point = startPos + Algebra::Vector4(j * dx, i * dy, 0.f);
+					point.w = 1.f;
+					controlPoints.push_back(point);
+				}
+			}
+			break;
+		}
+
+		case ConnectionType::Columns:
+		{
+			float dHeight = height / static_cast<float>(rows - 1);
+			float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(columns - 1);
+			Algebra::Vector4 startPos = position - Algebra::Vector4(0.f, 0.f, height / 2.f);
+
+			for (int i = 0; i < rows; ++i)
+			{
+				for (int j = 0; j < columns - 3; ++j)
+				{
+					Algebra::Vector4 point = startPos + Algebra::Vector4(0.f, 0.f, i * dHeight) +
+						Algebra::Matrix4::RotationZ(dAngle * j) *
+						Algebra::Vector4(width / 2.f, 0.f, 0.f);
+					point.w = 1.f;
+					controlPoints.push_back(point);
+				}
+				controlPoints.push_back(controlPoints[i * columns + 0]);
+				controlPoints.push_back(controlPoints[i * columns + 1]);
+				controlPoints.push_back(controlPoints[i * columns + 2]);
+			}
+			break;
+		}
+
+		case ConnectionType::Rows:
+		{
+			float dHeight = height / static_cast<float>(columns - 1);
+			float dAngle = 2.f * std::numbers::pi_v<float> / static_cast<float>(rows - 1);
+			Algebra::Vector4 startPos = position - Algebra::Vector4(height / 2.f, 0.f, 0.f);
+
+			for (int i = 0; i < rows - 3; ++i)
+			{
+				for (int j = 0; j < columns; ++j)
+				{
+					Algebra::Vector4 point = startPos +
+						Algebra::Vector4(j * dHeight, 0.f, 0.f) +
+						Algebra::Matrix4::RotationX(dAngle * i) *
+						Algebra::Vector4(0.f, width / 2.f, 0.f);
+					point.w = 1.f;
+					controlPoints.push_back(point);
+				}
+			}
+			for (int i = 0; i < 3; ++i)
+			{
+				for (int j = 0; j < columns; ++j)
+				{
+					controlPoints.push_back(controlPoints[i * columns + j]);
+				}
+			}
+			break;
+		}
+		}
+
+		return controlPoints;
+	}
+
 	inline Entity CreateBezierSurfaceC2(Ref<Scene> scene)
 	{
 		auto surface = scene->CreateEntity();
 
+		// ID & Name
 		auto id = surface.EmplaceComponent<IdComponent>().id;
 		surface.EmplaceComponent<NameComponent>().name = "BezierSurfaceC2_" + std::to_string(id);
-
 		surface.EmplaceTag<IsDirtyTag>();
 
-		auto& bsc = surface.EmplaceComponent<BezierSurfaceC2Component>();
-		for (int i = 0; i < bsc.GetColumns() * bsc.GetRows(); ++i)
+		auto& bsc = surface.EmplaceComponent<BezierSurfaceComponent>();
+		bsc.C2 = true;
+		auto controlPoints = SetupControlPointsC2(bsc, Algebra::Vector4(0.f, 0.f, 0.f), 4.f, 4.f);
+
+		// Create points
+		bsc.pointHandles.reserve(controlPoints.size());
+		for (size_t i = 0; i < controlPoints.size(); ++i)
 		{
-			Entity pointEntity = ShapeCreator::CreatePoint(scene);
-			pointEntity.EmplaceTag<IsInvisibleTag>();
-			bsc.pointHandles.push_back(pointEntity.GetHandle());
-			// Probably here
-			auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
+			Entity point = ShapeCreator::CreatePoint(scene);
+			point.GetComponent<TranslationComponent>().SetTranslation(controlPoints[i]);
+			point.EmplaceTag<IsInvisibleTag>();
+
+			bsc.pointHandles.push_back(point.GetHandle());
+			auto& nc = point.EmplaceComponent<NotificationComponent>();
 			nc.AddToNotify(surface.GetHandle());
 		}
 
+		// Create patches
+		bsc.patchHandles.reserve(bsc.widthPatches * bsc.heightPatches);
 		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
 		{
 			Entity patchEntity = scene->CreateEntity();
 			auto& pc = patchEntity.EmplaceComponent<PatchComponent>();
 			patchEntity.EmplaceComponent<VirtualComponent>(surface.GetHandle());
 
-			int startingI = patchIndex / bsc.widthPatches;
-			int startingJ = patchIndex % bsc.widthPatches;
+			int startI = patchIndex / bsc.widthPatches;
+			int startJ = patchIndex % bsc.widthPatches;
 
-			std::vector<entt::entity> controlPoints;
+			std::vector<entt::entity> handles;
+			handles.reserve(16);
 			for (int i = 0; i < 4; ++i)
 			{
 				for (int j = 0; j < 4; ++j)
 				{
-					controlPoints.push_back(bsc.pointHandles[(startingI + i) * bsc.GetColumns() + startingJ + j]);
+					int index = (startI + i) * bsc.GetColumns() + startJ + j;
+					handles.push_back(bsc.pointHandles[(startI + i) * bsc.GetColumns() + startJ + j]);
 				}
 			}
 
-			pc.pointHandles = controlPoints;
-			pc.deBoorPolylineHandle = ShapeCreator::CreatePolyline(scene, controlPoints).GetHandle();
-			pc.bernsteinPolylineHandle = ShapeCreator::CreatePolyline(scene, {}).GetHandle();
+			InitializePatch(pc, scene, handles);
 			bsc.patchHandles.push_back(patchEntity.GetHandle());
 		}
 
