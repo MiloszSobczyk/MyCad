@@ -233,7 +233,7 @@ namespace ShapeCreator
 	}
 
 	inline void InitializePatchPolylinePoints(Entity polylineEntity, std::vector<entt::entity> pointHandles,
-		Ref<Scene> scene)
+		Ref<Scene> scene, bool addToNotify = true)
 	{
 		std::vector<entt::entity> polylinePointHandles = {
 			// Rows
@@ -281,11 +281,14 @@ namespace ShapeCreator
 
 		auto& polylineComponent = polylineEntity.GetComponent<LineComponent>();
 		polylineComponent.pointHandles = polylinePointHandles;
-		for(auto handle : polylinePointHandles)
+		if (addToNotify)
 		{
-			Entity pointEntity{ handle, scene.get() };
-			auto& notificationComponent = pointEntity.GetComponent<NotificationComponent>();
-			notificationComponent.AddToNotify(polylineEntity.GetHandle());
+			for(auto handle : polylinePointHandles)
+			{
+				Entity pointEntity{ handle, scene.get() };
+				auto& notificationComponent = pointEntity.GetComponent<NotificationComponent>();
+				notificationComponent.AddToNotify(polylineEntity.GetHandle());
+			}
 		}
 	}
 
@@ -438,7 +441,8 @@ namespace ShapeCreator
 		return controlPoints;
 	}
 
-	inline std::vector<Algebra::Vector4> UpdatePatchC2(PatchComponent& patch, Ref<Scene> scene)
+	inline std::vector<Algebra::Vector4> UpdatePatchC2(PatchComponent& patch, Ref<Scene> scene, 
+		LineComponent& bernsteinPolyline)
 	{
 		static constexpr float A[4][4] = {
 			{ 1.f / 6.f, 4.f / 6.f, 1.f / 6.f, 0.f },
@@ -485,9 +489,15 @@ namespace ShapeCreator
 			}
 		}
 
+		for(int i = 0; i < 16; ++i)
+		{
+			Entity point{ bernsteinPolyline.pointHandles[i], scene.get() };
+			point.GetComponent<TranslationComponent>().SetTranslation(bernsteinPoints[i]);
+			point.RemoveComponent<IsNotifiedTag>();
+		}
+
 		return bernsteinPoints;
 	}
-
 
 	inline Entity CreateBezierSurfaceC2(Ref<Scene> scene)
 	{
@@ -520,15 +530,18 @@ namespace ShapeCreator
 		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
 		{
 			Entity patchEntity = scene->CreateEntity();
-			auto& pc = patchEntity.EmplaceComponent<PatchComponent>();
 			patchEntity.EmplaceTag<IsDirtyTag>();
 			patchEntity.EmplaceComponent<VirtualComponent>(surface.GetHandle());
+
+			auto& patchComponent = patchEntity.EmplaceComponent<PatchComponent>();
+			patchComponent.deBoorPolylineHandle = CreatePolyline(scene, {}).GetHandle();
+			patchComponent.bernsteinPolylineHandle = CreatePolyline(scene, {}).GetHandle();
 
 			int startI = patchIndex / bsc.widthPatches;
 			int startJ = patchIndex % bsc.widthPatches;
 
-			std::vector<entt::entity> handles;
-			handles.reserve(16);
+			std::vector<entt::entity> deBoorPointHandles;
+			deBoorPointHandles.reserve(16);
 			for (int i = 0; i < 4; ++i)
 			{
 				for (int j = 0; j < 4; ++j)
@@ -537,18 +550,32 @@ namespace ShapeCreator
 					auto pointEntity = Entity{ pointHandle, scene.get() };
 					pointEntity.GetComponent<NotificationComponent>().AddToNotify(patchEntity.GetHandle());
 
-					handles.push_back(pointHandle);
+					deBoorPointHandles.push_back(pointHandle);
 				}
 			}
 
-			pc.pointHandles = handles;
-			pc.onUpdate = [scene](PatchComponent& patch) {
-				return UpdatePatchC2(patch, scene);
+			patchComponent.pointHandles = deBoorPointHandles;
+
+			auto& bernsteinPolyline = Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }.GetComponent<LineComponent>();
+			patchComponent.onUpdate = [scene, &bernsteinPolyline](PatchComponent& patch) {
+				return UpdatePatchC2(patch, scene, bernsteinPolyline);
 				};
+			InitializePatchPolylinePoints(Entity{ patchComponent.deBoorPolylineHandle, scene.get() }, deBoorPointHandles, scene);
+
+			auto bernsteinPointHandles = std::vector<entt::entity>{};
+			bernsteinPointHandles.reserve(16);
+			for (int i = 0; i < 16; ++i)
+			{
+				Entity point = ShapeCreator::CreatePoint(scene);
+				point.EmplaceTag<IsInvisibleTag>();
+
+				bernsteinPointHandles.push_back(point.GetHandle());
+			}
+			InitializePatchPolylinePoints(Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }, bernsteinPointHandles, scene, false);
+
 			bsc.patchHandles.push_back(patchEntity.GetHandle());
 		}
 
 		return surface;
 	}
-
 }
