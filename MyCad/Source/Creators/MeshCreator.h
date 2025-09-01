@@ -108,14 +108,14 @@ namespace MeshCreator
     MeshData GeneratePointMeshData()
     {
         static std::vector<Algebra::Vector4> vertices = {
-            { Algebra::Vector4(-0.05f, -0.05f, -0.05f, 1.0f) },
-            { Algebra::Vector4( 0.05f, -0.05f, -0.05f, 1.0f) },
-            { Algebra::Vector4( 0.05f,  0.05f, -0.05f, 1.0f) },
-            { Algebra::Vector4(-0.05f,  0.05f, -0.05f, 1.0f) },
-            { Algebra::Vector4(-0.05f, -0.05f,  0.05f, 1.0f) },
-            { Algebra::Vector4( 0.05f, -0.05f,  0.05f, 1.0f) },
-            { Algebra::Vector4( 0.05f,  0.05f,  0.05f, 1.0f) },
-            { Algebra::Vector4(-0.05f,  0.05f,  0.05f, 1.0f) },
+            { Algebra::Vector4(-0.03f, -0.03f, -0.03f, 1.0f) },
+            { Algebra::Vector4( 0.03f, -0.03f, -0.03f, 1.0f) },
+            { Algebra::Vector4( 0.03f,  0.03f, -0.03f, 1.0f) },
+            { Algebra::Vector4(-0.03f,  0.03f, -0.03f, 1.0f) },
+            { Algebra::Vector4(-0.03f, -0.03f,  0.03f, 1.0f) },
+            { Algebra::Vector4( 0.03f, -0.03f,  0.03f, 1.0f) },
+            { Algebra::Vector4( 0.03f,  0.03f,  0.03f, 1.0f) },
+            { Algebra::Vector4(-0.03f,  0.03f,  0.03f, 1.0f) },
         };
 
         static std::vector<uint32_t> indices = {

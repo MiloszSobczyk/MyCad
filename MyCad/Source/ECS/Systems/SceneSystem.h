@@ -6,6 +6,7 @@
 #include "NotificationSystem.h"
 #include "Render/Buffer/VertexArray.h"
 #include "RenderingSystem.h"
+#include "ShapeManagementSystem.h"
 
 
 class SceneSystem
@@ -26,4 +27,5 @@ private:
 	MeshGenerationSystem m_MeshGenerationSystem;
 	RenderingSystem m_RenderingSystem;
 	NotificationSystem m_NotificationSystem;
+	ShapeManagementSystem m_ShapeManagementSystem;
 };

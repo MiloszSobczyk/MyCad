@@ -167,7 +167,6 @@ namespace ShapeCreator
 		{
 			Entity point = ShapeCreator::CreatePoint(scene);
 			point.GetComponent<TranslationComponent>().SetTranslation(controlPoints[i]);
-			point.EmplaceTag<IsInvisibleTag>();
 
 			bsc.pointHandles.push_back(point.GetHandle());
 			auto& nc = point.EmplaceComponent<NotificationComponent>();

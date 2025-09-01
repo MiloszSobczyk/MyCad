@@ -443,8 +443,12 @@ namespace Surfaces
 			pointHandles[15]
 		};
 
+		polylineEntity.EmplaceTag<IsInvisibleTag>();
+		// TODO: I'm retarded
+		polylineEntity.EmplaceComponent<VirtualComponent>();
 		auto& polylineComponent = polylineEntity.GetComponent<PolylineComponent>();
 		polylineComponent.pointHandles = polylinePointHandles;
+		
 		if (addToNotify)
 		{
 			for (auto handle : polylinePointHandles)

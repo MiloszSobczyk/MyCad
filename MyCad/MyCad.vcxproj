@@ -157,6 +157,7 @@
     <ClCompile Include="Source\ECS\Systems\NotificationSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\RenderingSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\SceneSystem.cpp" />
+    <ClCompile Include="Source\ECS\Systems\ShapeManagementSystem.cpp" />
     <ClCompile Include="Source\Managers\IdManager.cpp" />
     <ClCompile Include="Source\Platform\Imgui\ImguiApi.cpp" />
     <ClCompile Include="Source\Platform\OpenGL\OpenGLApi.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Source\ECS\Systems\NotificationSystem.h" />
     <ClInclude Include="Source\ECS\Systems\RenderingSystem.h" />
     <ClInclude Include="Source\ECS\Systems\SceneSystem.h" />
+    <ClInclude Include="Source\ECS\Systems\ShapeManagementSystem.h" />
     <ClInclude Include="Source\Input\Input.h" />
     <ClInclude Include="Source\Input\MouseButton.h" />
     <ClInclude Include="Source\Managers\IdManager.h" />

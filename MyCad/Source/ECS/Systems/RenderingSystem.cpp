@@ -41,6 +41,15 @@ void RenderingSystem::Update()
             modelMatrix = Algebra::Matrix4::Translation(translation.translation) * modelMatrix;
 		}
 
+        if (e.HasComponent<IsSelectedTag>())
+        {
+            m_Renderer->SetUniform("u_color", Algebra::Vector4{ .1f, .5f, .2f, 1.f });
+        }
+        else
+        {
+            m_Renderer->SetUniform("u_color", Algebra::Vector4{ .5f, .0f, .5f, 1.f });
+        }
+
         const auto& mc = e.GetComponent<MeshComponent>();
 
 		m_Renderer->SetUniform("u_modelMatrix", modelMatrix);

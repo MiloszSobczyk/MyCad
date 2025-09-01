@@ -53,4 +53,19 @@ namespace UI
 
 		ImGui::End();
 	}
+
+	void DisplayMergePoints(Ref<Scene> scene)
+	{
+		ImGui::Begin("Shape List##merge_points");
+
+		if (ImGui::Button("Merge Points"))
+		{
+			for (auto e : scene->GetAllEntitiesWith<IsSelectedTag>())
+			{
+				e.EmplaceTag<ToBeMergedTag>();
+			}
+		}
+
+		ImGui::End();
+	}
 }
