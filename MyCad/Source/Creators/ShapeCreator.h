@@ -149,7 +149,7 @@ namespace ShapeCreator
 		return curveEntity;
 	}
 
-	inline Entity CreateBezierSurfaceC0(Ref<Scene> scene) 
+	inline Entity CreateBezierSurfaceC0(Ref<Scene> scene, Algebra::Vector4 position = { 0.f, 0.f, 0.f, 0.f })
 	{
 		auto surface = scene->CreateEntity();
 
@@ -159,7 +159,7 @@ namespace ShapeCreator
 		surface.EmplaceTag<IsDirtyTag>();
 
 		auto& bsc = surface.EmplaceComponent<BezierSurfaceComponent>();
-		auto controlPoints = Surfaces::SetupControlPoints(bsc, Algebra::Vector4(0.f, 0.f, 0.f), 4.f, 4.f);
+		auto controlPoints = Surfaces::SetupControlPoints(bsc, position, 2.f, 2.f);
 
 		// Create points
 		bsc.pointHandles.reserve(controlPoints.size());
@@ -214,7 +214,7 @@ namespace ShapeCreator
 		return surface;
 	}
 
-	inline Entity CreateBezierSurfaceC2(Ref<Scene> scene)
+	inline Entity CreateBezierSurfaceC2(Ref<Scene> scene, Algebra::Vector4 position = { 0.f, 0.f, 0.f, 0.f })
 	{
 		auto surface = scene->CreateEntity();
 
@@ -225,7 +225,7 @@ namespace ShapeCreator
 
 		auto& bsc = surface.EmplaceComponent<BezierSurfaceComponent>();
 		bsc.C2 = true;
-		auto controlPoints = Surfaces::SetupControlPoints(bsc, Algebra::Vector4(0.f, 0.f, 0.f), 4.f, 4.f);
+		auto controlPoints = Surfaces::SetupControlPoints(bsc, position, 2.f, 2.f);
 
 		// Create points
 		bsc.pointHandles.reserve(controlPoints.size());

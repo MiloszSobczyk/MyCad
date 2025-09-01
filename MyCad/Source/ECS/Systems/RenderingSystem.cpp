@@ -81,8 +81,8 @@ void RenderingSystem::Update()
 
         m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
         m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
-        m_Renderer->SetUniform("u_tessLevelU", 16);
-        m_Renderer->SetUniform("u_tessLevelV", 16);
+        m_Renderer->SetUniform("u_tessLevelU", 8);
+        m_Renderer->SetUniform("u_tessLevelV", 8);
         m_Renderer->SetVertexArray(mc.vertexArray);
 
         for (const auto& shader : mc.shaders)
