@@ -201,11 +201,11 @@
     <ClInclude Include="Source\Creators\MeshCreator.h" />
     <ClInclude Include="Source\Creators\ShapeCreator.h" />
     <ClInclude Include="Source\Creators\ShapeCreatorHelpers.h" />
-    <ClInclude Include="Source\ECS\Components\BezierCurveC2Component.h" />
     <ClInclude Include="Source\ECS\Components\BezierSurfaceComponent.h" />
     <ClInclude Include="Source\ECS\Components\CameraComponent.h" />
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\CurveComponent.h" />
+    <ClInclude Include="Source\ECS\Components\GregoryPatch.h" />
     <ClInclude Include="Source\ECS\Components\IdComponent.h" />
     <ClInclude Include="Source\ECS\Components\PolylineComponent.h" />
     <ClInclude Include="Source\ECS\Components\MeshComponent.h" />

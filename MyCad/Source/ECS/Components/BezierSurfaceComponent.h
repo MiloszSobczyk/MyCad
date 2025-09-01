@@ -13,11 +13,11 @@ struct BezierSurfaceComponent
 {
 	bool C2 = false;
 
-	int tessLevelU = 16;
-	int tessLevelV = 16;
+	int tessLevelU = 8;
+	int tessLevelV = 8;
 
-	int widthPatches = 4;
-	int heightPatches = 4;
+	int widthPatches = 1;
+	int heightPatches = 1;
 
 	ConnectionType connectionType = ConnectionType::Flat;
 

@@ -448,7 +448,7 @@ namespace Surfaces
 		polylineEntity.EmplaceComponent<VirtualComponent>();
 		auto& polylineComponent = polylineEntity.GetComponent<PolylineComponent>();
 		polylineComponent.pointHandles = polylinePointHandles;
-		
+
 		if (addToNotify)
 		{
 			for (auto handle : polylinePointHandles)
@@ -489,13 +489,13 @@ namespace Surfaces
 				{ 0.f,       1.f / 6.f, 4.f / 6.f, 1.f / 6.f }
 			};
 
-			std::array<std::array<Algebra::Vector4, 4>, 4> P;
+			std::array<std::array<Algebra::Vector4, 4>, 4> P{};
 			for (int i = 0; i < 4; ++i)
 			{
 				for (int j = 0; j < 4; ++j)
 				{
 					P[i][j] = Entity{ patch.pointHandles[i * 4 + j], scene.get() }
-						.GetComponent<TranslationComponent>().translation;
+					.GetComponent<TranslationComponent>().translation;
 				}
 			}
 
@@ -536,5 +536,70 @@ namespace Surfaces
 
 			return bernsteinPoints;
 		}
+	}
+
+	namespace Patches
+	{
+		inline void FindCycles(Ref<Scene> scene)
+		{
+			auto surfaces = scene->GetAllEntitiesWith<BezierSurfaceComponent, IsSelectedTag>();
+
+			std::map<entt::entity, std::array<entt::entity, 4>> corners;
+			for (auto surface : surfaces)
+			{
+				auto& bsc = surface.GetComponent<BezierSurfaceComponent>();
+				int rows = bsc.GetRows();
+				int columns = bsc.GetColumns();
+
+				corners[surface.GetHandle()][0] = bsc.pointHandles[0];
+				corners[surface.GetHandle()][1] = bsc.pointHandles[columns - 1]; 
+				corners[surface.GetHandle()][2] = bsc.pointHandles[rows * columns - 1];
+				corners[surface.GetHandle()][3] = bsc.pointHandles[(rows - 1) * columns];
+			}
+
+			std::unordered_map<entt::entity, std::unordered_set<entt::entity>> adjacency;
+			for (auto& [surface, c] : corners)
+			{
+				for (int i = 0; i < 4; ++i)
+				{
+					entt::entity a = c[i];
+					entt::entity b = c[(i + 1) % 4];
+					adjacency[a].insert(b);
+					adjacency[b].insert(a);
+				}
+			}
+
+			std::vector<std::array<entt::entity, 3>> triangles;
+
+			for (auto& [v1, neighbors1] : adjacency)
+			{
+				for (auto v2 : neighbors1)
+				{
+					if (v2 <= v1) continue;
+					for (auto v3 : neighbors1)
+					{
+						if (v3 <= v2 || v3 == v1) continue;
+						if (adjacency[v2].count(v3))
+						{
+							triangles.push_back({ v1, v2, v3 });
+						}
+					}
+				}
+			}
+
+			// Print triangles
+			for (auto& tri : triangles)
+			{
+				std::cout << "Triangle: "
+					<< static_cast<int>(Entity{ tri[0], scene.get()}.GetComponent<IdComponent>().id) << ", "
+					<< static_cast<int>(Entity{ tri[1], scene.get() }.GetComponent<IdComponent>().id) << ", "
+					<< static_cast<int>(Entity{ tri[2], scene.get() }.GetComponent<IdComponent>().id) << std::endl;
+			}
+
+			// 16 + 31
+			// 34 + 40
+			// 37 + 13
+		}
+
 	}
 }

@@ -4,6 +4,7 @@
 #include "ECS/Components/Components.h"
 #include "Utils.h"
 #include "Utils/Base.h"
+#include "Creators/ShapeCreatorHelpers.h"
 
 namespace UI
 {
@@ -64,6 +65,10 @@ namespace UI
 			{
 				e.EmplaceTag<ToBeMergedTag>();
 			}
+		}
+		if (ImGui::Button("Find cycles"))
+		{
+			Surfaces::Patches::FindCycles(scene);
 		}
 
 		ImGui::End();

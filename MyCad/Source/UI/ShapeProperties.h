@@ -94,7 +94,6 @@ namespace UI
 			}
         }
 
-		// a lot of repeated code, but it can stay for now
         for (auto e : selectedShapes)
         {
             ImGui::Text("%s", GenerateLabel(e, e.GetComponent<NameComponent>().name).c_str());
