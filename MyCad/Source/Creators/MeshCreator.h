@@ -9,8 +9,6 @@
 
 namespace MeshCreator
 {
-    // Split these into multiple namespaces
-
     struct MeshData
     {
         std::vector<Algebra::Vector4> vertices;
@@ -104,143 +102,146 @@ namespace MeshCreator
         }
     }
 
-#pragma region Point
-    MeshData GeneratePointMeshData()
+    namespace Point
     {
-        static std::vector<Algebra::Vector4> vertices = {
-            { Algebra::Vector4(-0.03f, -0.03f, -0.03f, 1.0f) },
-            { Algebra::Vector4( 0.03f, -0.03f, -0.03f, 1.0f) },
-            { Algebra::Vector4( 0.03f,  0.03f, -0.03f, 1.0f) },
-            { Algebra::Vector4(-0.03f,  0.03f, -0.03f, 1.0f) },
-            { Algebra::Vector4(-0.03f, -0.03f,  0.03f, 1.0f) },
-            { Algebra::Vector4( 0.03f, -0.03f,  0.03f, 1.0f) },
-            { Algebra::Vector4( 0.03f,  0.03f,  0.03f, 1.0f) },
-            { Algebra::Vector4(-0.03f,  0.03f,  0.03f, 1.0f) },
-        };
-
-        static std::vector<uint32_t> indices = {
-            0, 1, 2,  2, 3, 0,
-            4, 5, 6,  6, 7, 4,
-            0, 3, 7,  7, 4, 0,
-            1, 5, 6,  6, 2, 1,
-            0, 1, 5,  5, 4, 0,
-            3, 2, 6,  6, 7, 3
-        };
-
-        MeshData mesh;
-        mesh.vertices = vertices;
-        mesh.indices = indices;
-        mesh.layout = BufferLayout{
-            { ShaderDataType::Float4, "position" }
-        };
-
-        return mesh;
-    }
-#pragma endregion Point
-
-#pragma region Torus
-    Algebra::Vector4 GetTorusPoint(float angleTube, float angleRadius, float radius, float tubeRadius)
-    {
-        return Algebra::Matrix4::RotationY(angleRadius) *
-            Algebra::Vector4(radius + tubeRadius * cosf(angleTube), tubeRadius * sinf(angleTube), 0.f, 1.f);
-    }
-
-    MeshData GenerateTorusMeshData(const TorusComponent& tc)
-    {
-        MeshData mesh;
-
-        for (int i = 0; i < tc.majorSegments; i++)
+        MeshData GenerateMeshData()
         {
-            for (int j = 0; j < tc.minorSegments; j++)
+            static std::vector<Algebra::Vector4> vertices = {
+                { Algebra::Vector4(-0.03f, -0.03f, -0.03f, 1.0f) },
+                { Algebra::Vector4( 0.03f, -0.03f, -0.03f, 1.0f) },
+                { Algebra::Vector4( 0.03f,  0.03f, -0.03f, 1.0f) },
+                { Algebra::Vector4(-0.03f,  0.03f, -0.03f, 1.0f) },
+                { Algebra::Vector4(-0.03f, -0.03f,  0.03f, 1.0f) },
+                { Algebra::Vector4( 0.03f, -0.03f,  0.03f, 1.0f) },
+                { Algebra::Vector4( 0.03f,  0.03f,  0.03f, 1.0f) },
+                { Algebra::Vector4(-0.03f,  0.03f,  0.03f, 1.0f) },
+            };
+
+            static std::vector<uint32_t> indices = {
+                0, 1, 2,  2, 3, 0,
+                4, 5, 6,  6, 7, 4,
+                0, 3, 7,  7, 4, 0,
+                1, 5, 6,  6, 2, 1,
+                0, 1, 5,  5, 4, 0,
+                3, 2, 6,  6, 7, 3
+            };
+
+            MeshData mesh;
+            mesh.vertices = vertices;
+            mesh.indices = indices;
+            mesh.layout = BufferLayout{
+                { ShaderDataType::Float4, "position" }
+            };
+
+            return mesh;
+        }
+    }
+
+    namespace Torus
+    {
+        Algebra::Vector4 CalculatePointPosition(float angleTube, float angleRadius, float radius, float tubeRadius)
+        {
+            return Algebra::Matrix4::RotationY(angleRadius) *
+                Algebra::Vector4(radius + tubeRadius * cosf(angleTube), tubeRadius * sinf(angleTube), 0.f, 1.f);
+        }
+
+        MeshData GenerateMeshData(const TorusComponent& tc)
+        {
+            MeshData mesh;
+
+            for (int i = 0; i < tc.majorSegments; i++)
             {
-                Algebra::Vector4 vertex = GetTorusPoint(
-                    2 * std::numbers::pi_v<float> *j / tc.minorSegments,
-                    2 * std::numbers::pi_v<float> *i / tc.majorSegments,
-                    tc.majorRadius, tc.minorRadius
-                );
-                mesh.vertices.push_back(vertex);
+                for (int j = 0; j < tc.minorSegments; j++)
+                {
+                    Algebra::Vector4 vertex = CalculatePointPosition(
+                        2 * std::numbers::pi_v<float> *j / tc.minorSegments,
+                        2 * std::numbers::pi_v<float> *i / tc.majorSegments,
+                        tc.majorRadius, tc.minorRadius
+                    );
+                    mesh.vertices.push_back(vertex);
+                }
             }
-        }
 
-        for (int i = 0; i < tc.majorSegments; i++)
-        {
-            int iNext = (i + 1) % tc.majorSegments;
-            for (int j = 0; j < tc.minorSegments; j++)
+            for (int i = 0; i < tc.majorSegments; i++)
             {
-                int jNext = (j + 1) % tc.minorSegments;
-                mesh.indices.push_back(tc.minorSegments * i + j);
-                mesh.indices.push_back(tc.minorSegments * i + jNext);
-                mesh.indices.push_back(tc.minorSegments * i + j);
-                mesh.indices.push_back((tc.minorSegments * iNext) + j);
+                int iNext = (i + 1) % tc.majorSegments;
+                for (int j = 0; j < tc.minorSegments; j++)
+                {
+                    int jNext = (j + 1) % tc.minorSegments;
+                    mesh.indices.push_back(tc.minorSegments * i + j);
+                    mesh.indices.push_back(tc.minorSegments * i + jNext);
+                    mesh.indices.push_back(tc.minorSegments * i + j);
+                    mesh.indices.push_back((tc.minorSegments * iNext) + j);
+                }
             }
+
+		    mesh.layout = BufferLayout {
+                { ShaderDataType::Float4, "position" }
+            };
+
+            return mesh;
         }
-
-		mesh.layout = BufferLayout {
-            { ShaderDataType::Float4, "position" }
-        };
-
-        return mesh;
     }
-#pragma endregion Torus
 
-#pragma region Line
-    MeshData GenerateLineMeshData(const PolylineComponent& lc, Ref<Scene> scene)
+    namespace Polyline
     {
-        MeshData mesh;
-
-        for (auto handle : lc.pointHandles)
+        MeshData GenerateMeshData(const PolylineComponent& lc, Ref<Scene> scene)
         {
-            Entity pointEntity{ handle, scene.get() };
+            MeshData mesh;
 
-            if (pointEntity.HasComponent<TranslationComponent>())
+            for (auto handle : lc.pointHandles)
             {
-                Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
-                vertex.w = 1.0f;
-                mesh.vertices.push_back(vertex);
+                Entity pointEntity{ handle, scene.get() };
+
+                if (pointEntity.HasComponent<TranslationComponent>())
+                {
+                    Algebra::Vector4 vertex = pointEntity.GetComponent<TranslationComponent>().translation;
+                    vertex.w = 1.0f;
+                    mesh.vertices.push_back(vertex);
+                }
             }
-        }
 
-        for (size_t i = 0; i + 1 < lc.pointHandles.size(); ++i)
+            for (size_t i = 0; i + 1 < lc.pointHandles.size(); ++i)
+            {
+                mesh.indices.push_back(static_cast<uint32_t>(i));
+                mesh.indices.push_back(static_cast<uint32_t>(i + 1));
+            }
+
+            mesh.layout = BufferLayout{
+                { ShaderDataType::Float4, "position" }
+            };
+
+            return mesh;
+        }
+    }
+
+    namespace Curve
+    {
+        MeshData GenerateMeshData(CurveComponent& bcc, Ref<Scene> scene)
         {
-            mesh.indices.push_back(static_cast<uint32_t>(i));
-            mesh.indices.push_back(static_cast<uint32_t>(i + 1));
+            MeshData mesh;
+            mesh.vertices = bcc.CallUpdate();
+            mesh.indices = {};
+            mesh.layout = BufferLayout{
+                { ShaderDataType::Float4, "position" }
+            };
+
+            return mesh;
         }
-
-        mesh.layout = BufferLayout{
-            { ShaderDataType::Float4, "position" }
-        };
-
-        return mesh;
     }
-#pragma endregion Line
 
-#pragma region Curve
-    MeshData GenerateCurveMeshData(CurveComponent& bcc, Ref<Scene> scene)
+    namespace Patch
     {
-        MeshData mesh;
-        mesh.vertices = bcc.CallUpdate();
-        mesh.indices = {};
-        mesh.layout = BufferLayout{
-            { ShaderDataType::Float4, "position" }
-        };
+        MeshData GenerateMeshData(PatchComponent& pc, Ref<Scene> scene)
+        {
+            MeshData mesh;
+            mesh.vertices = pc.CallUpdate();
+            mesh.indices = {};
+            mesh.layout = BufferLayout{
+                { ShaderDataType::Float4, "position" }
+            };
 
-        return mesh;
+            return mesh;
+        }
     }
-#pragma endregion Curve
-
-#pragma region Patch
-
-    MeshData GeneratePatchMeshData(PatchComponent& pc, Ref<Scene> scene)
-    {
-        MeshData mesh;
-        mesh.vertices = pc.CallUpdate();
-        mesh.indices = {};
-        mesh.layout = BufferLayout{
-            { ShaderDataType::Float4, "position" }
-        };
-
-        return mesh;
-    }
-
-#pragma endregion Patch
 }

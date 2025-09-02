@@ -34,7 +34,7 @@ void MeshGenerationSystem::UpdateDirtyTags()
 
 void MeshGenerationSystem::UpdatePointMeshes()
 {
-	MeshCreator::MeshData mesh = MeshCreator::GeneratePointMeshData();
+	MeshCreator::MeshData mesh = MeshCreator::Point::GenerateMeshData();
 
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PointComponent>())
 	{
@@ -52,7 +52,7 @@ void MeshGenerationSystem::UpdateTorusMeshes()
 
 		const auto& tc = e.GetComponent<TorusComponent>();
 
-		MeshCreator::MeshData mesh = MeshCreator::GenerateTorusMeshData(tc);
+		MeshCreator::MeshData mesh = MeshCreator::Torus::GenerateMeshData(tc);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout);
 	}
@@ -72,7 +72,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 			continue;
 		}
 		
-		MeshCreator::MeshData mesh = MeshCreator::GenerateLineMeshData(pc, m_Scene);
+		MeshCreator::MeshData mesh = MeshCreator::Polyline::GenerateMeshData(pc, m_Scene);
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout);
 	}
 	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, CurveComponent>())
@@ -81,7 +81,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 
 		auto& curveComponent = e.GetComponent<CurveComponent>();
 
-		MeshCreator::MeshData mesh = MeshCreator::GenerateCurveMeshData(curveComponent, m_Scene);
+		MeshCreator::MeshData mesh = MeshCreator::Curve::GenerateMeshData(curveComponent, m_Scene);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, 
 			RenderingMode::Patches, { ShaderName::BezierCurve });
@@ -96,7 +96,7 @@ void MeshGenerationSystem::UpdatePatchMeshes()
 
 		auto& pc = e.GetComponent<PatchComponent>();
 		
-		MeshCreator::MeshData mesh = MeshCreator::GeneratePatchMeshData(pc, m_Scene);
+		MeshCreator::MeshData mesh = MeshCreator::Patch::GenerateMeshData(pc, m_Scene);
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
 			RenderingMode::Patches, { ShaderName::BezierSurface, ShaderName::BezierSurface2 });
