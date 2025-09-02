@@ -540,66 +540,176 @@ namespace Surfaces
 
 	namespace Patches
 	{
-		inline void FindCycles(Ref<Scene> scene)
+		struct Edge
 		{
-			auto surfaces = scene->GetAllEntitiesWith<BezierSurfaceComponent, IsSelectedTag>();
+			std::vector<entt::entity> points;
 
-			std::map<entt::entity, std::array<entt::entity, 4>> corners;
+			entt::entity Start() const
+			{
+				return points.front();
+			}
+
+			entt::entity End() const
+			{
+				return points.back();
+			}
+
+			void Reverse()
+			{
+				std::reverse(points.begin(), points.end());
+			}
+		};
+
+		struct SurfaceEdge
+		{
+			entt::entity surface;
+			int edgeIndex; // 0=bottom,1=right,2=top,3=left
+			Edge edge;
+		};
+
+		inline std::vector<std::array<SurfaceEdge, 3>> FindCycles(Ref<Scene> scene)
+		{
+			std::vector<SurfaceEdge> allEdges;
+
+			auto surfaces = scene->GetAllEntitiesWith<BezierSurfaceComponent, IsSelectedTag>();
 			for (auto surface : surfaces)
 			{
 				auto& bsc = surface.GetComponent<BezierSurfaceComponent>();
 				int rows = bsc.GetRows();
 				int columns = bsc.GetColumns();
 
-				corners[surface.GetHandle()][0] = bsc.pointHandles[0];
-				corners[surface.GetHandle()][1] = bsc.pointHandles[columns - 1]; 
-				corners[surface.GetHandle()][2] = bsc.pointHandles[rows * columns - 1];
-				corners[surface.GetHandle()][3] = bsc.pointHandles[(rows - 1) * columns];
+				// Bottom edge (left -> right)
+				Edge bottom;
+				for (int col = 0; col < columns; ++col)
+				{
+					bottom.points.push_back(bsc.pointHandles[col]);
+				}
+
+				// Right edge (bottom -> top)
+				Edge right;
+				for (int row = 0; row < rows; ++row)
+				{
+					right.points.push_back(bsc.pointHandles[row * columns + (columns - 1)]);
+				}
+
+				// Top edge (right -> left)
+				Edge top;
+				for (int col = columns - 1; col >= 0; --col)
+				{
+					top.points.push_back(bsc.pointHandles[(rows - 1) * columns + col]);
+				}
+
+				// Left edge (top -> bottom)
+				Edge left;
+				for (int row = rows - 1; row >= 0; --row)
+				{
+					left.points.push_back(bsc.pointHandles[row * columns]);
+				}
+
+				allEdges.push_back({ surface.GetHandle(), 0, bottom });
+				allEdges.push_back({ surface.GetHandle(), 1, right });
+				allEdges.push_back({ surface.GetHandle(), 2, top });
+				allEdges.push_back({ surface.GetHandle(), 3, left });
 			}
 
-			std::unordered_map<entt::entity, std::unordered_set<entt::entity>> adjacency;
-			for (auto& [surface, c] : corners)
+			if (allEdges.empty())
 			{
-				for (int i = 0; i < 4; ++i)
+				return {};
+			}
+
+			std::vector<std::unordered_set<int>> adjacency;
+			adjacency.resize(allEdges.size());
+
+			for (size_t i = 0; i < allEdges.size(); ++i)
+			{
+				for (size_t j = i + 1; j < allEdges.size(); ++j)
 				{
-					entt::entity a = c[i];
-					entt::entity b = c[(i + 1) % 4];
-					adjacency[a].insert(b);
-					adjacency[b].insert(a);
+					auto aStart = allEdges[i].edge.Start();
+					auto aEnd = allEdges[i].edge.End();
+					auto bStart = allEdges[j].edge.Start();
+					auto bEnd = allEdges[j].edge.End();
+
+					if (aStart == bStart || aStart == bEnd || aEnd == bStart || aEnd == bEnd)
+					{
+						adjacency[i].insert(static_cast<int>(j));
+						adjacency[j].insert(static_cast<int>(i));
+					}
 				}
 			}
 
-			std::vector<std::array<entt::entity, 3>> triangles;
-
-			for (auto& [v1, neighbors1] : adjacency)
-			{
-				for (auto v2 : neighbors1)
+			auto CanFormClosedChain =
+				[&](const SurfaceEdge& A, const SurfaceEdge& B, const SurfaceEdge& C) -> bool
 				{
-					if (v2 <= v1) continue;
-					for (auto v3 : neighbors1)
+					entt::entity a1 = A.edge.Start();
+					entt::entity a2 = A.edge.End();
+					entt::entity b1 = B.edge.Start();
+					entt::entity b2 = B.edge.End();
+					entt::entity c1 = C.edge.Start();
+					entt::entity c2 = C.edge.End();
+
+					std::array<std::pair<entt::entity, entt::entity>, 2> Ao
+						= { std::make_pair(a1, a2), std::make_pair(a2, a1) };
+					std::array<std::pair<entt::entity, entt::entity>, 2> Bo
+						= { std::make_pair(b1, b2), std::make_pair(b2, b1) };
+					std::array<std::pair<entt::entity, entt::entity>, 2> Co
+						= { std::make_pair(c1, c2), std::make_pair(c2, c1) };
+
+					for (auto& aOri : Ao)
 					{
-						if (v3 <= v2 || v3 == v1) continue;
-						if (adjacency[v2].count(v3))
+						for (auto& bOri : Bo)
 						{
-							triangles.push_back({ v1, v2, v3 });
+							for (auto& cOri : Co)
+							{
+								if (aOri.second == bOri.first &&
+									bOri.second == cOri.first &&
+									cOri.second == aOri.first)
+								{
+									return true;
+								}
+							}
+						}
+					}
+
+					return false;
+				};
+
+			std::set<std::array<uint64_t, 3>> canonicalTriangles;
+			std::vector<std::array<SurfaceEdge, 3>> resultTriangles;
+
+			for (size_t i = 0; i < adjacency.size(); ++i)
+			{
+				for (int j : adjacency[i])
+				{
+					if (static_cast<size_t>(j) <= i) continue;
+					for (int k : adjacency[j])
+					{
+						if (static_cast<size_t>(k) <= static_cast<size_t>(j)) continue;
+						if (adjacency[k].count(static_cast<int>(i)) == 0) continue;
+
+						if (CanFormClosedChain(allEdges[i], allEdges[j], allEdges[k]))
+						{
+							auto encode = [&](const SurfaceEdge& se) -> uint64_t
+								{
+									return (static_cast<uint64_t>(se.surface) << 32) | se.edgeIndex;
+								};
+							std::array<uint64_t, 3> key = { encode(allEdges[i]), encode(allEdges[j]), encode(allEdges[k]) };
+							std::sort(key.begin(), key.end());
+							if (canonicalTriangles.insert(key).second)
+							{
+								resultTriangles.push_back({ allEdges[i], allEdges[j], allEdges[k] });
+							}
 						}
 					}
 				}
 			}
 
-			// Print triangles
-			for (auto& tri : triangles)
-			{
-				std::cout << "Triangle: "
-					<< static_cast<int>(Entity{ tri[0], scene.get()}.GetComponent<IdComponent>().id) << ", "
-					<< static_cast<int>(Entity{ tri[1], scene.get() }.GetComponent<IdComponent>().id) << ", "
-					<< static_cast<int>(Entity{ tri[2], scene.get() }.GetComponent<IdComponent>().id) << std::endl;
-			}
+			return resultTriangles;
 
-			// 16 + 31
-			// 34 + 40
-			// 37 + 13
 		}
+
+		// 16 + 31
+		// 34 + 40
+		// 37 + 13
 
 	}
 }
