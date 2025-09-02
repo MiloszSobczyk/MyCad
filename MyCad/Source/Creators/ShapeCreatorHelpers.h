@@ -12,7 +12,7 @@ namespace ShapeCreator
 	Entity CreatePoint(Ref<Scene> scene);
 }
 
-namespace Curves
+namespace Curve
 {
 	namespace C0
 	{
@@ -58,7 +58,7 @@ namespace Curves
 			}
 		}
 
-		inline std::vector<Algebra::Vector4> UpdateCurve(CurveComponent& curve, Ref<Scene> scene)
+		inline std::vector<Algebra::Vector4> Update(CurveComponent& curve, Ref<Scene> scene)
 		{
 			auto& bernsteinPolyline = Entity{ curve.bernsteinPolylineHandle, scene.get() }
 			.GetComponent<PolylineComponent>();
@@ -93,7 +93,7 @@ namespace Curves
 	}
 	namespace C2
 	{
-		inline std::vector<Algebra::Vector4> UpdateCurve(CurveComponent& curveComponent, Ref<Scene> scene)
+		inline std::vector<Algebra::Vector4> Update(CurveComponent& curveComponent, Ref<Scene> scene)
 		{
 			auto& controlPolyline = Entity{ curveComponent.controlPolylineHandle, scene.get() }
 				.GetComponent<PolylineComponent>();
@@ -252,7 +252,7 @@ namespace Curves
 			return bernsteinPoints;
 		}
 
-		inline std::vector<Algebra::Vector4> UpdateCurve(CurveComponent& curveComponent, Ref<Scene> scene)
+		inline std::vector<Algebra::Vector4> Update(CurveComponent& curveComponent, Ref<Scene> scene)
 		{
 			auto& controlPolyline = Entity{ curveComponent.controlPolylineHandle, scene.get() }
 			.GetComponent<PolylineComponent>();
@@ -307,7 +307,7 @@ namespace Curves
 	}
 }
 
-namespace Surfaces
+namespace Surface
 {
 	inline std::vector<Algebra::Vector4> SetupControlPoints(
 		BezierSurfaceComponent& bsc, Algebra::Vector4 position, float width, float height)
@@ -538,7 +538,7 @@ namespace Surfaces
 		}
 	}
 
-	namespace Patches
+	namespace Gregory
 	{
 		struct Edge
 		{

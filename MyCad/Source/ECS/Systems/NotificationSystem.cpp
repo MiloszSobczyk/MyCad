@@ -17,7 +17,7 @@ void NotificationSystem::Update()
 			for (auto toNotify : nc.toNotifys)
 			{
 				Entity targetEntity{ toNotify, m_Scene.get() };
-				targetEntity.EmplaceTag<IsDirtyTag>();
+				targetEntity.EmplaceComponent<DirtyFromComponent>();
 			}
 		}
 		e.RemoveComponent<IsNotifiedTag>();

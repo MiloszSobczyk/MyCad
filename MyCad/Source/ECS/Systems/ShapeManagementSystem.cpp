@@ -102,7 +102,7 @@ void ShapeManagementSystem::MergePoints()
 					}
 				}
 			}
-			toNotifyEntity.EmplaceTag<IsDirtyTag>();
+			toNotifyEntity.EmplaceComponent<DirtyFromComponent>();
 
 		}
 		nc.ClearToNotify();

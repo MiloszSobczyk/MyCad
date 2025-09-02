@@ -20,7 +20,7 @@ namespace ShapeCreator
 
 		point.EmplaceComponent<PointComponent>();
 		point.EmplaceComponent<TranslationComponent>();
-		point.EmplaceTag<IsDirtyTag>();
+		point.EmplaceComponent<DirtyFromComponent>();
 
 		return point;
 	}
@@ -38,7 +38,7 @@ namespace ShapeCreator
 		torus.EmplaceComponent<RotationComponent>();
 		torus.EmplaceComponent<ScalingComponent>();
 
-		torus.EmplaceTag<IsDirtyTag>();
+		torus.EmplaceComponent<DirtyFromComponent>();
 
 		return torus;
 	}
@@ -53,7 +53,7 @@ namespace ShapeCreator
 		auto& pc = polyline.EmplaceComponent<PolylineComponent>();
 		pc.pointHandles = pointHandles;
 		
-		polyline.EmplaceTag<IsDirtyTag>();
+		polyline.EmplaceComponent<DirtyFromComponent>();
 
 		for (auto pointHandle : pointHandles)
 		{
@@ -72,7 +72,7 @@ namespace ShapeCreator
 		auto id = curveEntity.EmplaceComponent<IdComponent>().id;
 		curveEntity.EmplaceComponent<NameComponent>().name = "BezierCurveC0_" + std::to_string(id);
 
-		curveEntity.EmplaceTag<IsDirtyTag>();
+		curveEntity.EmplaceComponent<DirtyFromComponent>();
 
 		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 		
@@ -83,7 +83,7 @@ namespace ShapeCreator
 		curveComponent.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
 
 		curveComponent.onUpdate = [scene](CurveComponent& curve) {
-			return Curves::C0::UpdateCurve(curve, scene);
+			return Curve::C0::Update(curve, scene);
 			};
 
 		return curveEntity;
@@ -96,7 +96,7 @@ namespace ShapeCreator
 		auto id = curveEntity.EmplaceComponent<IdComponent>().id;
 		curveEntity.EmplaceComponent<NameComponent>().name = "BezierCurveC2_" + std::to_string(id);
 
-		curveEntity.EmplaceTag<IsDirtyTag>();
+		curveEntity.EmplaceComponent<DirtyFromComponent>();
 
 		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 
@@ -113,7 +113,7 @@ namespace ShapeCreator
 		curveComponent.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
 
 		curveComponent.onUpdate = [scene](CurveComponent& curve) {
-			return Curves::C2::UpdateCurve(curve, scene);
+			return Curve::C2::Update(curve, scene);
 			};
 
 		return curveEntity;
@@ -126,7 +126,7 @@ namespace ShapeCreator
 		auto id = curveEntity.EmplaceComponent<IdComponent>().id;
 		curveEntity.EmplaceComponent<NameComponent>().name = "InterpolatingCurve_" + std::to_string(id);
 
-		curveEntity.EmplaceTag<IsDirtyTag>();
+		curveEntity.EmplaceComponent<DirtyFromComponent>();
 
 		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 
@@ -143,7 +143,7 @@ namespace ShapeCreator
 		curveComponent.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
 
 		curveComponent.onUpdate = [scene](CurveComponent& curve) {
-			return Curves::Interpolating::UpdateCurve(curve, scene);
+			return Curve::Interpolating::Update(curve, scene);
 			};
 
 		return curveEntity;
@@ -156,10 +156,10 @@ namespace ShapeCreator
 		// ID & Name
 		auto id = surface.EmplaceComponent<IdComponent>().id;
 		surface.EmplaceComponent<NameComponent>().name = "BezierSurfaceC0_" + std::to_string(id);
-		surface.EmplaceTag<IsDirtyTag>();
+		surface.EmplaceComponent<DirtyFromComponent>();
 
 		auto& bsc = surface.EmplaceComponent<BezierSurfaceComponent>();
-		auto controlPoints = Surfaces::SetupControlPoints(bsc, position, 2.f, 2.f);
+		auto controlPoints = Surface::SetupControlPoints(bsc, position, 2.f, 2.f);
 
 		// Create points
 		bsc.pointHandles.reserve(controlPoints.size());
@@ -178,7 +178,7 @@ namespace ShapeCreator
 		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex) 
 		{
 			Entity patchEntity = scene->CreateEntity();
-			patchEntity.EmplaceTag<IsDirtyTag>();
+			patchEntity.EmplaceComponent<DirtyFromComponent>();
 			patchEntity.EmplaceComponent<VirtualComponent>(surface.GetHandle());
 			
 			auto& patchComponent = patchEntity.EmplaceComponent<PatchComponent>();
@@ -203,9 +203,9 @@ namespace ShapeCreator
 
 			patchComponent.pointHandles = handles;
 			patchComponent.onUpdate = [scene](PatchComponent& patch) {
-				return Surfaces::C0::UpdatePatch(patch, scene);
+				return Surface::C0::UpdatePatch(patch, scene);
 				};
-			Surfaces::InitializePatchPolylinePoints(Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }, handles, scene);
+			Surface::InitializePatchPolylinePoints(Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }, handles, scene);
 
 			bsc.patchHandles.push_back(patchEntity.GetHandle());
 		}
@@ -220,11 +220,11 @@ namespace ShapeCreator
 		// ID & Name
 		auto id = surface.EmplaceComponent<IdComponent>().id;
 		surface.EmplaceComponent<NameComponent>().name = "BezierSurfaceC2_" + std::to_string(id);
-		surface.EmplaceTag<IsDirtyTag>();
+		surface.EmplaceComponent<DirtyFromComponent>();
 
 		auto& bsc = surface.EmplaceComponent<BezierSurfaceComponent>();
 		bsc.C2 = true;
-		auto controlPoints = Surfaces::SetupControlPoints(bsc, position, 2.f, 2.f);
+		auto controlPoints = Surface::SetupControlPoints(bsc, position, 2.f, 2.f);
 
 		// Create points
 		bsc.pointHandles.reserve(controlPoints.size());
@@ -244,7 +244,7 @@ namespace ShapeCreator
 		for (int patchIndex = 0; patchIndex < bsc.widthPatches * bsc.heightPatches; ++patchIndex)
 		{
 			Entity patchEntity = scene->CreateEntity();
-			patchEntity.EmplaceTag<IsDirtyTag>();
+			patchEntity.EmplaceComponent<DirtyFromComponent>();
 			patchEntity.EmplaceComponent<VirtualComponent>(surface.GetHandle());
 
 			auto& patchComponent = patchEntity.EmplaceComponent<PatchComponent>();
@@ -272,9 +272,9 @@ namespace ShapeCreator
 
 			auto& bernsteinPolyline = Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }.GetComponent<PolylineComponent>();
 			patchComponent.onUpdate = [scene, &bernsteinPolyline](PatchComponent& patch) {
-				return Surfaces::C2::UpdatePatch(patch, scene, bernsteinPolyline);
+				return Surface::C2::UpdatePatch(patch, scene, bernsteinPolyline);
 				};
-			Surfaces::InitializePatchPolylinePoints(Entity{ patchComponent.deBoorPolylineHandle, scene.get() }, deBoorPointHandles, scene);
+			Surface::InitializePatchPolylinePoints(Entity{ patchComponent.deBoorPolylineHandle, scene.get() }, deBoorPointHandles, scene);
 
 			auto bernsteinPointHandles = std::vector<entt::entity>{};
 			bernsteinPointHandles.reserve(16);
@@ -285,7 +285,7 @@ namespace ShapeCreator
 
 				bernsteinPointHandles.push_back(point.GetHandle());
 			}
-			Surfaces::InitializePatchPolylinePoints(Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }, bernsteinPointHandles, scene, false);
+			Surface::InitializePatchPolylinePoints(Entity{ patchComponent.bernsteinPolylineHandle, scene.get() }, bernsteinPointHandles, scene, false);
 
 			bsc.patchHandles.push_back(patchEntity.GetHandle());
 		}

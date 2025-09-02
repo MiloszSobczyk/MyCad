@@ -36,7 +36,7 @@ namespace UI
             if (ImGui::Button("X"))
             {
                 lc.pointHandles.erase(lc.pointHandles.begin() + i);
-                entity.EmplaceTag<IsDirtyTag>();
+                entity.EmplaceComponent<DirtyFromComponent>();
                 ImGui::PopID();
                 changed = true;
                 break;
@@ -48,7 +48,7 @@ namespace UI
             if (ImGui::ArrowButton("##up", ImGuiDir_Up))
             {
                 std::swap(lc.pointHandles[i], lc.pointHandles[i - 1]);
-                entity.EmplaceTag<IsDirtyTag>();
+                entity.EmplaceComponent<DirtyFromComponent>();
                 changed = true;
             }
             if (i == 0) ImGui::EndDisabled();
@@ -59,7 +59,7 @@ namespace UI
             if (ImGui::ArrowButton("##down", ImGuiDir_Down))
             {
                 std::swap(lc.pointHandles[i], lc.pointHandles[i + 1]);
-                entity.EmplaceTag<IsDirtyTag>();
+                entity.EmplaceComponent<DirtyFromComponent>();
                 changed = true;
             }
             if (i + 1 == lc.pointHandles.size()) ImGui::EndDisabled();
@@ -90,7 +90,7 @@ namespace UI
         {
             for(auto e : scene->GetAllEntitiesWith<PolylineComponent>())
             {
-                e.EmplaceTag<IsDirtyTag>();
+                e.EmplaceComponent<DirtyFromComponent>();
 			}
         }
 

@@ -24,11 +24,11 @@ void MeshGenerationSystem::Update()
 
 void MeshGenerationSystem::UpdateDirtyTags()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<VirtualComponent, IsDirtyTag>())
+	for (auto e : m_Scene->GetAllEntitiesWith<VirtualComponent, DirtyFromComponent>())
 	{
 		auto& vc = e.GetComponent<VirtualComponent>();
 		Entity targetEntity{ vc.targetEntity, m_Scene.get() };
-		targetEntity.EmplaceTag<IsDirtyTag>();
+		targetEntity.EmplaceTag<DirtyFromComponent>();
 	}
 }
 
@@ -36,9 +36,9 @@ void MeshGenerationSystem::UpdatePointMeshes()
 {
 	MeshCreator::MeshData mesh = MeshCreator::Point::GenerateMeshData();
 
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PointComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<DirtyFromComponent, PointComponent>())
 	{
-		e.RemoveComponent<IsDirtyTag>();
+		e.RemoveComponent<DirtyFromComponent>();
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, RenderingMode::Triangles);
 	}
@@ -46,9 +46,9 @@ void MeshGenerationSystem::UpdatePointMeshes()
 
 void MeshGenerationSystem::UpdateTorusMeshes()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, TorusComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<DirtyFromComponent, TorusComponent>())
 	{
-		e.RemoveComponent<IsDirtyTag>();
+		e.RemoveComponent<DirtyFromComponent>();
 
 		const auto& tc = e.GetComponent<TorusComponent>();
 
@@ -61,9 +61,9 @@ void MeshGenerationSystem::UpdateTorusMeshes()
 // Removing point from mesh should also remove mesh's reference from point, so I will need ShapeManagementSystem
 void MeshGenerationSystem::UpdateLineMeshes()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PolylineComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<DirtyFromComponent, PolylineComponent>())
 	{
-		e.RemoveComponent<IsDirtyTag>();
+		e.RemoveComponent<DirtyFromComponent>();
 
 		const auto& pc = e.GetComponent<PolylineComponent>();
 
@@ -75,9 +75,9 @@ void MeshGenerationSystem::UpdateLineMeshes()
 		MeshCreator::MeshData mesh = MeshCreator::Polyline::GenerateMeshData(pc, m_Scene);
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout);
 	}
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, CurveComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<DirtyFromComponent, CurveComponent>())
 	{
-		e.RemoveComponent<IsDirtyTag>();
+		e.RemoveComponent<DirtyFromComponent>();
 
 		auto& curveComponent = e.GetComponent<CurveComponent>();
 
@@ -90,9 +90,9 @@ void MeshGenerationSystem::UpdateLineMeshes()
 
 void MeshGenerationSystem::UpdatePatchMeshes()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<IsDirtyTag, PatchComponent>())
+	for (auto e : m_Scene->GetAllEntitiesWith<DirtyFromComponent, PatchComponent>())
 	{
-		e.RemoveComponent<IsDirtyTag>();
+		e.RemoveComponent<DirtyFromComponent>();
 
 		auto& pc = e.GetComponent<PatchComponent>();
 		

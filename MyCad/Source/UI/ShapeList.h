@@ -68,7 +68,7 @@ namespace UI
 		}
 		if (ImGui::Button("Find cycles"))
 		{
-			Surfaces::Patches::FindCycles(scene);
+			Surface::Gregory::FindCycles(scene);
 		}
 
 		ImGui::End();
