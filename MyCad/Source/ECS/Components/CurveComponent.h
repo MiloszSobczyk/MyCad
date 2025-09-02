@@ -18,6 +18,7 @@ struct CurveComponent
 
 	CurveType curveType = CurveType::BezierC0;
 
+	// perhaps some info if number of control points changed, so we know when to re-create bernstein polyline
 	entt::entity controlPolylineHandle; // deBoor or interpolating
 	entt::entity bernsteinPolylineHandle;
 

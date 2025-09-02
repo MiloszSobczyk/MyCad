@@ -10,13 +10,23 @@
 namespace ShapeCreator
 {
 	Entity CreatePoint(Ref<Scene> scene);
+
+	inline void AddAsTargets(entt::entity targetHandle, std::vector<entt::entity> notifiers, Ref<Scene> scene) 
+	{
+		for (auto pointHandle : notifiers)
+		{
+			Entity pointEntity{ pointHandle, scene.get() };
+			auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
+			nc.AddToNotify(targetHandle);
+		}
+	}
 }
 
 namespace Curve
 {
 	namespace C0
 	{
-		inline void PadBezierVertices(std::vector<Algebra::Vector4>& vertices)
+		inline void PadBernsteinVertices(std::vector<Algebra::Vector4>& vertices)
 		{
 			int rest = static_cast<int>(vertices.size() % 4);
 			if (rest == 0) return;
@@ -61,7 +71,7 @@ namespace Curve
 		inline std::vector<Algebra::Vector4> Update(CurveComponent& curve, Ref<Scene> scene)
 		{
 			auto& bernsteinPolyline = Entity{ curve.bernsteinPolylineHandle, scene.get() }
-			.GetComponent<PolylineComponent>();
+				.GetComponent<PolylineComponent>();
 
 			std::vector<Algebra::Vector4> result;
 
@@ -86,7 +96,7 @@ namespace Curve
 				}
 			}
 
-			PadBezierVertices(result);
+			PadBernsteinVertices(result);
 
 			return result;
 		}

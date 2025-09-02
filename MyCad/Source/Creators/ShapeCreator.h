@@ -13,92 +13,80 @@ namespace ShapeCreator
 {
 	inline Entity CreatePoint(Ref<Scene> scene)
 	{
-		auto point = scene->CreateEntity();
+		auto pointEntity = scene->CreateEntity();
+		pointEntity.EmplaceComponent<PointComponent>();
 
-		auto id = point.EmplaceComponent<IdComponent>().id;
-		point.EmplaceComponent<NameComponent>().name = "Point_" + std::to_string(id);
+		auto id = pointEntity.EmplaceComponent<IdComponent>().id;
+		pointEntity.EmplaceComponent<NameComponent>().name = "Point_" + std::to_string(id);
 
-		point.EmplaceComponent<PointComponent>();
-		point.EmplaceComponent<TranslationComponent>();
-		point.EmplaceComponent<DirtyFromComponent>();
+		pointEntity.EmplaceComponent<TranslationComponent>();
 
-		return point;
+		pointEntity.EmplaceComponent<DirtyFromComponent>();
+
+		return pointEntity;
 	}
 
 	inline Entity CreateTorus(Ref<Scene> scene)
 	{
-		auto torus = scene->CreateEntity();
+		auto torusEntity = scene->CreateEntity();
+		torusEntity.EmplaceComponent<TorusComponent>();
 
-		auto id = torus.EmplaceComponent<IdComponent>().id;
-		torus.EmplaceComponent<NameComponent>().name = "Torus_" + std::to_string(id);
+		auto id = torusEntity.EmplaceComponent<IdComponent>().id;
+		torusEntity.EmplaceComponent<NameComponent>().name = "Torus_" + std::to_string(id);
 
-		torus.EmplaceComponent<TorusComponent>();
+		torusEntity.EmplaceComponent<TranslationComponent>();
+		torusEntity.EmplaceComponent<RotationComponent>();
+		torusEntity.EmplaceComponent<ScalingComponent>();
 
-		torus.EmplaceComponent<TranslationComponent>();
-		torus.EmplaceComponent<RotationComponent>();
-		torus.EmplaceComponent<ScalingComponent>();
+		torusEntity.EmplaceComponent<DirtyFromComponent>();
 
-		torus.EmplaceComponent<DirtyFromComponent>();
-
-		return torus;
+		return torusEntity;
 	}
 
 	inline Entity CreatePolyline(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
 	{
-		auto polyline = scene->CreateEntity();
+		auto polylineEntity = scene->CreateEntity();
+		auto& polylineComponent = polylineEntity.EmplaceComponent<PolylineComponent>();
 
-		auto id = polyline.EmplaceComponent<IdComponent>().id;
-		polyline.EmplaceComponent<NameComponent>().name = "Polyline_" + std::to_string(id);
+		auto id = polylineEntity.EmplaceComponent<IdComponent>().id;
+		polylineEntity.EmplaceComponent<NameComponent>().name = "Polyline_" + std::to_string(id);
 
-		auto& pc = polyline.EmplaceComponent<PolylineComponent>();
-		pc.pointHandles = pointHandles;
+		polylineComponent.pointHandles = pointHandles;
+		AddAsTargets(polylineEntity.GetHandle(), pointHandles, scene);
 		
-		polyline.EmplaceComponent<DirtyFromComponent>();
+		polylineEntity.EmplaceComponent<DirtyFromComponent>();
 
-		for (auto pointHandle : pointHandles)
-		{
-			Entity pointEntity{ pointHandle, scene.get() };
-			auto& nc = pointEntity.EmplaceComponent<NotificationComponent>();
-			nc.AddToNotify(polyline.GetHandle());
-		}
-
-		return polyline;
+		return polylineEntity;
 	}
 
 	inline Entity CreateBezierCurveC0(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
 	{
 		auto curveEntity = scene->CreateEntity();
+		curveEntity.EmplaceComponent<DirtyFromComponent>();
 
 		auto id = curveEntity.EmplaceComponent<IdComponent>().id;
 		curveEntity.EmplaceComponent<NameComponent>().name = "BezierCurveC0_" + std::to_string(id);
 
-		curveEntity.EmplaceComponent<DirtyFromComponent>();
-
-		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
-		
 		auto bernsteinPolyline = CreatePolyline(scene, pointHandles);
 		bernsteinPolyline.EmplaceComponent<VirtualComponent>(curveEntity.GetHandle());
 		bernsteinPolyline.EmplaceTag<IsInvisibleTag>();
 
+		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 		curveComponent.bernsteinPolylineHandle = bernsteinPolyline.GetHandle();
-
 		curveComponent.onUpdate = [scene](CurveComponent& curve) {
 			return Curve::C0::Update(curve, scene);
 			};
-
+		
 		return curveEntity;
 	}
 
 	inline Entity CreateBezierCurveC2(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
 	{
 		auto curveEntity = scene->CreateEntity();
+		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 
 		auto id = curveEntity.EmplaceComponent<IdComponent>().id;
 		curveEntity.EmplaceComponent<NameComponent>().name = "BezierCurveC2_" + std::to_string(id);
-
-		curveEntity.EmplaceComponent<DirtyFromComponent>();
-
-		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 
 		auto deBoorPolyline = CreatePolyline(scene, pointHandles);
 		deBoorPolyline.EmplaceComponent<VirtualComponent>(curveEntity.GetHandle());
@@ -115,6 +103,8 @@ namespace ShapeCreator
 		curveComponent.onUpdate = [scene](CurveComponent& curve) {
 			return Curve::C2::Update(curve, scene);
 			};
+		
+		curveEntity.EmplaceComponent<DirtyFromComponent>();
 
 		return curveEntity;
 	}
@@ -122,13 +112,10 @@ namespace ShapeCreator
 	inline Entity CreateInterpolatingCurve(Ref<Scene> scene, const std::vector<entt::entity>& pointHandles)
 	{
 		auto curveEntity = scene->CreateEntity();
+		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 
 		auto id = curveEntity.EmplaceComponent<IdComponent>().id;
 		curveEntity.EmplaceComponent<NameComponent>().name = "InterpolatingCurve_" + std::to_string(id);
-
-		curveEntity.EmplaceComponent<DirtyFromComponent>();
-
-		auto& curveComponent = curveEntity.EmplaceComponent<CurveComponent>();
 
 		auto interpolatingPolyline = CreatePolyline(scene, pointHandles);
 		interpolatingPolyline.EmplaceComponent<VirtualComponent>(curveEntity.GetHandle());
@@ -145,6 +132,8 @@ namespace ShapeCreator
 		curveComponent.onUpdate = [scene](CurveComponent& curve) {
 			return Curve::Interpolating::Update(curve, scene);
 			};
+
+		curveEntity.EmplaceComponent<DirtyFromComponent>();
 
 		return curveEntity;
 	}

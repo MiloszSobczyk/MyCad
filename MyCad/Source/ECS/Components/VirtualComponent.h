@@ -8,4 +8,4 @@ struct VirtualComponent
 
 	VirtualComponent() = default;
 	VirtualComponent(entt::entity e) : targetEntity(e) {}
-};;
+};
