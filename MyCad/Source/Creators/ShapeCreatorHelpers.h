@@ -550,171 +550,69 @@ namespace Surface
 
 	namespace Gregory
 	{
-		struct Edge
-		{
-			std::vector<entt::entity> points;
-
-			entt::entity Start() const
-			{
-				return points.front();
-			}
-
-			entt::entity End() const
-			{
-				return points.back();
-			}
-
-			void Reverse()
-			{
-				std::reverse(points.begin(), points.end());
-			}
-		};
-
 		struct SurfaceEdge
 		{
-			entt::entity surface;
-			int edgeIndex; // 0=bottom,1=right,2=top,3=left
-			Edge edge;
+			std::array<std::array<entt::entity, 4>, 4> controlPointHandles{};
 		};
 
-		inline std::vector<std::array<SurfaceEdge, 3>> FindCycles(Ref<Scene> scene)
+		struct Triangle
 		{
-			std::vector<SurfaceEdge> allEdges;
+			std::array<SurfaceEdge, 3> surfaceEdges;
+		};
 
-			auto surfaces = scene->GetAllEntitiesWith<BezierSurfaceComponent, IsSelectedTag>();
+
+		inline Triangle FindCycles(Ref<Scene> scene)
+		{
+			auto surfaces = scene->GetAllEntitiesWith<BezierSurfaceComponent>();
+
 			for (auto surface : surfaces)
 			{
-				auto& bsc = surface.GetComponent<BezierSurfaceComponent>();
-				int rows = bsc.GetRows();
-				int columns = bsc.GetColumns();
-
-				// Bottom edge (left -> right)
-				Edge bottom;
-				for (int col = 0; col < columns; ++col)
-				{
-					bottom.points.push_back(bsc.pointHandles[col]);
-				}
-
-				// Right edge (bottom -> top)
-				Edge right;
-				for (int row = 0; row < rows; ++row)
-				{
-					right.points.push_back(bsc.pointHandles[row * columns + (columns - 1)]);
-				}
-
-				// Top edge (right -> left)
-				Edge top;
-				for (int col = columns - 1; col >= 0; --col)
-				{
-					top.points.push_back(bsc.pointHandles[(rows - 1) * columns + col]);
-				}
-
-				// Left edge (top -> bottom)
-				Edge left;
-				for (int row = rows - 1; row >= 0; --row)
-				{
-					left.points.push_back(bsc.pointHandles[row * columns]);
-				}
-
-				allEdges.push_back({ surface.GetHandle(), 0, bottom });
-				allEdges.push_back({ surface.GetHandle(), 1, right });
-				allEdges.push_back({ surface.GetHandle(), 2, top });
-				allEdges.push_back({ surface.GetHandle(), 3, left });
+				std::cout << surface.GetComponent<IdComponent>().id << '\n';
 			}
 
-			if (allEdges.empty())
+			auto surface2 = surfaces[0].GetComponent<BezierSurfaceComponent>();
+			SurfaceEdge edge2;
+
+			for (int i = 0; i <= 15; ++i)
 			{
-				return {};
+				edge2.controlPointHandles[i / 4][i % 4] = surface2.pointHandles[i];
 			}
 
-			std::vector<std::unordered_set<int>> adjacency;
-			adjacency.resize(allEdges.size());
+			auto surface1 = surfaces[1].GetComponent<BezierSurfaceComponent>();
+			SurfaceEdge edge1;
 
-			for (size_t i = 0; i < allEdges.size(); ++i)
+			for (int i = 0; i <= 15; ++i)
 			{
-				for (size_t j = i + 1; j < allEdges.size(); ++j)
-				{
-					auto aStart = allEdges[i].edge.Start();
-					auto aEnd = allEdges[i].edge.End();
-					auto bStart = allEdges[j].edge.Start();
-					auto bEnd = allEdges[j].edge.End();
-
-					if (aStart == bStart || aStart == bEnd || aEnd == bStart || aEnd == bEnd)
-					{
-						adjacency[i].insert(static_cast<int>(j));
-						adjacency[j].insert(static_cast<int>(i));
-					}
-				}
+				int j = 15 - i;
+				edge1.controlPointHandles[i / 4][i % 4] = surface1.pointHandles[j];
 			}
 
-			auto CanFormClosedChain =
-				[&](const SurfaceEdge& A, const SurfaceEdge& B, const SurfaceEdge& C) -> bool
-				{
-					entt::entity a1 = A.edge.Start();
-					entt::entity a2 = A.edge.End();
-					entt::entity b1 = B.edge.Start();
-					entt::entity b2 = B.edge.End();
-					entt::entity c1 = C.edge.Start();
-					entt::entity c2 = C.edge.End();
+			auto surface0 = surfaces[2].GetComponent<BezierSurfaceComponent>();
+			SurfaceEdge edge0;
 
-					std::array<std::pair<entt::entity, entt::entity>, 2> Ao
-						= { std::make_pair(a1, a2), std::make_pair(a2, a1) };
-					std::array<std::pair<entt::entity, entt::entity>, 2> Bo
-						= { std::make_pair(b1, b2), std::make_pair(b2, b1) };
-					std::array<std::pair<entt::entity, entt::entity>, 2> Co
-						= { std::make_pair(c1, c2), std::make_pair(c2, c1) };
-
-					for (auto& aOri : Ao)
-					{
-						for (auto& bOri : Bo)
-						{
-							for (auto& cOri : Co)
-							{
-								if (aOri.second == bOri.first &&
-									bOri.second == cOri.first &&
-									cOri.second == aOri.first)
-								{
-									return true;
-								}
-							}
-						}
-					}
-
-					return false;
-				};
-
-			std::set<std::array<uint64_t, 3>> canonicalTriangles;
-			std::vector<std::array<SurfaceEdge, 3>> resultTriangles;
-
-			for (size_t i = 0; i < adjacency.size(); ++i)
+			for (int i = 0; i <= 15; ++i)
 			{
-				for (int j : adjacency[i])
-				{
-					if (static_cast<size_t>(j) <= i) continue;
-					for (int k : adjacency[j])
-					{
-						if (static_cast<size_t>(k) <= static_cast<size_t>(j)) continue;
-						if (adjacency[k].count(static_cast<int>(i)) == 0) continue;
-
-						if (CanFormClosedChain(allEdges[i], allEdges[j], allEdges[k]))
-						{
-							auto encode = [&](const SurfaceEdge& se) -> uint64_t
-								{
-									return (static_cast<uint64_t>(se.surface) << 32) | se.edgeIndex;
-								};
-							std::array<uint64_t, 3> key = { encode(allEdges[i]), encode(allEdges[j]), encode(allEdges[k]) };
-							std::sort(key.begin(), key.end());
-							if (canonicalTriangles.insert(key).second)
-							{
-								resultTriangles.push_back({ allEdges[i], allEdges[j], allEdges[k] });
-							}
-						}
-					}
-				}
+				int j = 15 - i;
+				edge0.controlPointHandles[i / 4][i % 4] = surface0.pointHandles[j];
 			}
 
-			return resultTriangles;
+			Triangle triangle{ { edge2, edge1, edge0 } };
 
+			for (auto sEdge : triangle.surfaceEdges)
+			{
+				for (auto handleRow : sEdge.controlPointHandles)
+				{
+					for (auto handle : handleRow)
+					{
+						Entity point{ handle, scene.get() };
+						std::cout << point.GetComponent<IdComponent>().id << ' ';
+					}
+					std::cout << '\n';
+				}
+				std::cout << "----\n";
+			}
+
+			return triangle;
 		}
 
 		// 16 + 31

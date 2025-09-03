@@ -9,12 +9,6 @@ IdManager& IdManager::GetInstance()
 
 unsigned int IdManager::GetNextId()
 {
-    if (!m_FreeIds.empty())
-    {
-        unsigned int id = m_FreeIds.front();
-        m_FreeIds.pop();
-        return id;
-    }
     return m_CurrentId++;
 }
 

@@ -14,9 +14,9 @@ SceneSystem::SceneSystem()
 	m_NotificationSystem(m_Scene),
 	m_ShapeManagementSystem(m_Scene)
 {
-	//ShapeCreator::CreateBezierSurfaceC0(m_Scene, { -2.f, -1.5f, 0.f });
-	//ShapeCreator::CreateBezierSurfaceC0(m_Scene, {  2.f, -1.5f, 0.f });
-	//ShapeCreator::CreateBezierSurfaceC0(m_Scene, {  0.f,  1.5f, 0.f });
+	ShapeCreator::CreateBezierSurfaceC0(m_Scene, { -2.f, -1.5f, 0.f });
+	ShapeCreator::CreateBezierSurfaceC0(m_Scene, {  2.f, -1.5f, 0.f });
+	ShapeCreator::CreateBezierSurfaceC0(m_Scene, {  0.f,  1.5f, 0.f });
 }
 
 void SceneSystem::Update()

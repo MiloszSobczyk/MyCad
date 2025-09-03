@@ -40,6 +40,8 @@ void ShapeManagementSystem::MergePoints()
 	newPoint.GetComponent<TranslationComponent>().SetTranslation(averagePosition);
 	newPoint.EmplaceComponent<NotificationComponent>();
 
+	std::cout << newPoint.GetComponent<IdComponent>().id << " created as merged point.\n";
+
 	for (auto point : mergedPoints)
 	{
 		if (!point.HasComponent<NotificationComponent>())
