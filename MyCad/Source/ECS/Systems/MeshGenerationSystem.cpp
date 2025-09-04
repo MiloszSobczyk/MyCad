@@ -102,3 +102,4 @@ void MeshGenerationSystem::UpdatePatchMeshes()
 			RenderingMode::Patches, { ShaderName::BezierSurface, ShaderName::BezierSurface2 });
 	}
 }
+

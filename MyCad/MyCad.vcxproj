@@ -206,7 +206,7 @@
     <ClInclude Include="Source\ECS\Components\Components.h" />
     <ClInclude Include="Source\ECS\Components\CurveComponent.h" />
     <ClInclude Include="Source\ECS\Components\DirtyFromComponent.h" />
-    <ClInclude Include="Source\ECS\Components\GregoryPatch.h" />
+    <ClInclude Include="Source\ECS\Components\GregoryPatchComponent.h" />
     <ClInclude Include="Source\ECS\Components\IdComponent.h" />
     <ClInclude Include="Source\ECS\Components\PolylineComponent.h" />
     <ClInclude Include="Source\ECS\Components\MeshComponent.h" />
