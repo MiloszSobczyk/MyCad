@@ -20,6 +20,7 @@ void MeshGenerationSystem::Update()
 	UpdateTorusMeshes();
 	UpdateLineMeshes();
 	UpdatePatchMeshes();
+	UpdateGregoryPatchMeshes();
 }
 
 void MeshGenerationSystem::UpdateDirtyTags()
@@ -100,6 +101,20 @@ void MeshGenerationSystem::UpdatePatchMeshes()
 
 		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
 			RenderingMode::Patches, { ShaderName::BezierSurface, ShaderName::BezierSurface2 });
+	}
+}
+
+void MeshGenerationSystem::UpdateGregoryPatchMeshes()
+{
+	for (auto e : m_Scene->GetAllEntitiesWith<DirtyFromComponent, GregoryPatchComponent>())
+	{
+		e.RemoveComponent<DirtyFromComponent>();
+		auto& gpc = e.GetComponent<GregoryPatchComponent>();
+
+		MeshCreator::MeshData mesh = MeshCreator::GregoryPatch::GenerateMeshData(gpc, m_Scene);
+
+		//MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
+			//RenderingMode::Patches, { ShaderName::GregoryPatch });
 	}
 }
 

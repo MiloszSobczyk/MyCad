@@ -560,6 +560,30 @@ namespace Surface
 			std::array<SurfaceEdge, 3> surfaceEdges;
 		};
 
+		inline void printSurfaceEdge(const SurfaceEdge& edge, Ref<Scene> scene)
+		{
+			for (std::size_t i = 0; i < edge.controlPointHandles.size(); i++)
+			{
+				for (std::size_t j = 0; j < edge.controlPointHandles[i].size(); j++)
+				{
+					Entity point{ edge.controlPointHandles[i][j], scene.get() };
+					std::cout << point.GetComponent<IdComponent>().id << " ";
+				}
+				std::cout << "\n";
+			}
+		}
+
+		inline void PrintTriangle(const Triangle& triangle, Ref<Scene> scene)
+		{
+			for (std::size_t i = 0; i < triangle.surfaceEdges.size(); i++)
+			{
+				std::cout << "SurfaceEdge " << i << ":\n";
+				printSurfaceEdge(triangle.surfaceEdges[i], scene);
+				std::cout << "----------------------\n";
+			}
+			std::cout << "IF BUGS HAPPEN. YOU MAY NEED TO FLIP THE EDGES!!!";
+		}
+
 
 		inline Triangle FindCycles(Ref<Scene> scene)
 		{

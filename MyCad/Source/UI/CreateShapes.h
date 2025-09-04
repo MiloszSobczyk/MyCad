@@ -67,6 +67,10 @@ namespace UI
 				ShapeCreator::CreateInterpolatingCurve(scene, pointHandles);
 			}
 		}
+		if (ImGui::Button("Create Gregory Patch##shape_creation"))
+		{
+			ShapeCreator::CreateGregoryPatch(scene);
+		}
 
 		if (ImGui::Button("Create Bezier Surface##shape_creation"))
 		{

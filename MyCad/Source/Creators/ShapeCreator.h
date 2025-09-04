@@ -281,4 +281,17 @@ namespace ShapeCreator
 
 		return surface;
 	}
+
+	inline Entity CreateGregoryPatch(Ref<Scene> scene)
+	{
+		Entity gregory = scene->CreateEntity();
+
+		auto id = gregory.EmplaceComponent<IdComponent>().id;
+		gregory.EmplaceComponent<NameComponent>().name = "GregoryPatch_" + std::to_string(id);
+		gregory.EmplaceComponent<DirtyFromComponent>();
+
+		auto& gpc = gregory.EmplaceComponent<GregoryPatchComponent>();
+
+		return gregory;
+	}
 }

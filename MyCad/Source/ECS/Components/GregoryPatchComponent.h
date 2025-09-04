@@ -4,5 +4,6 @@
 
 struct GregoryPatchComponent
 {
-	bool active = true;
+	int tessLevelU = 16;
+	int tessLevelV = 16;
 };

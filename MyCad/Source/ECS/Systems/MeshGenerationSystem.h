@@ -21,4 +21,5 @@ private:
 	void UpdateTorusMeshes();
 	void UpdateLineMeshes();
 	void UpdatePatchMeshes();
+	void UpdateGregoryPatchMeshes();
 };

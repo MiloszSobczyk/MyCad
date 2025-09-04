@@ -16,6 +16,7 @@
 #include "CurveComponent.h"
 #include "PatchComponent.h"
 #include "BezierSurfaceComponent.h"
+#include "GregoryPatchComponent.h"
 
 // Metadata
 #include "IdComponent.h"

@@ -7,6 +7,8 @@
 
 #include <numbers>
 
+using namespace Surface::Gregory;
+
 namespace MeshCreator
 {
     struct MeshData
@@ -242,6 +244,25 @@ namespace MeshCreator
             };
 
             return mesh;
+        }
+    }
+
+    namespace GregoryPatch
+    {
+        MeshData GenerateGregoryPoints(GregoryPatchComponent& gpc, Ref<Scene> scene)
+        {
+            MeshData mesh;
+
+            auto triangle = FindCycles(scene);
+
+            PrintTriangle(triangle, scene);
+
+            return mesh;
+        }
+
+        MeshData GenerateMeshData(GregoryPatchComponent& gpc, Ref<Scene> scene)
+        {
+            return GenerateGregoryPoints(gpc, scene);
         }
     }
 }
