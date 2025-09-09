@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Render/Uniform/Uniform.h"
+#include "Render/Uniform/UniformDefinition.h"
 
 #include "Algebra.h"
 

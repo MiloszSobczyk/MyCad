@@ -2,11 +2,6 @@
 
 #include <iostream>
 
-UniformManager::UniformManager()
-{
-	VerifyUniforms();
-}
-
 UniformManager& UniformManager::GetInstance()
 {
 	static UniformManager instance;
@@ -14,7 +9,24 @@ UniformManager& UniformManager::GetInstance()
 	return instance;
 }
 
-void UniformManager::VerifyUniforms()
+UniformValue UniformManager::GetUniformValue(Entity entity, const std::string& uniformName)
 {
-	std::cout << "Verifying uniforms...\n";
+    for (auto& [typeIndex, calc] : m_Calculations)
+    {
+        if (calc->Has(uniformName))
+        {
+            return calc->Get(uniformName, entity);
+        }
+    }
+
+    return FallbackForUniform(uniformName, entity);
+}
+
+UniformValue UniformManager::FallbackForUniform(const std::string& uniformName, Entity entity) const
+{
+	if (uniformName == "u_color") 
+		return DefaultColorFallback(entity); 
+	if (uniformName == "u_modelMatrix") 
+		return DefaultModelMatrixFallback(entity); 
+	return 0;
 }

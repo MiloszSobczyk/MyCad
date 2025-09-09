@@ -181,6 +181,7 @@
     <ClCompile Include="Source\Render\Shader\Shader.cpp" />
     <ClCompile Include="Source\Render\Shader\ShaderBuilder.cpp" />
     <ClCompile Include="Source\Managers\ShaderManager.cpp" />
+    <ClCompile Include="Source\Render\Uniform\UniformCalculation.cpp" />
     <ClCompile Include="Source\Utils\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -236,7 +237,9 @@
     <ClInclude Include="Source\Render\Buffer\VertexArray.h" />
     <ClInclude Include="Source\Render\Buffer\VertexBuffer.h" />
     <ClInclude Include="Source\Render\Renderer.h" />
-    <ClInclude Include="Source\Render\Uniform\Uniform.h" />
+    <ClInclude Include="Source\Render\Uniform\UniformCalculationFallbacks.h" />
+    <ClInclude Include="Source\Render\Uniform\UniformDefinition.h" />
+    <ClInclude Include="Source\Render\Uniform\UniformCalculation.h" />
     <ClInclude Include="Source\Render\Uniform\UniformOld.h" />
     <ClInclude Include="Source\Render\Uniform\UniformManagerOld.h" />
     <ClInclude Include="Source\Render\Uniform\UniformManagerOld.ipp" />
