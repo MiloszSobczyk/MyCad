@@ -3,11 +3,17 @@
 #include "Utils/Config.h"
 #include "Platform/Imgui/ImguiApi.h"
 
+#include "Managers/UniformManager.h"
+#include "Managers/ShaderManager.h"
+
 App::App()
 	: m_Window(Config::WindowWidth, Config::WindowHeight, "Pierce the Heavens"),
 	m_SceneSystem()
 {
 	ImguiApi::InitImgui(m_Window.GetNativeWindow());
+
+	ShaderManager::GetInstance();
+	UniformManager::GetInstance();
 }
 
 void App::Run()

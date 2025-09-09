@@ -3,7 +3,7 @@
 #include "Core/Scene/Scene.h"
 #include "Core/Scene/Entity.h"
 #include "ECS/Components/Components.h"
-#include "Render/Uniform/UniformManager.h"
+#include "Render/Uniform/UniformManagerOld.h"
 #include "Utils/Config.h"
 
 #include <iostream>
@@ -39,7 +39,7 @@ void CameraSystem::UpdateCameraUniforms()
 			static_cast<float>(Config::WindowWidth) / Config::WindowHeight,
 			camera.farPlane, camera.nearPlane, camera.fov);
 
-		UniformManager::GetInstance().SetUniformValue("u_viewMatrix", viewMatrix);
-		UniformManager::GetInstance().SetUniformValue("u_projectionMatrix", projectionMatrix);
+		UniformManagerOld::GetInstance().SetUniformValue("u_viewMatrix", viewMatrix);
+		UniformManagerOld::GetInstance().SetUniformValue("u_projectionMatrix", projectionMatrix);
 	}
 }

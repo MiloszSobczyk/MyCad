@@ -3,7 +3,7 @@
 #include "Core/Scene/Entity.h"
 #include "ECS/Components/Components.h"
 #include "Managers/ShaderManager.h"
-#include "Render/Uniform/UniformManager.h"
+#include "Render/Uniform/UniformManagerOld.h"
 #include "Utils/Config.h"
 
 
@@ -14,8 +14,8 @@ RenderingSystem::RenderingSystem(Ref<Scene> scene)
 
 void RenderingSystem::Update()
 {
-    auto* viewMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
-    auto* projectionMatrix = UniformManager::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
+    auto* viewMatrix = UniformManagerOld::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
+    auto* projectionMatrix = UniformManagerOld::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
 
     m_Renderer->SetPatchParameters(4);
 

@@ -28,12 +28,12 @@ struct ShaderTypeInfo
     static const std::unordered_map<ShaderType, ShaderTypeInfo>& GetMap()
     {
         static std::unordered_map<ShaderType, ShaderTypeInfo> map = {
-            { ShaderType::Vertex,         { GL_VERTEX_SHADER,         ".vert" } },
-            { ShaderType::Fragment,       { GL_FRAGMENT_SHADER,       ".frag" } },
-            { ShaderType::TessControl,    { GL_TESS_CONTROL_SHADER,   ".tesc"  } },
-            { ShaderType::TessEvaluation, { GL_TESS_EVALUATION_SHADER,".tese"  } },
-            { ShaderType::Geometry,       { GL_GEOMETRY_SHADER,       ".geom" } },
-            { ShaderType::Compute,        { GL_COMPUTE_SHADER,        ".comp" } }
+            { ShaderType::Vertex,         { GL_VERTEX_SHADER,          ".vert" } },
+            { ShaderType::Fragment,       { GL_FRAGMENT_SHADER,        ".frag" } },
+            { ShaderType::TessControl,    { GL_TESS_CONTROL_SHADER,    ".tesc" } },
+            { ShaderType::TessEvaluation, { GL_TESS_EVALUATION_SHADER, ".tese" } },
+            { ShaderType::Geometry,       { GL_GEOMETRY_SHADER,        ".geom" } },
+            { ShaderType::Compute,        { GL_COMPUTE_SHADER,         ".comp" } }
         };
         return map;
     }

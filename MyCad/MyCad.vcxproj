@@ -159,6 +159,7 @@
     <ClCompile Include="Source\ECS\Systems\SceneSystem.cpp" />
     <ClCompile Include="Source\ECS\Systems\ShapeManagementSystem.cpp" />
     <ClCompile Include="Source\Managers\IdManager.cpp" />
+    <ClCompile Include="Source\Managers\UniformManager.cpp" />
     <ClCompile Include="Source\Platform\Imgui\ImguiApi.cpp" />
     <ClCompile Include="Source\Platform\OpenGL\OpenGLApi.cpp" />
     <ClCompile Include="Source\Render\Buffer\BufferLayout.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="Source\Input\Input.h" />
     <ClInclude Include="Source\Input\MouseButton.h" />
     <ClInclude Include="Source\Managers\IdManager.h" />
+    <ClInclude Include="Source\Managers\UniformManager.h" />
     <ClInclude Include="Source\Platform\Imgui\ImguiApi.h" />
     <ClInclude Include="Source\Platform\OpenGL\OpenGLApi.h" />
     <ClInclude Include="Source\Render\Buffer\BufferElement.h" />
@@ -235,8 +237,9 @@
     <ClInclude Include="Source\Render\Buffer\VertexBuffer.h" />
     <ClInclude Include="Source\Render\Renderer.h" />
     <ClInclude Include="Source\Render\Uniform\Uniform.h" />
-    <ClInclude Include="Source\Render\Uniform\UniformManager.h" />
-    <ClInclude Include="Source\Render\Uniform\UniformManager.ipp" />
+    <ClInclude Include="Source\Render\Uniform\UniformOld.h" />
+    <ClInclude Include="Source\Render\Uniform\UniformManagerOld.h" />
+    <ClInclude Include="Source\Render\Uniform\UniformManagerOld.ipp" />
     <ClInclude Include="Source\UI\CreateShapes.h" />
     <ClInclude Include="Source\UI\ShapeList.h" />
     <ClInclude Include="Source\UI\ShapeProperties.h" />

@@ -1,23 +1,44 @@
+#pragma once
+
 #include <string>
 
-class IUniform 
+#include <GL/glew.h>
+
+enum class UniformType
 {
-public:
-    virtual ~IUniform() = default;
+    Float,
+    Vec2,
+    Vec3,
+    Vec4,
+    Mat3,
+    Mat4,
+    Int,
+    Sampler2D,
+    SamplerCube,
+    Unknown
 };
 
-template<typename T>
-class Uniform : public IUniform
+inline UniformType ToUniformType(GLenum glType)
 {
-public:
-    inline Uniform(const std::string& name, const T& value)
-        : m_Name(name), m_Value(value) {
+    switch (glType)
+    {
+    case GL_FLOAT:          return UniformType::Float;
+    case GL_FLOAT_VEC2:     return UniformType::Vec2;
+    case GL_FLOAT_VEC3:     return UniformType::Vec3;
+    case GL_FLOAT_VEC4:     return UniformType::Vec4;
+    case GL_FLOAT_MAT3:     return UniformType::Mat3;
+    case GL_FLOAT_MAT4:     return UniformType::Mat4;
+    case GL_INT:            return UniformType::Int;
+    case GL_SAMPLER_2D:     return UniformType::Sampler2D;
+    case GL_SAMPLER_CUBE:   return UniformType::SamplerCube;
+    default:                return UniformType::Unknown;
     }
+}
 
-    inline void SetValue(const T& value) { m_Value = value; }
-    inline const T& GetValue() const { return m_Value; }
-
-private:
-    std::string m_Name;
-    T m_Value;
+struct UniformDefinition
+{
+    std::string name;
+    UniformType type;
+    int location;
+    int arraySize;
 };
