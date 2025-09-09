@@ -71,10 +71,10 @@ unsigned int ShaderBuilder::CompileShader(ShaderType type, const std::string& so
     return id;
 }
 
-std::shared_ptr<Shader> ShaderBuilder::Compile()
+Ref<Shader> ShaderBuilder::Compile()
 {
     unsigned int program = glCreateProgram();
-    std::vector<unsigned int> shaderIDs;
+    std::vector<unsigned int> shaderIds;
 
     for (const auto& [type, source] : m_ShaderSources)
     {
@@ -82,17 +82,17 @@ std::shared_ptr<Shader> ShaderBuilder::Compile()
         {
             unsigned int id = CompileShader(type, source);
             GLCall(glAttachShader(program, id));
-            shaderIDs.push_back(id);
+            shaderIds.push_back(id);
         }
     }
 
     GLCall(glLinkProgram(program));
     GLCall(glValidateProgram(program));
 
-    for (unsigned int id : shaderIDs)
+    for (unsigned int id : shaderIds)
     {
         GLCall(glDeleteShader(id));
     }
 
-    return std::make_shared<Shader>(program);
+    return CreateRef<Shader>(program);
 }

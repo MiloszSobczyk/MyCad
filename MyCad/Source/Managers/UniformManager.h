@@ -1,13 +1,14 @@
 #pragma once
 
+#include "Render/Uniform/UniformCalculation.h"
+#include "Render/Uniform/UniformCalculationFallbacks.h"
+#include "Core/Scene/Entity.h"
+#include "Utils/Base.h"
+
 #include <unordered_map>
 #include <typeindex>
 #include <memory>
 #include <iostream>
-
-#include "Render/Uniform/UniformCalculation.h"
-#include "Render/Uniform/UniformCalculationFallbacks.h"
-#include "Core/Scene/Entity.h"
 
 class UniformManager
 {
@@ -20,7 +21,16 @@ public:
     template<typename Component>
     void RegisterCalculation(UniformCalculation calc)
     {
-        m_Calculations[std::type_index(typeid(Component))] = std::make_shared<UniformCalculation>(std::move(calc));
+        m_Calculations[std::type_index(typeid(Component))] = CreateRef<UniformCalculation>(std::move(calc));
+    }
+
+    template<typename Component>
+    Ref<UniformCalculation> GetCalculation() const
+    {
+        auto it = m_Calculations.find(std::type_index(typeid(Component)));
+        if (it != m_Calculations.end())
+            return it->second;
+        return nullptr;
     }
 
     template<typename Component, typename Func>
@@ -29,19 +39,10 @@ public:
         auto calc = GetCalculation<Component>();
         if (!calc)
         {
-            calc = std::make_shared<UniformCalculation>();
+            calc = CreateRef<UniformCalculation>();
             m_Calculations[std::type_index(typeid(Component))] = calc;
         }
         calc->Set(uniformName, std::forward<Func>(provider));
-    }
-
-    template<typename Component>
-    std::shared_ptr<UniformCalculation> GetCalculation() const
-    {
-        auto it = m_Calculations.find(std::type_index(typeid(Component)));
-        if (it != m_Calculations.end())
-            return it->second;
-        return nullptr;
     }
 
     template<typename Component>
@@ -59,5 +60,5 @@ private:
     UniformManager() = default;
     ~UniformManager() = default;
 
-    std::unordered_map<std::type_index, std::shared_ptr<UniformCalculation>> m_Calculations;
+    std::unordered_map<std::type_index, Ref<UniformCalculation>> m_Calculations;
 };
