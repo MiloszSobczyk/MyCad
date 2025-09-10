@@ -41,7 +41,7 @@ void MeshGenerationSystem::UpdatePointMeshes()
 	{
 		e.RemoveComponent<DirtyFromComponent>();
 
-		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, RenderingMode::Triangles);
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.uniformCalculation, mesh.layout, RenderingMode::Triangles);
 	}
 }
 
@@ -55,7 +55,7 @@ void MeshGenerationSystem::UpdateTorusMeshes()
 
 		MeshCreator::MeshData mesh = MeshCreator::Torus::GenerateMeshData(tc);
 
-		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout);
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.uniformCalculation, mesh.layout);
 	}
 }
 
@@ -74,7 +74,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 		}
 		
 		MeshCreator::MeshData mesh = MeshCreator::Polyline::GenerateMeshData(pc, m_Scene);
-		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout);
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.uniformCalculation, mesh.layout);
 	}
 	for (auto e : m_Scene->GetAllEntitiesWith<DirtyFromComponent, CurveComponent>())
 	{
@@ -84,7 +84,7 @@ void MeshGenerationSystem::UpdateLineMeshes()
 
 		MeshCreator::MeshData mesh = MeshCreator::Curve::GenerateMeshData(curveComponent, m_Scene);
 
-		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout, 
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.uniformCalculation, mesh.layout,
 			RenderingMode::Patches, { ShaderName::BezierCurve });
 	}
 }
@@ -99,22 +99,13 @@ void MeshGenerationSystem::UpdatePatchMeshes()
 		
 		MeshCreator::MeshData mesh = MeshCreator::Patch::GenerateMeshData(pc, m_Scene);
 
-		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
+		MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.uniformCalculation, mesh.layout,
 			RenderingMode::Patches, { ShaderName::BezierSurface, ShaderName::BezierSurface2 });
 	}
 }
 
 void MeshGenerationSystem::UpdateGregoryPatchMeshes()
 {
-	for (auto e : m_Scene->GetAllEntitiesWith<DirtyFromComponent, GregoryPatchComponent>())
-	{
-		e.RemoveComponent<DirtyFromComponent>();
-		auto& gpc = e.GetComponent<GregoryPatchComponent>();
 
-		MeshCreator::MeshData mesh = MeshCreator::GregoryPatch::GenerateMeshData(gpc, m_Scene);
-
-		//MeshCreator::UpdateMesh(e, mesh.vertices, mesh.indices, mesh.layout,
-			//RenderingMode::Patches, { ShaderName::GregoryPatch });
-	}
 }
 

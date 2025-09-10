@@ -4,6 +4,7 @@
 #include "Creators/ShapeCreator.h"
 #include "ECS/Components/Components.h"
 #include "Managers/ShaderManager.h"
+#include "Managers/UniformManager.h"
 
 #include <numbers>
 
@@ -16,18 +17,23 @@ namespace MeshCreator
         std::vector<Algebra::Vector4> vertices;
         std::vector<uint32_t> indices;
 		BufferLayout layout;
+        Ref<UniformCalculation> uniformCalculation;
 
         MeshData() = default;
 
         MeshData(const MeshData& enemy)
-            : vertices(enemy.vertices), indices(enemy.indices), layout(enemy.layout) 
+            : vertices(enemy.vertices), 
+            indices(enemy.indices), 
+            layout(enemy.layout),
+            uniformCalculation(uniformCalculation)
         {
         }
 
         MeshData(MeshData&& enemy) noexcept
             : vertices(std::move(enemy.vertices)),
             indices(std::move(enemy.indices)),
-            layout(std::move(enemy.layout))
+            layout(std::move(enemy.layout)),
+            uniformCalculation(std::move(enemy.uniformCalculation))
         {
         }
 
@@ -37,6 +43,8 @@ namespace MeshCreator
             {
                 vertices = enemy.vertices;
                 indices = enemy.indices;
+                layout = enemy.layout;
+                uniformCalculation = enemy.uniformCalculation;
             }
             return *this;
         }
@@ -48,6 +56,7 @@ namespace MeshCreator
                 vertices = std::move(enemy.vertices);
                 indices = std::move(enemy.indices);
                 layout = std::move(enemy.layout);
+                uniformCalculation = std::move(enemy.uniformCalculation);
             }
             return *this;
         }
@@ -57,6 +66,7 @@ namespace MeshCreator
         Entity& e,
         std::vector<Algebra::Vector4>& vertices,
         std::vector<uint32_t>& indices,
+        Ref<UniformCalculation> uniformCalculation,
         BufferLayout layout = BufferLayout{ { ShaderDataType::Float4, "position" } },
         RenderingMode mode = RenderingMode::Lines,
         std::vector<ShaderName> shaderNames = { ShaderName::Default })
@@ -82,6 +92,7 @@ namespace MeshCreator
             auto& mc = e.EmplaceComponent<MeshComponent>();
             mc.vertexArray = va;
             mc.renderingMode = mode;
+            mc.uniformCalculation = uniformCalculation;
             for (auto shaderName : shaderNames)
             {
 				mc.shaders.push_back(ShaderManager::GetInstance().GetShader(shaderName));
@@ -134,6 +145,7 @@ namespace MeshCreator
             mesh.layout = BufferLayout{
                 { ShaderDataType::Float4, "position" }
             };
+            mesh.uniformCalculation = UniformManager::GetInstance().GetCalculation<PointComponent>();
 
             return mesh;
         }
@@ -180,6 +192,7 @@ namespace MeshCreator
 		    mesh.layout = BufferLayout {
                 { ShaderDataType::Float4, "position" }
             };
+            mesh.uniformCalculation = UniformManager::GetInstance().GetCalculation<TorusComponent>();
 
             return mesh;
         }
@@ -212,6 +225,7 @@ namespace MeshCreator
             mesh.layout = BufferLayout{
                 { ShaderDataType::Float4, "position" }
             };
+            mesh.uniformCalculation = UniformManager::GetInstance().GetCalculation<PolylineComponent>();
 
             return mesh;
         }
@@ -227,6 +241,7 @@ namespace MeshCreator
             mesh.layout = BufferLayout{
                 { ShaderDataType::Float4, "position" }
             };
+            mesh.uniformCalculation = UniformManager::GetInstance().GetCalculation<CurveComponent>();
 
             return mesh;
         }
@@ -242,6 +257,7 @@ namespace MeshCreator
             mesh.layout = BufferLayout{
                 { ShaderDataType::Float4, "position" }
             };
+            mesh.uniformCalculation = UniformManager::GetInstance().GetCalculation<PatchComponent>();
 
             return mesh;
         }

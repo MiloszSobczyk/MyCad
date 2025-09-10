@@ -7,18 +7,20 @@
 #include "Render/Uniform/UniformManagerOld.h"
 #include "Utils/Config.h"
 
+#include <chrono>
+#include <iostream>
 
 RenderingSystem::RenderingSystem(Ref<Scene> scene)
 	: m_Scene{ scene }, m_Renderer{ CreateRef<Renderer>() }
 {
 }
 
-inline void SetUniformsForEntity(Ref<Renderer> renderer, Ref<Shader> shader, Entity entity)
+void RenderingSystem::SetUniformsForEntity(Ref<Renderer> renderer, Ref<Shader> shader, Ref<UniformCalculation> uniformCalculation, Entity entity)
 {
     auto& uniformDefs = shader->GetUniformDefinitions();
     for (auto& [name, def] : uniformDefs)
     {
-        UniformValue value = UniformManager::GetInstance().GetUniformValue(entity, name);
+        UniformValue value = uniformCalculation->Get(name, entity);
 
         switch (def.type)
         {
@@ -38,16 +40,16 @@ inline void SetUniformsForEntity(Ref<Renderer> renderer, Ref<Shader> shader, Ent
     }
 }
 
-
-
 void RenderingSystem::Update()
 {
+    auto startTime = std::chrono::high_resolution_clock::now();
+
     auto* viewMatrix = UniformManagerOld::GetInstance().GetUniformValue<Algebra::Matrix4>("u_viewMatrix");
     auto* projectionMatrix = UniformManagerOld::GetInstance().GetUniformValue<Algebra::Matrix4>("u_projectionMatrix");
 
     m_Renderer->SetPatchParameters(4);
 
-    for (auto e : m_Scene->GetAllEntitiesWith<PointComponent>(entt::exclude<CurveComponent, PatchComponent, IsInvisibleTag>))
+    for (auto e : m_Scene->GetAllEntitiesWithAny<MeshComponent>(entt::exclude_t<IsInvisibleTag>()))
     {
         m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
         m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
@@ -58,7 +60,7 @@ void RenderingSystem::Update()
         {
             m_Renderer->SetShader(shader);
 
-            SetUniformsForEntity(m_Renderer, shader, e);
+            SetUniformsForEntity(m_Renderer, shader, mc.uniformCalculation, e);
 
             m_Renderer->SetVertexArray(mc.vertexArray);
 
@@ -68,42 +70,8 @@ void RenderingSystem::Update()
         m_Renderer->ClearUniforms();
     }
 
+    auto endTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> elapsed = endTime - startTime;
 
-
-    //for (auto e : m_Scene->GetAllEntitiesWith<CurveComponent>(entt::exclude<IsInvisibleTag>))
-    //{
-    //    const auto& mc = e.GetComponent<MeshComponent>();
-
-    //    m_Renderer->SetUniform("u_cameraPos", Config::InitialCameraPosition);
-    //    m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
-    //    m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
-    //    m_Renderer->SetVertexArray(mc.vertexArray);
-
-    //    for (const auto& shader : mc.shaders)
-    //    {
-    //        m_Renderer->SetShader(shader);
-    //        m_Renderer->Render(mc.renderingMode);
-    //    }
-    //    m_Renderer->ClearUniforms();
-    //}
-
-    //m_Renderer->SetPatchParameters(16);
-
-    //for (auto e : m_Scene->GetAllEntitiesWith<PatchComponent>(entt::exclude<IsInvisibleTag>))
-    //{
-    //    const auto& mc = e.GetComponent<MeshComponent>();
-
-    //    m_Renderer->SetUniform("u_viewMatrix", *viewMatrix);
-    //    m_Renderer->SetUniform("u_projectionMatrix", *projectionMatrix);
-    //    m_Renderer->SetUniform("u_tessLevelU", 8);
-    //    m_Renderer->SetUniform("u_tessLevelV", 8);
-    //    m_Renderer->SetVertexArray(mc.vertexArray);
-
-    //    for (const auto& shader : mc.shaders)
-    //    {
-    //        m_Renderer->SetShader(shader);
-    //        m_Renderer->Render(mc.renderingMode);
-    //    }
-    //    m_Renderer->ClearUniforms();
-    //}
+    std::cout << "[RenderingSystem] Update loop took: " << elapsed.count() << " ms\n";
 }

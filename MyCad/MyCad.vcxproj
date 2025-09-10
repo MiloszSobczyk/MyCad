@@ -246,6 +246,7 @@
     <ClInclude Include="Source\UI\CreateShapes.h" />
     <ClInclude Include="Source\UI\ShapeList.h" />
     <ClInclude Include="Source\UI\ShapeProperties.h" />
+    <ClInclude Include="Source\UI\ShowDiagnostics.h" />
     <ClInclude Include="Source\UI\UI.h" />
     <ClInclude Include="Source\UI\Utils.h" />
     <ClInclude Include="Source\Utils\Base.h" />

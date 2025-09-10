@@ -33,34 +33,20 @@ public:
         return nullptr;
     }
 
-    template<typename Component, typename Func>
-    void SetUniform(const std::string& uniformName, Func&& provider)
-    {
-        auto calc = GetCalculation<Component>();
-        if (!calc)
-        {
-            calc = CreateRef<UniformCalculation>();
-            m_Calculations[std::type_index(typeid(Component))] = calc;
-        }
-        calc->Set(uniformName, std::forward<Func>(provider));
-    }
-
     template<typename Component>
     bool HasCalculation() const
     {
         return m_Calculations.find(std::type_index(typeid(Component))) != m_Calculations.end();
     }
 
-    UniformValue GetUniformValue(Entity entity, const std::string& uniformName);
-
 private:
-    UniformManager() = default;
+    UniformManager();
     ~UniformManager() = default;
     
     // void VerifyUniforms(); should tell if all uniforms have fallbacks
 
     void InitializeCalculations();
-    UniformValue FallbackForUniform(const std::string& uniformName, Entity entity) const;
+    UniformProvider FallbackForUniform(const std::string& uniformName) const;
 
 private:
     std::unordered_map<std::type_index, Ref<UniformCalculation>> m_Calculations;

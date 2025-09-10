@@ -9,40 +9,44 @@ UniformManager& UniformManager::GetInstance()
 	return instance;
 }
 
-UniformValue UniformManager::GetUniformValue(Entity entity, const std::string& uniformName)
+UniformManager::UniformManager()
 {
-    for (auto& [typeIndex, calc] : m_Calculations)
-    {
-        if (calc->Has(uniformName))
-        {
-            return calc->Get(uniformName, entity);
-        }
-    }
-
-    return FallbackForUniform(uniformName, entity);
+    InitializeCalculations();
 }
 
 void UniformManager::InitializeCalculations()
 {
     {
         UniformCalculation pointCalculation;
+        pointCalculation.Set("u_color", FallbackForUniform("u_color"));
+        pointCalculation.Set("u_modelMatrix", FallbackForUniform("u_modelMatrix"));
         RegisterCalculation<PointComponent>(pointCalculation);
     }
     {
 		UniformCalculation torusCalculation;
+        torusCalculation.Set("u_color", FallbackForUniform("u_color"));
+        torusCalculation.Set("u_modelMatrix", FallbackForUniform("u_modelMatrix"));
 		RegisterCalculation<TorusComponent>(torusCalculation);
     }
     {
         UniformCalculation polylineCalculation;
+        polylineCalculation.Set("u_color", FallbackForUniform("u_color"));
+        polylineCalculation.Set("u_modelMatrix", FallbackForUniform("u_modelMatrix"));
 		RegisterCalculation<PolylineComponent>(polylineCalculation);
     }
 }
 
-UniformValue UniformManager::FallbackForUniform(const std::string& uniformName, Entity entity) const
+UniformProvider UniformManager::FallbackForUniform(const std::string& uniformName) const
 {
-	if (uniformName == "u_color") 
-		return DefaultColorFallback(entity); 
-	if (uniformName == "u_modelMatrix") 
-		return DefaultModelMatrixFallback(entity); 
-	return 0;
+    static const std::unordered_map<std::string, UniformProvider> fallbackMap
+    {
+        { "u_color", DefaultColorFallback },
+        { "u_modelMatrix", DefaultModelMatrixFallback }
+    };
+
+    auto it = fallbackMap.find(uniformName);
+    if (it != fallbackMap.end())
+        return it->second;
+
+    return [](Entity) -> UniformValue { return 0; };
 }
