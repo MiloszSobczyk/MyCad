@@ -54,11 +54,14 @@ public:
     UniformValue GetUniformValue(Entity entity, const std::string& uniformName);
 
 private:
+    UniformManager() = default;
+    ~UniformManager() = default;
+    
+    // void VerifyUniforms(); should tell if all uniforms have fallbacks
+
+    void InitializeCalculations();
     UniformValue FallbackForUniform(const std::string& uniformName, Entity entity) const;
 
 private:
-    UniformManager() = default;
-    ~UniformManager() = default;
-
     std::unordered_map<std::type_index, Ref<UniformCalculation>> m_Calculations;
 };

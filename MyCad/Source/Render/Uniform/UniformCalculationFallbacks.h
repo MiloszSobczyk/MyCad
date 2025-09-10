@@ -9,7 +9,7 @@
 
 inline UniformValue DefaultColorFallback(Entity e)
 {
-    return Algebra::Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
+    return Algebra::Vector4{ .8f, .2f, .8f, 1.f };
 }
 
 inline UniformValue DefaultModelMatrixFallback(Entity e)

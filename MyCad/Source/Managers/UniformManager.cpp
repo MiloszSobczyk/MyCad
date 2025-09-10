@@ -22,6 +22,22 @@ UniformValue UniformManager::GetUniformValue(Entity entity, const std::string& u
     return FallbackForUniform(uniformName, entity);
 }
 
+void UniformManager::InitializeCalculations()
+{
+    {
+        UniformCalculation pointCalculation;
+        RegisterCalculation<PointComponent>(pointCalculation);
+    }
+    {
+		UniformCalculation torusCalculation;
+		RegisterCalculation<TorusComponent>(torusCalculation);
+    }
+    {
+        UniformCalculation polylineCalculation;
+		RegisterCalculation<PolylineComponent>(polylineCalculation);
+    }
+}
+
 UniformValue UniformManager::FallbackForUniform(const std::string& uniformName, Entity entity) const
 {
 	if (uniformName == "u_color") 
